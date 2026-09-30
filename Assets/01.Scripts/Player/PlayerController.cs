@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,22 +16,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerStats stats;
 
     [Header("Move")]
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed;
     [SerializeField] private float frontDir = 1f;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce = 3f;
+    [SerializeField] private float jumpForce;
 
     [Header("Ground CHeck")]
-    [SerializeField] private Vector2 checkSize = new Vector2(0.8f, 0.1f);
-    [SerializeField] private float checkDistance = 0.1f;
+    [SerializeField] private Vector2 checkSize;
+    [SerializeField] private float checkDistance;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Vector3 checkOffset = new Vector2(0f, -0.4f);
+    [SerializeField] private Vector3 checkOffset;
 
     [Header("Dash")]
-    [SerializeField] private float dashTime = 0.2f;
-    [SerializeField] private float dashSpeed = 10f;
-    [SerializeField] private float dashCool = 0.5f;
+    [SerializeField] private float dashTime;
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float dashCool;
     [SerializeField] private float dashCheckTimer = 0f;
     [SerializeField] private float dashCoolTimer = 0f;
 
@@ -99,6 +100,7 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
 
+        // 플레이어 보는 방향 판별
         if (moveInput.x != 0f)
         {
             frontDir = Mathf.Sign(moveInput.x);
@@ -129,7 +131,7 @@ public class PlayerController : MonoBehaviour
 
     private void Dash()
     {
-        Debug.Log("대시 시작");
+        Utils.Log<PlayerController>("대시 시작");
         isDash = true;
 
         DashAsync(token.Token).Forget();
@@ -150,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
             }
-            Debug.Log("대시 종료");
+            Utils.Log<PlayerController>("대시 종료");
         }
         catch (OperationCanceledException)
         {
@@ -175,7 +177,10 @@ public class PlayerController : MonoBehaviour
                 await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
             }
 
-            Debug.Log("쿨타임 종료");
+            if (dashCoolTimer <= 0)
+                dashCoolTimer = 0f;
+
+            Utils.Log<PlayerController>("쿨타임 종료");
         }
         catch (OperationCanceledException)
         {
@@ -203,13 +208,13 @@ public class PlayerController : MonoBehaviour
     {
         if (!context.performed)
         {
-            Debug.Log("context.performed");
+            Utils.Log<PlayerController>("context.performed");
             return;
         }
 
         if (isDash || dashCoolTimer > 0f)
         {
-            Debug.Log("대시중이거나 쿨타임 중");
+            Utils.Log<PlayerController>("대시중이거나 쿨타임 중");
             return;
         }
 

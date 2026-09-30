@@ -20,7 +20,7 @@ public class PlayerStats : MonoBehaviour
         nowStamina = maxStamina;
     }
 
-    private void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         nowHp -= damage;
 

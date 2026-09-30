@@ -492,7 +492,9 @@ GameObject:
   - component: {fileID: 1302843616}
   - component: {fileID: 1302843620}
   - component: {fileID: 1302843621}
-  m_Layer: 0
+  - component: {fileID: 1302843622}
+  - component: {fileID: 1302843623}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -692,7 +694,19 @@ MonoBehaviour:
     m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1302843623}
+        m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
     m_ActionName: 'Player/Attack[/Mouse/leftButton,/Keyboard/enter]'
   - m_PersistentCalls:
@@ -787,6 +801,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: c046edad-f1a5-4feb-a1b0-a8b7cd90189f
     m_ActionName: Player/Dash
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1302843623}
+        m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
+        m_MethodName: OnGuard
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ffe4b318-8bf8-4264-be19-868e9e0709c6
+    m_ActionName: 'Player/Guard[/Mouse/rightButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -804,24 +834,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73aad52d34b2634180bb44db3c6d5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 5
+  data: {fileID: 11400000, guid: be9a085361e30404d9b6c9ac0f13ade5, type: 2}
+  stats: {fileID: 1302843622}
+  moveSpeed: 0
   frontDir: 1
-  acceleration: 15
-  deceleration: 10
-  jumpForce: 10
-  checkSize: {x: 0.8, y: 0.1}
-  checkDistance: 0.1
+  jumpForce: 0
+  checkSize: {x: 0, y: 0}
+  checkDistance: 0
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
-  checkOffset: {x: 0, y: -0.4, z: 0}
-  dashTime: 0.1
-  dashSpeed: 20
-  dashCool: 0.5
+    m_Bits: 0
+  checkOffset: {x: 0, y: 0, z: 0}
+  dashTime: 0
+  dashSpeed: 0
+  dashCool: 0
   dashCheckTimer: 0
   dashCoolTimer: 0
   isGround: 0
   isDash: 0
+--- !u!114 &1302843622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302843615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6defbe8065a777644a55528fb6e6179c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  nowHp: 0
+  maxHp: 0
+  nowStamina: 0
+  maxStamina: 0
+--- !u!114 &1302843623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302843615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd046463a244b4a488b65a67d1ac1fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  attackDamage: 10
+  attackRange: 0.8
+  attackOffset: {x: 0.6, y: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  parryWindow: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
