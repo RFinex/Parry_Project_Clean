@@ -15,8 +15,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
 
-    private bool isGuard;
-    private bool isParry;
+    [SerializeField] private bool isParry;
 
     private float parryTimer;
 
@@ -71,14 +70,17 @@ public class PlayerCombat : MonoBehaviour
 
     private void Attack()
     {
-        if (isGuard)
+        if (controller.CurrentState is PlayerGuardState)
             return;
 
         Utils.Log<PlayerCombat>("공격");
 
+
         Vector2 attackPos = (Vector2)transform.position + attackOffset;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
+
+        controller.ChangeState<PlayerAttackState>();
 
         foreach (Collider2D hit in hits)
         {
@@ -91,10 +93,11 @@ public class PlayerCombat : MonoBehaviour
 
     private void GuardStart()
     {
-        if (isGuard)
+        if (controller.CurrentState is PlayerGuardState)
             return;
 
-        isGuard = true;
+        controller.ChangeState<PlayerGuardState>();
+
         isParry = true;
 
         parryTimer = parryWindow;
@@ -126,11 +129,18 @@ public class PlayerCombat : MonoBehaviour
 
     private void GuardEnd()
     {
-        isGuard = false;
+        if (controller.CurrentState is not PlayerGuardState)
+            return;
+
         isParry = false;
         parryTimer = 0f;
 
-        Utils.Log<PlayerCombat>("가드 종료");
+        if (controller.MoveInput.x != 0f)
+            controller.ChangeState<PlayerMoveState>();
+        else
+            controller.ChangeState<PlayerIdleState>();
+
+            Utils.Log<PlayerCombat>("가드 종료");
     }
 
     public bool IsParry()

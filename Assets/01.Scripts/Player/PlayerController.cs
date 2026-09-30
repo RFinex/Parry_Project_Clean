@@ -38,16 +38,17 @@ public class PlayerController : MonoBehaviour
     public Vector2 MoveInput => moveInput;
 
     [Header("State Machine")]
-    [SerializeField] private StateMachine<PlayerController> stateMachine;
-    [SerializeField] private string currentStateName;
+    private StateMachine<PlayerController> stateMachine;
 
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
     [SerializeField] private bool isDash;
 
     [Header("Current State")]
-    [SerializeField] private BaseState<PlayerController> currentState;
+    private BaseState<PlayerController> currentState;
     public BaseState<PlayerController> CurrentState => currentState;
+    [SerializeField] private string currentStateName;
+
 
     private CancellationTokenSource token;
 
@@ -179,7 +180,10 @@ public class PlayerController : MonoBehaviour
         }
         finally
         {
-            ChangeState<PlayerIdleState>();
+            if(moveInput.x != 0f)
+                ChangeState<PlayerMoveState>();
+            else
+                ChangeState<PlayerIdleState>();
         }
     }
 
@@ -211,6 +215,15 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+
+        if (moveInput.x != 0f && currentState is PlayerIdleState)
+        {
+            ChangeState<PlayerMoveState>();
+        }
+        else if (moveInput.x == 0f && currentState is PlayerMoveState)
+        {
+            ChangeState<PlayerIdleState>();
+        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
