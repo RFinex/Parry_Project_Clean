@@ -21,7 +21,7 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float dashCool = 0.5f;
 
     [Header("Stats")]
-    [SerializeField] private int maxHp = 100;
+    [SerializeField] private float maxHp = 100f;
     [SerializeField] private float maxStamina = 100f;
 
     public float MoveSpeed => moveSpeed;

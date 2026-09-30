@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour
         dashTime = data.DashTime;
         dashSpeed = data.DashSpeed;
         dashCool = data.DashCool;
+
+        stats.Initialized(data);
     }
 
     private void Update()
