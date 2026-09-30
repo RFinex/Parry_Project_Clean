@@ -1,9 +1,19 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+public enum PlayerState
+{
+    Idle,
+    Attack,
+    Guard,
+    Dash,
+    Jump,
+    Hit,
+    Dead
+}
 
 public class PlayerController : MonoBehaviour
 {
