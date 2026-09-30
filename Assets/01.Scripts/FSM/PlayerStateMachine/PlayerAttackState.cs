@@ -1,15 +1,13 @@
 using UnityEngine;
 
-public class PlayerAttackState : MonoBehaviour
+public class PlayerAttackState : PlayerBaseState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Enter(PlayerController owner)
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Exit(PlayerController owner)
     {
         
     }

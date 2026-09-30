@@ -4,17 +4,6 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum PlayerState
-{
-    Idle,
-    Attack,
-    Guard,
-    Dash,
-    Jump,
-    Hit,
-    Dead
-}
-
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -26,36 +15,46 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerStats stats;
 
     [Header("Move")]
-    [SerializeField] private float moveSpeed;
     [SerializeField] private float frontDir = 1f;
+    private float moveSpeed;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce;
+    private float jumpForce;
 
     [Header("Ground CHeck")]
-    [SerializeField] private Vector2 checkSize;
-    [SerializeField] private float checkDistance;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Vector3 checkOffset;
+    private Vector2 checkSize;
+    private float checkDistance;
+    private LayerMask groundLayer;
+    private Vector3 checkOffset;
 
     [Header("Dash")]
-    [SerializeField] private float dashTime;
-    [SerializeField] private float dashSpeed;
-    [SerializeField] private float dashCool;
+    private float dashTime;
+    private float dashSpeed;
+    private float dashCool;
     [SerializeField] private float dashCheckTimer = 0f;
     [SerializeField] private float dashCoolTimer = 0f;
 
     private Vector2 moveInput;
+    public Vector2 MoveInput => moveInput;
+
+    [Header("State Machine")]
+    [SerializeField] private StateMachine<PlayerController> stateMachine;
+    [SerializeField] private string currentStateName;
 
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
     [SerializeField] private bool isDash;
+
+    [Header("Current State")]
+    [SerializeField] private BaseState<PlayerController> currentState;
+    public BaseState<PlayerController> CurrentState => currentState;
 
     private CancellationTokenSource token;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        stateMachine = new StateMachine<PlayerController>(this);
         Initialized();
     }
 
@@ -88,6 +87,8 @@ public class PlayerController : MonoBehaviour
         dashSpeed = data.DashSpeed;
         dashCool = data.DashCool;
 
+        ChangeState<PlayerIdleState>();
+
         stats.Initialized(data);
     }
 
@@ -98,10 +99,18 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDash)
+        if (currentState is PlayerDashState)
             return;
 
         Move();
+    }
+
+    public void ChangeState<TState>() where TState : BaseState<PlayerController>, new()
+    {
+        stateMachine.ChangeState<TState>();
+        currentState = stateMachine.CurrentState;
+
+        currentStateName = currentState != null ? currentState.GetType().Name : "None";
     }
 
     private void Move()
@@ -142,7 +151,7 @@ public class PlayerController : MonoBehaviour
     private void Dash()
     {
         Utils.Log<PlayerController>("대시 시작");
-        isDash = true;
+        ChangeState<PlayerDashState>();
 
         DashAsync(token.Token).Forget();
         DashCoolTime(token.Token).Forget();
@@ -170,7 +179,7 @@ public class PlayerController : MonoBehaviour
         }
         finally
         {
-            isDash = false;
+            ChangeState<PlayerIdleState>();
         }
     }
 
@@ -198,6 +207,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region InputAction Method
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
@@ -230,4 +240,5 @@ public class PlayerController : MonoBehaviour
 
         Dash();
     }
+    #endregion
 }
