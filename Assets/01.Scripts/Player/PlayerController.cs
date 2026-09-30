@@ -8,11 +8,15 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
 
+    [Header("Player Data")]
+    [SerializeField] private PlayerBaseData data;
+
+    [Header("Player Info")]
+    [SerializeField] private PlayerStats stats;
+
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float frontDir = 1f;
-    [SerializeField] private float acceleration = 15f;
-    [SerializeField] private float deceleration = 20f;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 3f;
@@ -41,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        Initialized();
     }
 
     private void OnEnable()
@@ -55,6 +60,22 @@ public class PlayerController : MonoBehaviour
         token?.Cancel();
         token?.Dispose();
         token = null;
+    }
+
+    private void Initialized()
+    {
+        moveSpeed = data.MoveSpeed;
+
+        jumpForce = data.JumpForce;
+
+        checkSize = data.CheckSize;
+        checkOffset = data.CheckOffset;
+        checkDistance = data.CheckDistance;
+        groundLayer = data.GroundLayer;
+
+        dashTime = data.DashTime;
+        dashSpeed = data.DashSpeed;
+        dashCool = data.DashCool;
     }
 
     private void Update()
@@ -74,11 +95,7 @@ public class PlayerController : MonoBehaviour
     {
         float targetSpeed = moveInput.x * moveSpeed;
 
-        float currentAccel = moveInput.x != 0f ? acceleration : deceleration;
-
-        float velocityX = Mathf.MoveTowards(rb.linearVelocity.x, targetSpeed, currentAccel * Time.fixedDeltaTime);
-
-        rb.linearVelocity = new Vector2(velocityX, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
 
         if (moveInput.x != 0f)
         {
@@ -129,14 +146,17 @@ public class PlayerController : MonoBehaviour
 
                 rb.linearVelocity = new Vector2(frontDir * dashSpeed, 0f);
 
-                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
+                await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
             }
             Debug.Log("대시 종료");
-            isDash = false;
         }
         catch (OperationCanceledException)
         {
 
+        }
+        finally
+        {
+            isDash = false;
         }
     }
 
