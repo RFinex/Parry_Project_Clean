@@ -14,11 +14,11 @@ public abstract class BaseState<T>
     //    await UniTask.CompletedTask;
     //}
 
-    protected void EnterToken()
+    protected void EnterToken(CancellationToken ownerToken)
     {
         token?.Cancel();
         token?.Dispose();
-        token = new CancellationTokenSource();
+        token = CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
     }
 
     protected void ExitToken()

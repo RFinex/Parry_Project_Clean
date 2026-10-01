@@ -6,7 +6,11 @@ public class EnemyIdleState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {
-        EnterToken();
+        owner.StopMove();
+
+        EnterToken(owner.DestroyToken);
+
+        UpdateAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(EnemyController owner)
@@ -14,11 +18,29 @@ public class EnemyIdleState : EnemyBaseState
         ExitToken();
     }
 
-    public async UniTaskVoid UpdateAsync(EnemyController owner, CancellationToken ctk)
+    private async UniTaskVoid UpdateAsync(EnemyController owner, CancellationToken ctk)
     {
         try
         {
+            await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
 
+            if (owner.TryDetectTarget())
+            {
+                owner.ChangeState<EnemyTraceState>();
+                return;
+            }
+
+            float waitTime = UnityEngine.Random.Range(owner.Data.MinIdleTime, owner.Data.MaxIdleTime);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: ctk);
+
+            if (owner.TryDetectTarget())
+            {
+                owner.ChangeState<EnemyTraceState>();
+                return;
+            }
+
+            owner.ChangeState<EnemyPatrolState>();            
         }
         catch (OperationCanceledException)
         {
