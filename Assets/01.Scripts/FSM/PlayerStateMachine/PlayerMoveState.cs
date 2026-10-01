@@ -12,6 +12,8 @@ public class PlayerMoveState : PlayerBaseState
 
     public override void Exit(PlayerController owner)
     {
+        owner.StopMove();
+
         ExitToken();
     }
 

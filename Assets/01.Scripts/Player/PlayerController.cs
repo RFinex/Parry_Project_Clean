@@ -66,9 +66,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
+        if (token == null)
+        {
+            token?.Cancel();
+            token?.Dispose();
+            token = new CancellationTokenSource();
+        }       
     }
 
     private void OnDisable()
@@ -93,6 +96,10 @@ public class PlayerController : MonoBehaviour
         dashSpeed = data.DashSpeed;
         dashCool = data.DashCool;
 
+        token?.Cancel();
+        token?.Dispose();
+        token = new CancellationTokenSource();
+
         combat = new PlayerCombat(data);
 
         stateMachine = new StateMachine<PlayerController>(this);
@@ -112,6 +119,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         GroundCheck();
+
+        if (stateMachine != null && stateMachine.CurrentState != null)
+        {
+            currentStateName = stateMachine.CurrentState.GetType().Name;
+        }
     }
    
 
@@ -191,7 +203,9 @@ public class PlayerController : MonoBehaviour
         }
         finally
         {
-            if(moveInput.x != 0f)
+            if (!isGround)
+                stateMachine.ChangeState(typeof(PlayerJumpState));
+            else if(moveInput.x != 0f)
                 stateMachine.ChangeState(typeof(PlayerMoveState));
             else
                 stateMachine.ChangeState(typeof(PlayerIdleState));
@@ -244,12 +258,10 @@ public class PlayerController : MonoBehaviour
 
         //if (moveInput.x != 0f && stateMachine.IsState(typeof(PlayerIdleState)))
         //{
-        //    Utils.Log<PlayerController>($"{moveInput.x}");
         //    stateMachine.ChangeState(typeof(PlayerMoveState));
         //}
         //else if (moveInput.x == 0f && stateMachine.IsState(typeof(PlayerMoveState)))
         //{
-        //    Utils.Log<PlayerController>($"{moveInput.x}");
         //    stateMachine.ChangeState(typeof(PlayerIdleState));
         //}
     }

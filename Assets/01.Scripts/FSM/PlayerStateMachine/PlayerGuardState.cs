@@ -10,6 +10,8 @@ public class PlayerGuardState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
+        owner.StopMove();
+
         owner.GuardStart();
 
         ParryTimerAsync(owner, token.Token).Forget();

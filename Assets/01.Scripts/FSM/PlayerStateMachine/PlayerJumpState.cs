@@ -9,13 +9,16 @@ public class PlayerJumpState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        owner.Jump();
+        if (owner.IsGround)
+            owner.Jump();
 
         LandingCheckAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
+        owner.StopMove();
+
         ExitToken();
     }
 
@@ -25,6 +28,8 @@ public class PlayerJumpState : PlayerBaseState
         {
             while (!ctk.IsCancellationRequested)
             {
+                owner.Move();
+
                 if (owner.IsGround && owner.VerticalVelocity <= 0f)
                 {
                     if (owner.MoveInput.x != 0f)

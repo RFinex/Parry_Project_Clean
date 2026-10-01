@@ -819,6 +819,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   data: {fileID: 11400000, guid: ad4647bab80185e4d9a677007711fc3f, type: 2}
   stats: {fileID: 852964827}
+  combat: {fileID: 0}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   currentStateName: 
 --- !u!1 &1302843615
 GameObject:
@@ -835,7 +842,6 @@ GameObject:
   - component: {fileID: 1302843620}
   - component: {fileID: 1302843621}
   - component: {fileID: 1302843622}
-  - component: {fileID: 1302843623}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -1037,7 +1043,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1302843623}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
         m_MethodName: OnAttack
         m_Mode: 0
@@ -1145,7 +1151,7 @@ MonoBehaviour:
     m_ActionName: Player/Dash
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1302843623}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PlayerCombat, Assembly-CSharp
         m_MethodName: OnGuard
         m_Mode: 0
@@ -1200,28 +1206,6 @@ MonoBehaviour:
   maxHp: 0
   nowStamina: 0
   maxStamina: 0
---- !u!114 &1302843623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1302843615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd046463a244b4a488b65a67d1ac1fe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  attackDamage: 10
-  attackRange: 0.8
-  attackOffset: {x: 0.6, y: 0}
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  attackDuration: 0.3
-  parryWindow: 0.5
-  isParry: 0
-  parryTimer: 0
 --- !u!1 &1356652193
 GameObject:
   m_ObjectHideFlags: 0
