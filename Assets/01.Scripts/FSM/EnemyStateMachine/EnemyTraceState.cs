@@ -30,14 +30,14 @@ public class EnemyTraceState : EnemyBaseState
                 if (owner.Target == null)
                 {
                     owner.ClearTarget();
-                    owner.ChangeState<EnemyPatrolState>();
+                    TransitionState(typeof(EnemyPatrolState));
                     return;
                 }
 
                 if (owner.IsTargetInAttackRange())
                 {
                     owner.StopMove();
-                    owner.ChangeState<EnemyAttackState>();
+                    TransitionState(typeof(EnemyAttackState));
                     return;
                 }
 
@@ -45,7 +45,7 @@ public class EnemyTraceState : EnemyBaseState
                 {
                     owner.ClearTarget();
                     owner.StopMove();
-                    owner.ChangeState<EnemyPatrolState>();
+                    TransitionState(typeof(EnemyPatrolState));
                     return;
                 }
 

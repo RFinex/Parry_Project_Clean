@@ -48,19 +48,26 @@ public class EnemyController : MonoBehaviour
 
         stateMachine = new StateMachine<EnemyController>(this);
 
-        ChangeState<EnemyIdleState>();
+        stateMachine.AddState<EnemyAttackState>();
+        stateMachine.AddState<EnemyDeadState>();
+        stateMachine.AddState<EnemyIdleState>();
+        stateMachine.AddState<EnemyPatrolState>();
+        stateMachine.AddState<EnemyStaggerState>();
+        stateMachine.AddState<EnemyTraceState>();
+
+        stateMachine.ChangeState(typeof(EnemyIdleState));
 
         if(data != null)
             stats.Initialized(data);
     }
 
-    public void ChangeState<TState>() where TState : BaseState<EnemyController>, new()
-    {
-        stateMachine.ChangeState<TState>();
-        currentState = stateMachine.CurrentState;
+    //public void ChangeState<TState>() where TState : BaseState<EnemyController>, new()
+    //{
+    //    stateMachine.ChangeState<TState>();
+    //    currentState = stateMachine.CurrentState;
 
-        currentStateName = currentState != null ? currentState.GetType().Name : "";
-    }
+    //    currentStateName = currentState != null ? currentState.GetType().Name : "";
+    //}
 
     public bool TryDetectTarget()
     {

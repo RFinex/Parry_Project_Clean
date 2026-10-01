@@ -30,13 +30,13 @@ public class EnemyAttackState : EnemyBaseState
                 if (owner.Target == null)
                 {
                     owner.ClearTarget();
-                    owner.ChangeState<EnemyIdleState>();
+                    TransitionState(typeof(EnemyIdleState));
                     return;
                 }
 
                 if (!owner.IsTargetInAttackRange())
                 {
-                    owner.ChangeState<EnemyTraceState>();
+                    TransitionState(typeof(EnemyTraceState));
                     return;
                 }
 
@@ -47,13 +47,13 @@ public class EnemyAttackState : EnemyBaseState
                 if (owner.Target == null)
                 {
                     owner.ClearTarget();
-                    owner.ChangeState<EnemyIdleState>();
+                    TransitionState(typeof(EnemyIdleState));
                     return;
                 }
 
                 if (!owner.IsTargetInAttackRange())
                 {
-                    owner.ChangeState<EnemyTraceState>();
+                    TransitionState(typeof(EnemyTraceState));
                     return;
                 }
             }

@@ -5,11 +5,36 @@ public class PlayerMoveState : PlayerBaseState
 {
     public override void Enter(PlayerController owner)
     {
-        Utils.Log<PlayerJumpState>("Move State 시작");
+        EnterToken(owner.DestroyToken);
+
+        FixedUpdateAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
-        Utils.Log<PlayerJumpState>("Move State 종료");
+        ExitToken();
+    }
+
+    public async UniTaskVoid FixedUpdateAsync(PlayerController owner, CancellationToken ctk)
+    {
+        try
+        {
+            while (!ctk.IsCancellationRequested)
+            {
+                owner.Move();
+
+                if (owner.MoveInput.x == 0f)
+                {
+                    TransitionState(typeof(PlayerIdleState));
+                    return;
+                }
+
+                await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
     }
 }

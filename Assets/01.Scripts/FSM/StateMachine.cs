@@ -19,26 +19,67 @@ public class StateMachine<T>
     /// StateMachine 상태 변경 Method
     /// </summary>
     /// <typeparam name="TState"> 전환할 상태 타입 </typeparam>
-    public void ChangeState<TState>() where TState : BaseState<T>, new()
+    //public void ChangeState<TState>() where TState : BaseState<T>, new()
+    //{
+    //    Type stateType = typeof(TState);
+
+    //    if (currentState != null && currentState.GetType() == stateType)
+    //        return;
+
+    //    // 해당 상태가 없으면 새로 등록
+    //    if (!stateDic.TryGetValue(stateType, out var nextState))
+    //    {
+    //        nextState = new TState();
+    //        stateDic.Add(stateType, nextState);
+    //    }
+
+    //    if (currentState != null)
+    //    {
+    //        currentState.Exit(owner);
+    //    }
+
+    //    currentState = nextState;
+    //    currentState.Enter(owner);
+    //}
+
+    public void ChangeState(Type type)
     {
-        Type stateType = typeof(TState);
-
-        if (currentState != null && currentState.GetType() == stateType)
+        if (currentState != null && currentState.GetType() == type)
             return;
-
-        // 해당 상태가 없으면 새로 등록
-        if (!stateDic.TryGetValue(stateType, out var nextState))
-        {
-            nextState = new TState();
-            stateDic.Add(stateType, nextState);
-        }
 
         if (currentState != null)
         {
             currentState.Exit(owner);
+            currentState.OnTransition -= ChangeState;
         }
 
+        if (!stateDic.TryGetValue(type, out var nextState))
+            return;
+
         currentState = nextState;
+        
+        currentState.OnTransition -= ChangeState;
+        currentState.OnTransition += ChangeState;
+
         currentState.Enter(owner);
+
+        Utils.Log<StateMachine<T>>($"{type.Name}");
+    }
+
+    public void AddState<TState>() where TState : BaseState<T>, new()
+    {
+        if (!stateDic.TryGetValue(typeof(TState), out var nextState))
+        {
+            nextState = new TState();
+            stateDic.Add(typeof(TState), nextState);
+        }
+    }
+
+    public bool IsState(Type type)
+    {
+        if(!stateDic.TryGetValue(type, out var targetState))
+            return false;
+
+        return currentState == targetState;
     }
 }

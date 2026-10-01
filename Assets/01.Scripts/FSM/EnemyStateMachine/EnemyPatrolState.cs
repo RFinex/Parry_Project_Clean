@@ -30,7 +30,7 @@ public class EnemyPatrolState : EnemyBaseState
                 if (owner.TryDetectTarget())
                 {
                     owner.StopMove();
-                    owner.ChangeState<EnemyTraceState>();
+                    TransitionState(typeof(EnemyTraceState));
                     return;
                 }
 
@@ -38,7 +38,7 @@ public class EnemyPatrolState : EnemyBaseState
 
                 if (goal)
                 {
-                    owner.ChangeState<EnemyIdleState>();
+                    TransitionState(typeof(EnemyIdleState));
                     return;
                 }
 

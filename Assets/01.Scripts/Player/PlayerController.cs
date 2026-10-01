@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Info")]
     [SerializeField] private PlayerStats stats;
+    private PlayerCombat combat;
+
+    public PlayerCombat Combat => combat;
 
     [Header("Move")]
     [SerializeField] private float frontDir = 1f;
@@ -44,19 +47,20 @@ public class PlayerController : MonoBehaviour
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
     [SerializeField] private bool isDash;
+    public bool IsGround => isGround;
+
+    public float VerticalVelocity => rb.linearVelocity.y;
 
     [Header("Current State")]
-    private BaseState<PlayerController> currentState;
-    public BaseState<PlayerController> CurrentState => currentState;
     [SerializeField] private string currentStateName;
 
 
     private CancellationTokenSource token;
+    public CancellationToken DestroyToken => token.Token;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        stateMachine = new StateMachine<PlayerController>(this);
         Initialized();
     }
 
@@ -89,7 +93,18 @@ public class PlayerController : MonoBehaviour
         dashSpeed = data.DashSpeed;
         dashCool = data.DashCool;
 
-        ChangeState<PlayerIdleState>();
+        combat = new PlayerCombat(data);
+
+        stateMachine = new StateMachine<PlayerController>(this);
+
+        stateMachine.AddState<PlayerAttackState>();
+        stateMachine.AddState<PlayerDashState>();
+        stateMachine.AddState<PlayerGuardState>();
+        stateMachine.AddState<PlayerMoveState>();
+        stateMachine.AddState<PlayerIdleState>();
+        stateMachine.AddState<PlayerJumpState>();
+
+        stateMachine.ChangeState(typeof(PlayerIdleState));
 
         stats.Initialized(data);
     }
@@ -98,24 +113,9 @@ public class PlayerController : MonoBehaviour
     {
         GroundCheck();
     }
+   
 
-    private void FixedUpdate()
-    {
-        if (currentState is PlayerDashState)
-            return;
-
-        Move();
-    }
-
-    public void ChangeState<TState>() where TState : BaseState<PlayerController>, new()
-    {
-        stateMachine.ChangeState<TState>();
-        currentState = stateMachine.CurrentState;
-
-        currentStateName = currentState != null ? currentState.GetType().Name : "None";
-    }
-
-    private void Move()
+    public void Move()
     {
         float targetSpeed = moveInput.x * moveSpeed;
 
@@ -128,9 +128,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Jump()
+    public void StopMove()
+    {
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+    }
+
+    public void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+    }
+
+    public void StopJump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
     }
 
     private void GroundCheck()
@@ -139,7 +149,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(origin, checkSize, 0f, Vector2.down, checkDistance, groundLayer);
 
         isGround = hit.collider != null;
-    }
+    }    
 
     private void OnDrawGizmos()
     {
@@ -153,7 +163,7 @@ public class PlayerController : MonoBehaviour
     private void Dash()
     {
         Utils.Log<PlayerController>("대시 시작");
-        ChangeState<PlayerDashState>();
+        stateMachine.ChangeState(typeof(PlayerDashState));
 
         DashAsync(token.Token).Forget();
         DashCoolTime(token.Token).Forget();
@@ -182,9 +192,9 @@ public class PlayerController : MonoBehaviour
         finally
         {
             if(moveInput.x != 0f)
-                ChangeState<PlayerMoveState>();
+                stateMachine.ChangeState(typeof(PlayerMoveState));
             else
-                ChangeState<PlayerIdleState>();
+                stateMachine.ChangeState(typeof(PlayerIdleState));
         }
     }
 
@@ -212,39 +222,59 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Attack()
+    {
+        combat.Attack(transform.position, frontDir);
+    }
+
+    public void GuardStart()
+    {
+        combat.GuardStart();
+    }
+
+    public void GuardEnd()
+    {
+        combat.GuardEnd();
+    }
+
     #region InputAction Method
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
 
-        if (moveInput.x != 0f && currentState is PlayerIdleState)
-        {
-            ChangeState<PlayerMoveState>();
-        }
-        else if (moveInput.x == 0f && currentState is PlayerMoveState)
-        {
-            ChangeState<PlayerIdleState>();
-        }
+        //if (moveInput.x != 0f && stateMachine.IsState(typeof(PlayerIdleState)))
+        //{
+        //    Utils.Log<PlayerController>($"{moveInput.x}");
+        //    stateMachine.ChangeState(typeof(PlayerMoveState));
+        //}
+        //else if (moveInput.x == 0f && stateMachine.IsState(typeof(PlayerMoveState)))
+        //{
+        //    Utils.Log<PlayerController>($"{moveInput.x}");
+        //    stateMachine.ChangeState(typeof(PlayerIdleState));
+        //}
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed && isGround)
-            Jump();
-
-        if (context.canceled && rb.linearVelocity.y > 0f)
+        if (context.performed)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
+            if (!isGround)
+                return;
+
+            stateMachine.ChangeState(typeof(PlayerJumpState));
+
+        }
+        
+        if (context.canceled)
+        {
+            StopJump();
         }
     }
 
     public void OnDash(InputAction.CallbackContext context)
     {
         if (!context.performed)
-        {
-            Utils.Log<PlayerController>("context.performed");
             return;
-        }
 
         if (isDash || dashCoolTimer > 0f)
         {
@@ -252,7 +282,46 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+           stateMachine.IsState(typeof(PlayerMoveState)) ||
+           stateMachine.IsState(typeof(PlayerJumpState)))
+        {
+            stateMachine.ChangeState(typeof(PlayerDashState));
+        }
+
         Dash();
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+
+        if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+           stateMachine.IsState(typeof(PlayerMoveState)) ||
+           stateMachine.IsState(typeof(PlayerJumpState)))
+        {
+            stateMachine.ChangeState(typeof(PlayerAttackState));
+        }        
+    }
+
+    public void OnGuard(InputAction.CallbackContext context)
+    {
+        Utils.Log<PlayerCombat>($"Guard - started:{context.started}, performed:{context.performed}, canceled:{context.canceled}");
+
+        if (context.started)
+        {
+            if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+                stateMachine.IsState(typeof(PlayerMoveState)) ||
+                stateMachine.IsState(typeof(PlayerJumpState)))
+            {
+                stateMachine.ChangeState(typeof(PlayerGuardState));
+            }
+        }
+        else if (context.canceled)
+        {
+            stateMachine.ChangeState(typeof(PlayerIdleState));
+        }
     }
     #endregion
 }

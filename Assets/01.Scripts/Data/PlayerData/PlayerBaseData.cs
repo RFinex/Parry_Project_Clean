@@ -24,6 +24,18 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float maxHp = 100f;
     [SerializeField] private float maxStamina = 100f;
 
+    [Header("Attack")]
+    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float attackRange = 0.8f;
+    [SerializeField] private Vector2 attackOffset = new Vector2(0.6f, 0f);
+    [SerializeField] private float attackDuration = 0.3f;
+
+    [Header("Guard")]
+    [SerializeField] private float parryWindow = 0.15f;
+    
+    [Header("Layer Mask")]
+    [SerializeField] private LayerMask enemyLayer;
+
     public float MoveSpeed => moveSpeed;
     
     public float JumpForce => jumpForce;
@@ -39,4 +51,13 @@ public class PlayerBaseData : ScriptableObject
 
     public float MaxHp => maxHp;
     public float MaxStamina => maxStamina;
+
+    public float AttackDamage => attackDamage;
+    public float AttackRange => attackRange;
+    public Vector2 AttackOffset => attackOffset;
+    public float AttackDuration => attackDuration;
+
+    public float ParryWindow => parryWindow;
+
+    public LayerMask EnemyLayer => enemyLayer;
 }

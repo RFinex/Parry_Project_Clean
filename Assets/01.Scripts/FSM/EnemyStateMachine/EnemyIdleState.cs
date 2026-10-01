@@ -26,7 +26,7 @@ public class EnemyIdleState : EnemyBaseState
 
             if (owner.TryDetectTarget())
             {
-                owner.ChangeState<EnemyTraceState>();
+                TransitionState(typeof(EnemyTraceState));
                 return;
             }
 
@@ -36,11 +36,11 @@ public class EnemyIdleState : EnemyBaseState
 
             if (owner.TryDetectTarget())
             {
-                owner.ChangeState<EnemyTraceState>();
+                TransitionState(typeof(EnemyTraceState));
                 return;
             }
 
-            owner.ChangeState<EnemyPatrolState>();            
+            TransitionState(typeof(EnemyPatrolState));            
         }
         catch (OperationCanceledException)
         {
