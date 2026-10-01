@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Move")]
     [SerializeField] private float frontDir = 1f;
+    public float FrontDir => frontDir;
     private float moveSpeed;
 
     [Header("Jump")]

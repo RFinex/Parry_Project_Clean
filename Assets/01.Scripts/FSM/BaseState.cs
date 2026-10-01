@@ -9,10 +9,10 @@ public abstract class BaseState<T>
 
     public abstract void Exit(T owner);
 
-    public virtual async UniTaskVoid UpdateAsync(T owner, CancellationToken ctk)
-    {
-
-    }
+    //public virtual async UniTask UpdateAsync(T owner, CancellationToken ctk)
+    //{
+    //    await UniTask.CompletedTask;
+    //}
 
     protected void EnterToken()
     {

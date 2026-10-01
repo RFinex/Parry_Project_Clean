@@ -12,14 +12,21 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Vector2 attackOffset = new Vector2(0.6f, 0f);
     [SerializeField] private LayerMask enemyLayer;
 
+    // 테스트 공격 시간
+    [SerializeField] private float attackDuration = 0.3f;
+
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
 
     [SerializeField] private bool isParry;
 
-    private float parryTimer;
+    [SerializeField] private float parryTimer;
+
+    private float attackTimer;
 
     private PlayerController controller;
+
+    private CancellationTokenSource token;
 
     private void Awake()
     {
@@ -29,6 +36,7 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         UpdateParryTimer();
+        UpdateAttackTimer();
     }
 
     private void UpdateParryTimer()
@@ -73,14 +81,18 @@ public class PlayerCombat : MonoBehaviour
         if (controller.CurrentState is PlayerGuardState)
             return;
 
-        Utils.Log<PlayerCombat>("공격");
+        if (controller.CurrentState is PlayerAttackState)
+            return;
 
-
-        Vector2 attackPos = (Vector2)transform.position + attackOffset;
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
+        Utils.Log<PlayerCombat>("공격 시작");
 
         controller.ChangeState<PlayerAttackState>();
+
+        attackTimer = attackDuration;
+
+        Vector2 attackPos = GetAttackPos();
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)
         {
@@ -88,7 +100,22 @@ public class PlayerCombat : MonoBehaviour
 
             //EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
             //enemyStats.TakeDamage(attackDamage);
-        }
+        }        
+    }
+
+    private void UpdateAttackTimer()
+    {
+        if (controller.CurrentState is not PlayerAttackState)
+            return;
+
+        attackTimer -= Time.deltaTime;
+
+        if (attackTimer > 0)
+            return;
+
+        ReturnState();
+
+        Utils.Log<PlayerCombat>("공격 종료");
     }
 
     private void GuardStart()
@@ -96,8 +123,12 @@ public class PlayerCombat : MonoBehaviour
         if (controller.CurrentState is PlayerGuardState)
             return;
 
+        if (controller.CurrentState is PlayerAttackState)
+            return;
+
         controller.ChangeState<PlayerGuardState>();
 
+        // 패리 시작
         isParry = true;
 
         parryTimer = parryWindow;
@@ -135,16 +166,46 @@ public class PlayerCombat : MonoBehaviour
         isParry = false;
         parryTimer = 0f;
 
-        if (controller.MoveInput.x != 0f)
-            controller.ChangeState<PlayerMoveState>();
-        else
-            controller.ChangeState<PlayerIdleState>();
+        ReturnState();
 
-            Utils.Log<PlayerCombat>("가드 종료");
+        Utils.Log<PlayerCombat>("가드 종료");
     }
 
     public bool IsParry()
     {
         return isParry;
+    }
+
+    private void ReturnState()
+    {
+        if (controller.MoveInput.x != 0f)
+        {
+            controller.ChangeState<PlayerMoveState>();
+        }
+        else
+        {
+            controller.ChangeState<PlayerIdleState>();
+        }
+    }
+
+    private Vector2 GetAttackPos()
+    {
+        Vector2 offset = attackOffset;
+
+        offset.x *= controller.FrontDir;
+
+        return (Vector2)transform.position + offset;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (controller == null)
+            return;
+
+        Vector2 attackPos = GetAttackPos();
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawSphere(attackPos, attackRange);
     }
 }
