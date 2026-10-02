@@ -28,7 +28,10 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float attackRange = 0.8f;
     [SerializeField] private Vector2 attackOffset = new Vector2(0.6f, 0f);
-    [SerializeField] private float attackDuration = 0.3f;
+    [SerializeField] private int maxCombo = 3;
+    [SerializeField] private float comboInputTime = 0.25f;
+    [SerializeField] private float attackEndTime = 0.5f;
+
 
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
@@ -55,7 +58,9 @@ public class PlayerBaseData : ScriptableObject
     public float AttackDamage => attackDamage;
     public float AttackRange => attackRange;
     public Vector2 AttackOffset => attackOffset;
-    public float AttackDuration => attackDuration;
+    public int MaxCombo => maxCombo;
+    public float ComboInputTime => comboInputTime;
+    public float AttackEndTime => attackEndTime;
 
     public float ParryWindow => parryWindow;
 

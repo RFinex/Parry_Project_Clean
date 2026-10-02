@@ -14,14 +14,12 @@ public class PlayerDashState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        Utils.Log<PlayerDashState>("Dash 진입 성공");
-
-
         if (blackBoard is PlayerBlackBoard board)
         {
-            Utils.Log<PlayerDashState>("BlackBoard 넘겨주기 성공");
             this.board = board;
         }
+
+        this.board.animator.PlayDash();
 
         DashAsync(token.Token).Forget();
         this.board.skill.DashCoolTime(owner.DestroyToken).Forget();

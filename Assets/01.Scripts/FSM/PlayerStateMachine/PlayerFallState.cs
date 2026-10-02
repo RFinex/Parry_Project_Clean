@@ -29,13 +29,6 @@ public class PlayerFallState : PlayerBaseState
     {
         try
         {
-            while (!ctk.IsCancellationRequested && board.movement.isGround)
-            {
-                owner.Move();
-
-                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
-            }
-
             while (!ctk.IsCancellationRequested)
             {
                 owner.Move();

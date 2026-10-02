@@ -15,13 +15,17 @@ public class PlayerAttackState : PlayerBaseState
             this.board = board;
         }
 
-        owner.Combat.Attack(owner.transform.position, this.board.movement.frontDir);
+        int index = owner.Combat.AttackStart(owner.transform.position, this.board.movement.frontDir);
+
+        this.board.animator.PlayAttack(index);
 
         AttackAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
+        owner.Combat.AttackEnd();
+
         ExitToken();
     }
 
@@ -29,22 +33,36 @@ public class PlayerAttackState : PlayerBaseState
     {
         try
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(owner.Combat.AttackDuration), cancellationToken: ctk);
+            while (!ctk.IsCancellationRequested)
+            {
+                int index = owner.Combat.UpdateAttack(UnityEngine.Time.deltaTime, owner.transform.position, board.movement.frontDir);
 
-            if (!board.movement.isGround)
-            {
-                TransitionState(typeof(PlayerFallState));
-                return;
-            }
+                if (index > 0)
+                {
+                    board.animator.PlayAttack(index);
+                }
 
-            if (board.movement.moveInput.x != 0f)
-            {
-                TransitionState(typeof(PlayerMoveState));
-            }
-            else
-            {
-                TransitionState(typeof(PlayerIdleState));
-            }
+                if (owner.Combat.IsAttackFinished())
+                {
+                    Utils.Log<PlayerAttackState>("공격 상태 종료");
+
+                    if (!board.movement.isGround)
+                    {
+                        TransitionState(typeof(PlayerFallState));
+                        return;
+                    }
+
+                    if (board.movement.moveInput.x != 0f)
+                    {
+                        TransitionState(typeof(PlayerMoveState));
+                        return;
+                    }
+
+                    TransitionState(typeof(PlayerIdleState));
+                }
+
+                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
+            }            
         }
         catch (OperationCanceledException)
         {

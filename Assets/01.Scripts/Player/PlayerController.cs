@@ -8,14 +8,19 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private Animator animator;
+    private SpriteRenderer sr;
 
     #region Black Board
+
     private PlayerBlackBoard blackBoard;
     private PlayerMovement movement;
     private PlayerSkill skill;
+
     #endregion
 
     #region Initialized Value
+
     [Header("Player Data")]
     [SerializeField] private PlayerBaseData data;
 
@@ -52,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Current State Test")]
     [SerializeField] private string currentStateName;
+
     #endregion
 
     private CancellationTokenSource token;
@@ -84,6 +90,8 @@ public class PlayerController : MonoBehaviour
     private void Initialized()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
 
         moveSpeed = data.MoveSpeed;
         jumpForce = data.JumpForce;
@@ -112,11 +120,13 @@ public class PlayerController : MonoBehaviour
             dashSpeed = dashSpeed,
             dashCool = dashCool
         };
+        PlayerAnimator playerAnimator = new PlayerAnimator(animator);
         blackBoard = new PlayerBlackBoard()
         {
             rb = rb,
             movement = movement,
-            skill = skill
+            skill = skill,
+            animator = playerAnimator
         };
 
         token?.Cancel();
@@ -132,6 +142,7 @@ public class PlayerController : MonoBehaviour
         stateMachine.PlayerAddState<PlayerGuardState>();
         stateMachine.PlayerAddState<PlayerMoveState>();
         stateMachine.PlayerAddState<PlayerIdleState>();
+        stateMachine.PlayerAddState<PlayerJumpState>();
         stateMachine.PlayerAddState<PlayerFallState>();
 
         stateMachine.ChangeState(typeof(PlayerIdleState));
@@ -186,8 +197,12 @@ public class PlayerController : MonoBehaviour
 
     public void StopJump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
+        if (movement.verticalVelocity > 0f)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
+        }
     }
+
     #endregion
 
     private void GroundCheck()
@@ -200,27 +215,41 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerStatsUpdate()
     {
+        combat.GuardTimeUpdate(Time.deltaTime);
+
         movement.moveInput = moveInput;
         movement.frontDir = frontDir;
         movement.isGround = isGround;
         movement.verticalVelocity = rb.linearVelocity.y;
         movement.moveSpeed = moveSpeed;
         movement.jumpForce = jumpForce;
+
+        // Animator
+        blackBoard.animator.SetGrounded(isGround);
+        blackBoard.animator.SetAirSpeed(rb.linearVelocity.y);
+
+        if (Mathf.Abs(moveInput.x) > Mathf.Epsilon)
+        {
+            blackBoard.animator.SetAnimState(1);
+        }
+        else
+        {
+            blackBoard.animator.SetAnimState(0);
+        }
+
+        if (frontDir > 0f)
+        {
+            sr.flipX = false;
+        }
+        else if (frontDir < 0f)
+        {
+            sr.flipX = true;
+        }
     }
 
     public void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
-    }
-
-    public void JumpCanceled()
-    {
-
-        if (movement.verticalVelocity > 0f)
-        {
-            Utils.Log<PlayerFallState>("점프 취소 성공");
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
-        }
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -247,16 +276,16 @@ public class PlayerController : MonoBehaviour
             if (!isGround)
                 return;
 
-            stateMachine.ChangeState(typeof(PlayerFallState));
+            stateMachine.ChangeState(typeof(PlayerJumpState));
 
             Jump();
         }
         
         if (context.canceled)
         {
-            if (stateMachine.IsState(typeof(PlayerFallState)))
+            if (stateMachine.IsState(typeof(PlayerJumpState)))
             {
-                JumpCanceled();
+                StopJump();
             }            
         }
     }
@@ -273,8 +302,8 @@ public class PlayerController : MonoBehaviour
         }
 
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-           stateMachine.IsState(typeof(PlayerMoveState)) ||
-           stateMachine.IsState(typeof(PlayerFallState)))
+            stateMachine.IsState(typeof(PlayerMoveState)) ||
+            stateMachine.IsState(typeof(PlayerFallState)))
         {
             stateMachine.ChangeState(typeof(PlayerDashState));
         }
@@ -285,9 +314,16 @@ public class PlayerController : MonoBehaviour
         if (!context.performed)
             return;
 
+        if (stateMachine.IsState(typeof(PlayerAttackState)))
+        {
+            combat.RequestCombo();
+            return;
+        }
+
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-           stateMachine.IsState(typeof(PlayerMoveState)) ||
-           stateMachine.IsState(typeof(PlayerFallState)))
+            stateMachine.IsState(typeof(PlayerMoveState)) ||
+            stateMachine.IsState(typeof(PlayerGuardState)) ||
+            stateMachine.IsState(typeof(PlayerFallState)))
         {
             stateMachine.ChangeState(typeof(PlayerAttackState));
         }        
@@ -297,8 +333,12 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
+            if (!combat.CanGuard)
+                return;
+
             if (stateMachine.IsState(typeof(PlayerIdleState)) ||
                 stateMachine.IsState(typeof(PlayerMoveState)) ||
+                stateMachine.IsState(typeof(PlayerAttackState)) ||
                 stateMachine.IsState(typeof(PlayerFallState)))
             {
                 stateMachine.ChangeState(typeof(PlayerGuardState));
