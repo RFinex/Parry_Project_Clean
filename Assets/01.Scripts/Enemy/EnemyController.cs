@@ -65,14 +65,6 @@ public class EnemyController : MonoBehaviour
             stats.Initialized(data);
     }
 
-    //public void ChangeState<TState>() where TState : BaseState<EnemyController>, new()
-    //{
-    //    stateMachine.ChangeState<TState>();
-    //    currentState = stateMachine.CurrentState;
-
-    //    currentStateName = currentState != null ? currentState.GetType().Name : "";
-    //}
-
     public bool TryDetectTarget()
     {
         Vector2 origin = transform.position;
