@@ -4,9 +4,16 @@ using Cysharp.Threading.Tasks;
 
 public class PlayerIdleState : PlayerBaseState
 {
+    private PlayerBlackBoard board;
+
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
+
+        if (blackBoard is PlayerBlackBoard board)
+        {
+            this.board = board;
+        }
 
         owner.StopMove();
 
@@ -24,7 +31,7 @@ public class PlayerIdleState : PlayerBaseState
         {
             while (!ctk.IsCancellationRequested)
             {
-                if (owner.MoveInput.x != 0f)
+                if (board.movement.moveInput.x != 0f)
                 {
                     TransitionState(typeof(PlayerMoveState));
                     return;

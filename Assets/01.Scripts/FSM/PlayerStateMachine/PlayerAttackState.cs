@@ -1,25 +1,27 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using UnityEngine.InputSystem.XR;
 
 public class PlayerAttackState : PlayerBaseState
 {
+    private PlayerBlackBoard board;
+
     public override void Enter(PlayerController owner)
     {
-        Utils.Log<PlayerJumpState>("Attack State 시작");
-
-        owner.Attack();
-
         EnterToken(owner.DestroyToken);
+
+        if (blackBoard is PlayerBlackBoard board)
+        {
+            this.board = board;
+        }
+
+        owner.Combat.Attack(owner.transform.position, this.board.movement.frontDir);
 
         AttackAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
-        Utils.Log<PlayerJumpState>("Attack State 종료");
-
         ExitToken();
     }
 
@@ -29,7 +31,13 @@ public class PlayerAttackState : PlayerBaseState
         {
             await UniTask.Delay(TimeSpan.FromSeconds(owner.Combat.AttackDuration), cancellationToken: ctk);
 
-            if (owner.MoveInput.x != 0f)
+            if (!board.movement.isGround)
+            {
+                TransitionState(typeof(PlayerJumpState));
+                return;
+            }
+
+            if (board.movement.moveInput.x != 0f)
             {
                 TransitionState(typeof(PlayerMoveState));
             }

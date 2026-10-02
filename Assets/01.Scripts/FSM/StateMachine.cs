@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class StateMachine<T>
+public class StateMachine<T> where T : class
 {
     private BaseState<T> currentState;
     private T owner;
@@ -10,37 +10,13 @@ public class StateMachine<T>
 
     public BaseState<T> CurrentState => currentState;
 
-    public StateMachine(T owner)
+    public BlackBoard blackBoard;
+
+    public StateMachine(T owner, BlackBoard blackBoard)
     {
         this.owner = owner;
+        this.blackBoard = blackBoard;
     }
-
-    /// <summary>
-    /// StateMachine 상태 변경 Method
-    /// </summary>
-    /// <typeparam name="TState"> 전환할 상태 타입 </typeparam>
-    //public void ChangeState<TState>() where TState : BaseState<T>, new()
-    //{
-    //    Type stateType = typeof(TState);
-
-    //    if (currentState != null && currentState.GetType() == stateType)
-    //        return;
-
-    //    // 해당 상태가 없으면 새로 등록
-    //    if (!stateDic.TryGetValue(stateType, out var nextState))
-    //    {
-    //        nextState = new TState();
-    //        stateDic.Add(stateType, nextState);
-    //    }
-
-    //    if (currentState != null)
-    //    {
-    //        currentState.Exit(owner);
-    //    }
-
-    //    currentState = nextState;
-    //    currentState.Enter(owner);
-    //}
 
     public void ChangeState(Type type)
     {
@@ -63,7 +39,7 @@ public class StateMachine<T>
 
         currentState.Enter(owner);
 
-        Utils.Log<StateMachine<T>>($"{type.Name}");
+        //Utils.Log<StateMachine<T>>($"{type.Name}");
     }
 
     public void AddState<TState>() where TState : BaseState<T>, new()
@@ -81,5 +57,30 @@ public class StateMachine<T>
             return false;
 
         return currentState == targetState;
+    }
+
+    public TState GetState<TState>() where TState : BaseState<T>
+    {
+        if (stateDic.TryGetValue(typeof(TState), out var targetState))
+        {
+            return (TState)targetState;
+        }
+
+        return null;
+    }
+}
+
+public class PlayerStateMachine : StateMachine<PlayerController>
+{
+    public PlayerStateMachine(PlayerController owner, PlayerBlackBoard blackBoard) : base(owner, blackBoard)
+    {
+        
+    }
+
+    public void PlayerAddState<TState>() where TState : PlayerBaseState, new()
+    {
+        AddState<TState>();
+
+        GetState<TState>().Initialized(blackBoard);
     }
 }

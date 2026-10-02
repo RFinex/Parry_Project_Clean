@@ -1,12 +1,19 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 public class PlayerMoveState : PlayerBaseState
 {
+    private PlayerBlackBoard board;
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
+        if (blackBoard is PlayerBlackBoard board)
+        {
+            this.board = board;
+        }
+        
         FixedUpdateAsync(owner, token.Token).Forget();
     }
 
@@ -25,7 +32,7 @@ public class PlayerMoveState : PlayerBaseState
             {
                 owner.Move();
 
-                if (owner.MoveInput.x == 0f)
+                if (board.movement.moveInput.x == 0f)
                 {
                     TransitionState(typeof(PlayerIdleState));
                     return;

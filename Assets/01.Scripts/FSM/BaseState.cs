@@ -6,9 +6,14 @@ public abstract class BaseState<T>
 {
     protected CancellationTokenSource token;
 
-    protected StateMachine<T> stateMachine;
-
     public event Action<Type> OnTransition;
+
+    public BlackBoard blackBoard;
+
+    public void Initialized(BlackBoard blackBoard)
+    {
+        this.blackBoard = blackBoard;
+    }
 
     public abstract void Enter(T owner);
 

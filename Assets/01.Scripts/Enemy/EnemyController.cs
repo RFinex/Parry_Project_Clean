@@ -8,6 +8,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] protected EnemyBaseData data;
     public EnemyBaseData Data => data;
 
+    protected EnemyBlackBoard blackBoard;
+
     [Header("Info")]
     [SerializeField] protected EnemyStats stats;
     [SerializeField] protected EnemyCombat combat;
@@ -46,7 +48,9 @@ public class EnemyController : MonoBehaviour
         stats = GetComponent<EnemyStats>();
         combat = GetComponent<EnemyCombat>();
 
-        stateMachine = new StateMachine<EnemyController>(this);
+        blackBoard = new EnemyBlackBoard();
+
+        stateMachine = new StateMachine<EnemyController>(this, blackBoard);
 
         stateMachine.AddState<EnemyAttackState>();
         stateMachine.AddState<EnemyDeadState>();

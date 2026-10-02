@@ -6,20 +6,30 @@ using UnityEngine.InputSystem.XR;
 
 public class PlayerGuardState : PlayerBaseState
 {
+    private PlayerBlackBoard board;
+
+    private bool isParryEnd;
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
+        if (blackBoard is PlayerBlackBoard board)
+        {
+            this.board = board;
+        }
+
+        isParryEnd = false;
+
         owner.StopMove();
 
-        owner.GuardStart();
+        owner.Combat.GuardStart();
 
         ParryTimerAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
-        owner.GuardEnd();
+        owner.Combat.GuardEnd();
 
         ExitToken();
     }
@@ -29,6 +39,8 @@ public class PlayerGuardState : PlayerBaseState
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(owner.Combat.ParryWindow), cancellationToken: ctk);
+                        
+            isParryEnd = true;
 
             owner.Combat.ParryEnd();
         }
@@ -36,5 +48,27 @@ public class PlayerGuardState : PlayerBaseState
         {
 
         }
+    }
+
+    public void GuardCanceled()
+    {
+        EndGuard();
+    }
+
+    private void EndGuard()
+    {
+        if (!board.movement.isGround)
+        {
+            TransitionState(typeof(PlayerJumpState));
+            return;
+        }
+
+        if (board.movement.moveInput.x != 0f)
+        {
+            TransitionState(typeof(PlayerMoveState));
+            return;
+        }
+
+        TransitionState(typeof(PlayerIdleState));
     }
 }
