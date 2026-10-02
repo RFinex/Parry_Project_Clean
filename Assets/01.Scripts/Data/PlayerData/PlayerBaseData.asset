@@ -25,3 +25,11 @@ MonoBehaviour:
   dashCool: 0.5
   maxHp: 100
   maxStamina: 100
+  attackDamage: 10
+  attackRange: 0.8
+  attackOffset: {x: 0.6, y: 0}
+  attackDuration: 0.3
+  parryWindow: 0.15
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256

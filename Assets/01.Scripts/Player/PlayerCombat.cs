@@ -1,150 +1,85 @@
-using Cysharp.Threading.Tasks;
-using System;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class PlayerCombat : MonoBehaviour
+public class PlayerCombat
 {
-    [Header("Attack")]
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackRange = 0.8f;
-    [SerializeField] private Vector2 attackOffset = new Vector2(0.6f, 0f);
-    [SerializeField] private LayerMask enemyLayer;
+    private PlayerBaseData data;
 
-    [Header("Guard")]
-    [SerializeField] private float parryWindow = 0.15f;
+    //private readonly float attackDamage = 10f;
+    //private readonly float attackRange = 0.8f;
+    //private readonly Vector2 attackOffset = new Vector2(0.6f, 0f);
+    //private readonly LayerMask enemyLayer;
+    //private readonly float parryWindow = 0.15f;
+    //// 테스트 공격 시간
+    //private readonly float attackDuration = 0.3f;
 
-    [SerializeField] private bool isParry;
+    private bool isParry;
+
+    public float AttackDuration => data.AttackDuration;
+    public float ParryWindow => data.ParryWindow;
 
     private float parryTimer;
 
-    private PlayerController controller;
+    private float attackTimer;
 
-    private void Awake()
+    public PlayerCombat(PlayerBaseData data)
     {
-        controller = GetComponent<PlayerController>();
+        this.data = data;
     }
 
-    private void Update()
+    public void Attack(Vector2 pos, float frontDir)
     {
-        UpdateParryTimer();
-    }
+        Utils.Log<PlayerCombat>("공격 시작");
 
-    private void UpdateParryTimer()
-    {
-        if (!isParry)
-            return;
+        Vector2 attackPos = GetAttackPos(pos, frontDir);
 
-        parryTimer -= Time.deltaTime;
-
-        if (parryTimer > 0)
-            return;
-
-        isParry = false;
-        parryTimer = 0f;
-        Utils.Log<PlayerCombat>("패링 판정 종료");
-    }
-
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (!context.performed)
-            return;
-
-        Attack();
-    }
-
-    public void OnGuard(InputAction.CallbackContext context)
-    {
-        Utils.Log<PlayerCombat>($"Guard - started:{context.started}, performed:{context.performed}, canceled:{context.canceled}");
-
-        if (context.started)
-        {
-            GuardStart();
-        }
-        else if (context.canceled)
-        {
-            GuardEnd();
-        }
-    }
-
-    private void Attack()
-    {
-        if (controller.CurrentState is PlayerGuardState)
-            return;
-
-        Utils.Log<PlayerCombat>("공격");
-
-
-        Vector2 attackPos = (Vector2)transform.position + attackOffset;
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
-
-        controller.ChangeState<PlayerAttackState>();
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, data.AttackRange, data.EnemyLayer);
 
         foreach (Collider2D hit in hits)
         {
             Utils.Log<PlayerCombat>($"공격 적중 : {hit.name}");
 
-            //EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
-            //enemyStats.TakeDamage(attackDamage);
-        }
+            EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
+            enemyStats.TakeDamage(data.AttackDamage);
+        }        
     }
 
-    private void GuardStart()
+    public void GuardStart()
     {
-        if (controller.CurrentState is PlayerGuardState)
-            return;
-
-        controller.ChangeState<PlayerGuardState>();
-
+        // 패리 시작
         isParry = true;
-
-        parryTimer = parryWindow;
 
         Utils.Log<PlayerCombat>($"가드 시작 / parryTimer = {parryTimer}");
     }
 
-    //private async UniTaskVoid ParryTimer(CancellationToken ctk)
-    //{
-    //    try
-    //    {
-    //        float timer = 0f;
-
-    //        while (timer < parryWindow)
-    //        {
-    //            timer += Time.deltaTime;
-
-    //            await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
-    //        }
-
-    //        isParry = false;
-    //        Utils.Log<PlayerCombat>("패링 판정 종료");
-    //    }
-    //    catch (OperationCanceledException)
-    //    {
-
-    //    }
-    //}
-
-    private void GuardEnd()
+    public void ParryEnd()
     {
-        if (controller.CurrentState is not PlayerGuardState)
+        if (!isParry)
             return;
 
         isParry = false;
+
+        Utils.Log<PlayerCombat>("패링 종료");
+    }
+
+    public void GuardEnd()
+    {
+        isParry = false;
         parryTimer = 0f;
 
-        if (controller.MoveInput.x != 0f)
-            controller.ChangeState<PlayerMoveState>();
-        else
-            controller.ChangeState<PlayerIdleState>();
-
-            Utils.Log<PlayerCombat>("가드 종료");
+        Utils.Log<PlayerCombat>("가드 종료");
     }
 
     public bool IsParry()
     {
         return isParry;
+    }
+
+    private Vector2 GetAttackPos(Vector2 pos, float frontDir)
+    {
+        Vector2 offset = data.AttackOffset;
+
+        offset.x *= frontDir;
+
+        return pos + offset;
     }
 }
