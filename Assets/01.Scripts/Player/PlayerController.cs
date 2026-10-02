@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
 
-    [Header("Current State")]
+    [Header("Current State Test")]
     [SerializeField] private string currentStateName;
     #endregion
 
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
         stateMachine.PlayerAddState<PlayerGuardState>();
         stateMachine.PlayerAddState<PlayerMoveState>();
         stateMachine.PlayerAddState<PlayerIdleState>();
-        stateMachine.PlayerAddState<PlayerJumpState>();
+        stateMachine.PlayerAddState<PlayerFallState>();
 
         stateMachine.ChangeState(typeof(PlayerIdleState));
 
@@ -208,6 +208,21 @@ public class PlayerController : MonoBehaviour
         movement.jumpForce = jumpForce;
     }
 
+    public void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
+    }
+
+    public void JumpCanceled()
+    {
+
+        if (movement.verticalVelocity > 0f)
+        {
+            Utils.Log<PlayerFallState>("점프 취소 성공");
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
+        }
+    }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private void OnDrawGizmos()
     {
@@ -232,20 +247,16 @@ public class PlayerController : MonoBehaviour
             if (!isGround)
                 return;
 
-            stateMachine.ChangeState(typeof(PlayerJumpState));
+            stateMachine.ChangeState(typeof(PlayerFallState));
 
-            PlayerJumpState jump = stateMachine.GetState<PlayerJumpState>();
-
-            jump.StartJump();
+            Jump();
         }
         
         if (context.canceled)
         {
-            if (stateMachine.IsState(typeof(PlayerJumpState)))
+            if (stateMachine.IsState(typeof(PlayerFallState)))
             {
-                PlayerJumpState jump = stateMachine.GetState<PlayerJumpState>();
-
-                jump.JumpCanceled();
+                JumpCanceled();
             }            
         }
     }
@@ -263,7 +274,7 @@ public class PlayerController : MonoBehaviour
 
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
            stateMachine.IsState(typeof(PlayerMoveState)) ||
-           stateMachine.IsState(typeof(PlayerJumpState)))
+           stateMachine.IsState(typeof(PlayerFallState)))
         {
             stateMachine.ChangeState(typeof(PlayerDashState));
         }
@@ -276,7 +287,7 @@ public class PlayerController : MonoBehaviour
 
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
            stateMachine.IsState(typeof(PlayerMoveState)) ||
-           stateMachine.IsState(typeof(PlayerJumpState)))
+           stateMachine.IsState(typeof(PlayerFallState)))
         {
             stateMachine.ChangeState(typeof(PlayerAttackState));
         }        
@@ -288,7 +299,7 @@ public class PlayerController : MonoBehaviour
         {
             if (stateMachine.IsState(typeof(PlayerIdleState)) ||
                 stateMachine.IsState(typeof(PlayerMoveState)) ||
-                stateMachine.IsState(typeof(PlayerJumpState)))
+                stateMachine.IsState(typeof(PlayerFallState)))
             {
                 stateMachine.ChangeState(typeof(PlayerGuardState));
             }
@@ -297,9 +308,19 @@ public class PlayerController : MonoBehaviour
         {
             if (stateMachine.IsState(typeof(PlayerGuardState)))
             {
-                PlayerGuardState guard = stateMachine.GetState<PlayerGuardState>();
+                if (!isGround)
+                {
+                    stateMachine.ChangeState(typeof(PlayerFallState));
+                    return;
+                }
 
-                guard.GuardCanceled();
+                if (moveInput.x != 0f)
+                {
+                    stateMachine.ChangeState(typeof(PlayerMoveState));
+                    return;
+                }
+
+                stateMachine.ChangeState(typeof(PlayerIdleState));
             }
         }
     }

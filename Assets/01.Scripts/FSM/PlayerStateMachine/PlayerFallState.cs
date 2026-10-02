@@ -2,11 +2,9 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 
-public class PlayerJumpState : PlayerBaseState
+public class PlayerFallState : PlayerBaseState
 {
     private PlayerBlackBoard board;
-
-    private bool isJumpCanceled;
 
     public override void Enter(PlayerController owner)
     {
@@ -17,9 +15,6 @@ public class PlayerJumpState : PlayerBaseState
             this.board = board;
         }
 
-        isJumpCanceled = false;
-
-
         LandingCheckAsync(owner, token.Token).Forget();
     }
 
@@ -28,29 +23,7 @@ public class PlayerJumpState : PlayerBaseState
         owner.StopMove();
 
         ExitToken();
-    }
-
-    public void StartJump()
-    {
-        this.board.rb.linearVelocity = new UnityEngine.Vector2(this.board.rb.linearVelocity.x, this.board.movement.jumpForce);
-    }
-
-    public void JumpCanceled()
-    {
-        if (isJumpCanceled)
-        {
-            Utils.Log<PlayerJumpState>("점프 취소 불가능");
-            return;
-        }
-
-        isJumpCanceled= true;
-
-        if (board.movement.verticalVelocity > 0f)
-        {
-            Utils.Log<PlayerJumpState>("점프 취소 성공");
-            board.rb.linearVelocity = new UnityEngine.Vector2(board.rb.linearVelocity.x, board.rb.linearVelocity.y * 0.4f);
-        }
-    }
+    }    
 
     public async UniTaskVoid LandingCheckAsync(PlayerController owner, CancellationToken ctk)
     {

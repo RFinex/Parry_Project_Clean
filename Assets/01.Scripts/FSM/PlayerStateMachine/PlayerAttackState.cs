@@ -33,7 +33,7 @@ public class PlayerAttackState : PlayerBaseState
 
             if (!board.movement.isGround)
             {
-                TransitionState(typeof(PlayerJumpState));
+                TransitionState(typeof(PlayerFallState));
                 return;
             }
 

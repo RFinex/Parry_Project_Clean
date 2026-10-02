@@ -55,7 +55,7 @@ public class PlayerDashState : PlayerBaseState
         finally
         {
             if (!board.movement.isGround)
-                TransitionState(typeof(PlayerJumpState));
+                TransitionState(typeof(PlayerFallState));
             else if (board.movement.moveInput.x != 0f)
                 TransitionState(typeof(PlayerMoveState));
             else

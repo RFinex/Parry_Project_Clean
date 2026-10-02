@@ -49,26 +49,4 @@ public class PlayerGuardState : PlayerBaseState
 
         }
     }
-
-    public void GuardCanceled()
-    {
-        EndGuard();
-    }
-
-    private void EndGuard()
-    {
-        if (!board.movement.isGround)
-        {
-            TransitionState(typeof(PlayerJumpState));
-            return;
-        }
-
-        if (board.movement.moveInput.x != 0f)
-        {
-            TransitionState(typeof(PlayerMoveState));
-            return;
-        }
-
-        TransitionState(typeof(PlayerIdleState));
-    }
 }
