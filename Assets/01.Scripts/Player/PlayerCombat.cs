@@ -4,22 +4,32 @@ public class PlayerCombat
 {
     private PlayerBaseData data;
 
-    //private readonly float attackDamage = 10f;
-    //private readonly float attackRange = 0.8f;
-    //private readonly Vector2 attackOffset = new Vector2(0.6f, 0f);
-    //private readonly LayerMask enemyLayer;
-    //private readonly float parryWindow = 0.15f;
-    //// 테스트 공격 시간
-    //private readonly float attackDuration = 0.3f;
-
     private bool isParry;
+    private float guardTimer;
 
-    public float AttackDuration => data.AttackDuration;
-    public float ParryWindow => data.ParryWindow;
+    #region Attack Stats
 
-    private float parryTimer;
-
+    private int attackIndex;
     private float attackTimer;
+    private bool iscomboRequest;
+
+    private const int maxCombo = 3;
+    private const float comboInputTime = 0.25f;
+    private const float attackEndTime = 0.5f;
+
+    public float ParryWindow => data.ParryWindow;
+    public int AttackIndex => attackIndex;
+    public bool isAttacking;
+
+    #endregion
+
+    #region Guard Stats
+
+    private const float guardTime = 0.3f;
+
+    public bool CanGuard => guardTimer <= 0f;
+
+    #endregion
 
     public PlayerCombat(PlayerBaseData data)
     {
@@ -28,7 +38,7 @@ public class PlayerCombat
 
     public void Attack(Vector2 pos, float frontDir)
     {
-        Utils.Log<PlayerCombat>("공격 시작");
+        Utils.Log<PlayerCombat>($"공격 시작 : {attackIndex}");
 
         Vector2 attackPos = GetAttackPos(pos, frontDir);
 
@@ -39,16 +49,97 @@ public class PlayerCombat
             Utils.Log<PlayerCombat>($"공격 적중 : {hit.name}");
 
             EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
-            enemyStats.TakeDamage(data.AttackDamage);
+
+            if (enemyStats != null)
+            {
+                enemyStats.TakeDamage(data.AttackDamage);
+            }
         }        
     }
 
+    public void RequestCombo()
+    {
+        if (!isAttacking)
+            return;
+
+        iscomboRequest = true;
+    }
+
+    public int UpdateAttack(float deltaTime, Vector2 pos, float frontDir)
+    {
+        if (!isAttacking)
+            return 0;
+
+        attackTimer += deltaTime;
+
+        if (!iscomboRequest)
+            return 0;
+
+        if (attackTimer < comboInputTime)
+            return 0;
+
+        if (attackIndex >= maxCombo)
+            return 0;
+
+        iscomboRequest = false;
+        attackIndex++;
+        attackTimer = 0f;
+
+        Attack(pos, frontDir);
+
+        return attackIndex;
+    }
+
+    public bool IsAttackFinished()
+    {
+        if (!isAttacking)
+            return true;
+
+        return attackTimer >= attackEndTime;
+    }
+
+    public int AttackStart(Vector2 pos, float frontDir)
+    {
+        isAttacking = true;
+
+        attackIndex = 1;
+        attackTimer = 0;
+        iscomboRequest = false;
+
+        Attack(pos, frontDir);
+
+        return attackIndex;
+    }
+
+    public void AttackEnd()
+    {
+        isAttacking = false;
+
+        attackIndex = 0;
+        attackTimer = 0f;
+        iscomboRequest = false;
+    }
+
+    private Vector2 GetAttackPos(Vector2 pos, float frontDir)
+    {
+        Vector2 offset = data.AttackOffset;
+
+        offset.x *= frontDir;
+
+        return pos + offset;
+    }
+
+    #region Guard
+
     public void GuardStart()
     {
+        if (!CanGuard)
+            return;
+
         // 패리 시작
         isParry = true;
 
-        Utils.Log<PlayerCombat>($"가드 시작 / parryTimer = {parryTimer}");
+        guardTimer = guardTime;
     }
 
     public void ParryEnd()
@@ -64,7 +155,6 @@ public class PlayerCombat
     public void GuardEnd()
     {
         isParry = false;
-        parryTimer = 0f;
 
         Utils.Log<PlayerCombat>("가드 종료");
     }
@@ -74,12 +164,16 @@ public class PlayerCombat
         return isParry;
     }
 
-    private Vector2 GetAttackPos(Vector2 pos, float frontDir)
+    public void GuardTimeUpdate(float deltaTime)
     {
-        Vector2 offset = data.AttackOffset;
+        if (guardTimer > 0f)
+        {
+            guardTimer -= deltaTime;
 
-        offset.x *= frontDir;
-
-        return pos + offset;
+            if (guardTimer <= 0f)
+                guardTimer = 0f;
+        }
     }
+
+    #endregion
 }

@@ -12,6 +12,8 @@ public class PlayerBlackBoard : BlackBoard
     public PlayerSkill skill = new PlayerSkill();
 
     public Rigidbody2D rb;
+
+    public PlayerAnimator animator;
 }
 
 public class EnemyBlackBoard : BlackBoard

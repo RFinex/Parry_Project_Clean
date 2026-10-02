@@ -22,6 +22,8 @@ public class PlayerGuardState : PlayerBaseState
 
         owner.StopMove();
 
+        this.board.animator.PlayGuard();
+
         owner.Combat.GuardStart();
 
         ParryTimerAsync(owner, token.Token).Forget();
@@ -29,6 +31,8 @@ public class PlayerGuardState : PlayerBaseState
 
     public override void Exit(PlayerController owner)
     {
+        board.animator.StopGuard();
+
         owner.Combat.GuardEnd();
 
         ExitToken();
