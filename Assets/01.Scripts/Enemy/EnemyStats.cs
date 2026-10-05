@@ -1,12 +1,21 @@
 using UnityEngine;
 
-public class EnemyStats : MonoBehaviour
+public class EnemyStats
 {
-    [SerializeField] private float nowHp;
-    [SerializeField] private float maxHp;
+    private float nowHp;
+    private float maxHp;
 
-    [SerializeField] private float nowBalance;
-    [SerializeField] private float maxBalance;
+    public float NowHp => nowHp;
+    public float MaxHp => maxHp;
+
+    private float nowBalance;
+    private float maxBalance;
+
+    public float NowBalance => nowBalance;
+    public float MaxBalance => maxBalance;
+
+    public bool IsDead => nowHp <= 0;
+    public bool IsBalanceBroken => nowBalance <= 0;
 
     public void Initialized(EnemyBaseData data)
     {
@@ -19,17 +28,32 @@ public class EnemyStats : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (IsDead)
+            return;
+
         nowHp -= damage;
 
         if (nowHp <= 0)
             nowHp = 0;
+
+        Utils.Log<EnemyStats>($"남은 체력 : {nowHp}/{maxHp}");
     }
 
     public void TakeBalanceDamage(float damage)
     {
+        if (IsDead || IsBalanceBroken)
+            return;
+
         nowBalance -= damage;
 
         if(nowBalance <= 0)
             nowBalance = 0;
+
+        Utils.Log<EnemyStats>($"남은 밸런스 : {nowBalance}/{maxBalance}");
+    }
+
+    public void RestoreBalance()
+    {
+        nowBalance = maxBalance;
     }
 }

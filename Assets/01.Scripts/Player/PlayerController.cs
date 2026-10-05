@@ -25,9 +25,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerBaseData data;
 
     [Header("Player Info")]
-    [SerializeField] private PlayerStats stats;
+    private PlayerStats stats;
     private PlayerCombat combat;
 
+    public PlayerStats Stats => stats;
     public PlayerCombat Combat => combat;
 
     [Header("Move")]
@@ -93,6 +94,23 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
 
+        InitBasePlayerInfo();
+
+        InitData();
+
+        InitBlackBoard();
+
+        token?.Cancel();
+        token?.Dispose();
+        token = new CancellationTokenSource();
+
+        InitStateMachine();        
+
+        stateMachine.ChangeState(typeof(PlayerIdleState));
+    }
+
+    private void InitBasePlayerInfo()
+    {
         moveSpeed = data.MoveSpeed;
         jumpForce = data.JumpForce;
 
@@ -120,23 +138,37 @@ public class PlayerController : MonoBehaviour
             dashSpeed = dashSpeed,
             dashCool = dashCool
         };
+    }
+
+    private void InitBlackBoard()
+    {
         PlayerAnimator playerAnimator = new PlayerAnimator(animator);
+
         blackBoard = new PlayerBlackBoard()
         {
             rb = rb,
             movement = movement,
+            stats = stats,
             skill = skill,
             animator = playerAnimator
         };
+    }
 
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
-
+    private void InitData()
+    {
         combat = new PlayerCombat(data);
+        stats = new PlayerStats(data);
+    }
 
+    private void InitStateMachine()
+    {
         stateMachine = new PlayerStateMachine(this, blackBoard);
 
+        AddStates();
+    }
+
+    private void AddStates()
+    {
         stateMachine.PlayerAddState<PlayerAttackState>();
         stateMachine.PlayerAddState<PlayerDashState>();
         stateMachine.PlayerAddState<PlayerGuardState>();
@@ -144,10 +176,8 @@ public class PlayerController : MonoBehaviour
         stateMachine.PlayerAddState<PlayerIdleState>();
         stateMachine.PlayerAddState<PlayerJumpState>();
         stateMachine.PlayerAddState<PlayerFallState>();
-
-        stateMachine.ChangeState(typeof(PlayerIdleState));
-
-        stats.Initialized(data);
+        stateMachine.PlayerAddState<PlayerHurtState>();
+        stateMachine.PlayerAddState<PlayerDeadState>();
     }
 
     private async UniTaskVoid UpdateAsync(CancellationToken ctk)
@@ -204,6 +234,19 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    public void TakeDamage(float damage)
+    {
+        stats.TakeDamage(damage);
+
+        if (stats.IsDead)
+        {
+            stateMachine.ChangeState(typeof(PlayerDeadState));
+            return;
+        }
+
+        stateMachine.ChangeState(typeof(PlayerHurtState));
+    }
 
     private void GroundCheck()
     {
@@ -303,7 +346,8 @@ public class PlayerController : MonoBehaviour
 
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
             stateMachine.IsState(typeof(PlayerMoveState)) ||
-            stateMachine.IsState(typeof(PlayerFallState)))
+            stateMachine.IsState(typeof(PlayerFallState)) ||
+            stateMachine.IsState(typeof(PlayerAttackState)))
         {
             stateMachine.ChangeState(typeof(PlayerDashState));
         }

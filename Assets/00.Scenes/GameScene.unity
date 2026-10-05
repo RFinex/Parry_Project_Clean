@@ -629,8 +629,6 @@ GameObject:
   - component: {fileID: 852964824}
   - component: {fileID: 852964823}
   - component: {fileID: 852964829}
-  - component: {fileID: 852964828}
-  - component: {fileID: 852964827}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -776,35 +774,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &852964827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 852964822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60269ce5a10e40f4fb5cf502945391fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  nowHp: 0
-  maxHp: 0
-  nowBalance: 0
-  maxBalance: 0
---- !u!114 &852964828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 852964822}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d029fae9316299e499ed1ce78607448e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
-  attackDamage: 5
 --- !u!114 &852964829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,8 +787,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   data: {fileID: 11400000, guid: ad4647bab80185e4d9a677007711fc3f, type: 2}
-  stats: {fileID: 852964827}
-  combat: {fileID: 852964828}
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -977,6 +944,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6323719953710832613, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7087049454815086010, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967423529762950208, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.31
@@ -1016,6 +995,14 @@ PrefabInstance:
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8631832243428726876, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013660374251658338, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
