@@ -41,7 +41,7 @@ public class EnemyTraceState : EnemyBaseState
                     return;
                 }
 
-                if (!owner.IsTargetTraceRange())
+                if (!owner.IsTargetInTraceRange())
                 {
                     owner.ClearTarget();
                     owner.StopMove();

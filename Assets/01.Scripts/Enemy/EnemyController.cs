@@ -11,26 +11,30 @@ public class EnemyController : MonoBehaviour
     protected EnemyBlackBoard blackBoard;
 
     [Header("Info")]
-    [SerializeField] protected EnemyStats stats;
-    [SerializeField] protected EnemyCombat combat;
+    protected EnemyStats stats;
+    protected EnemyCombat combat;
+
+    public EnemyStats Stats => stats;
+    public EnemyCombat Combat => combat;
 
     [Header("Layer Mask")]
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected LayerMask obstacleLayer;
-
-    private float moveSpeed;
 
     protected Rigidbody2D rb;
 
     protected Transform target;
     public Transform Target => target;
 
-    public float FrontDir { get; private set; } = 1f;
+    private float frontDir = 1f;
+    public float FrontDir => frontDir;
 
     [Header("State Machine")]
     private StateMachine<EnemyController> stateMachine;
     private BaseState<EnemyController> currentState;
-    public string currentStateName;
+
+    [Header("Debug Check")]
+    [SerializeField] private string currentStateName;
 
     private CancellationToken destroyToken;
     public CancellationToken DestroyToken => destroyToken;
@@ -40,36 +44,62 @@ public class EnemyController : MonoBehaviour
         Initialized();
     }
 
-    private void Initialized()
+    protected virtual void Initialized()
     {
         destroyToken = this.GetCancellationTokenOnDestroy();
 
         rb = GetComponent<Rigidbody2D>();
-        stats = GetComponent<EnemyStats>();
-        combat = GetComponent<EnemyCombat>();
 
+        InitComponents();
+        InitBlackBoard();
+        InitStateMachine();
+        InitData();
+
+        stateMachine.ChangeState(typeof(EnemyIdleState));       
+    }
+
+    protected virtual void InitComponents()
+    {
+        stats = new EnemyStats();
+        combat = new EnemyCombat();
+    }
+
+    protected virtual void InitBlackBoard()
+    {
         blackBoard = new EnemyBlackBoard();
+    }
 
+    protected virtual void InitStateMachine()
+    {
         stateMachine = new StateMachine<EnemyController>(this, blackBoard);
 
+        AddStates();
+    }
+
+    protected virtual void AddStates()
+    {
         stateMachine.AddState<EnemyAttackState>();
         stateMachine.AddState<EnemyDeadState>();
         stateMachine.AddState<EnemyIdleState>();
         stateMachine.AddState<EnemyPatrolState>();
         stateMachine.AddState<EnemyStaggerState>();
         stateMachine.AddState<EnemyTraceState>();
+    }
 
-        stateMachine.ChangeState(typeof(EnemyIdleState));
+    protected virtual void InitData()
+    {
+        if (data == null)
+            return;
 
-        if(data != null)
-            stats.Initialized(data);
+        stats.Initialized(data);
+        combat.Initialized(data);
     }
 
     public bool TryDetectTarget()
     {
         Vector2 origin = transform.position;
 
-        Vector2 dir = Vector2.right * FrontDir;
+        Vector2 dir = Vector2.right * frontDir;
 
         RaycastHit2D hit = Physics2D.Raycast(origin, dir, data.DetectRange, playerLayer | obstacleLayer);
 
@@ -110,6 +140,7 @@ public class EnemyController : MonoBehaviour
         return (Vector2)transform.position + Vector2.right * dir * distance;
     }
 
+    /// <summary> 타겟이 공격 범위에 있는지 체크 </summary>
     public bool IsTargetInAttackRange()
     {
         if (target == null)
@@ -120,6 +151,7 @@ public class EnemyController : MonoBehaviour
         return distance <= data.AttackRange;
     }
 
+    /// <summary> 타겟이 탐지 범위에 있는지 체크 </summary>
     public bool IsTargetInDetectRange()
     {
         if (target == null)
@@ -130,7 +162,8 @@ public class EnemyController : MonoBehaviour
         return distance <= data.DetectRange;
     }
 
-    public bool IsTargetTraceRange()
+    /// <summary> 타겟이 추격 범위에 있는지 체크 </summary>
+    public bool IsTargetInTraceRange()
     {
         if (target == null)
             return false;
@@ -146,9 +179,10 @@ public class EnemyController : MonoBehaviour
 
         SetFrontDir(direction);
 
-        rb.linearVelocity = new Vector2(FrontDir * data.MoveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(frontDir * data.MoveSpeed, rb.linearVelocity.y);
 
-        return Mathf.Abs(targetPos.x - transform.position.x) <= data.PatrolArrivalDistance;
+        // 도착 지점과의 거리가 ArrivalDistance 보다 가까운지 체크
+        return Mathf.Abs(targetPos.x - transform.position.x) <= data.ArrivalDistance;
     }
 
     public void StopMove()
@@ -169,7 +203,7 @@ public class EnemyController : MonoBehaviour
         if (direction == 0f)
             return;
 
-        FrontDir = Mathf.Sign(direction);
+        frontDir = Mathf.Sign(direction);
     }
 
     public void LookAtTarget()
@@ -177,13 +211,18 @@ public class EnemyController : MonoBehaviour
         if (target == null)
             return;
 
-        float direction = target.position.x - transform.position.x;
+        float dir = target.position.x - transform.position.x;
 
-        SetFrontDir(direction);
+        SetFrontDir(dir);
 
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+    private void Update()
+    {
+        currentStateName = stateMachine.CurrentState.GetType().Name;
+    }
+
     private void OnDrawGizmos()
     {
         if (data == null)

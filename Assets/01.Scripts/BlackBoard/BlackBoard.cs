@@ -18,5 +18,6 @@ public class PlayerBlackBoard : BlackBoard
 
 public class EnemyBlackBoard : BlackBoard
 {
+    public Rigidbody2D rb;
 
 }
