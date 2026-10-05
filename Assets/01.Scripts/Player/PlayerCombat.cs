@@ -46,14 +46,14 @@ public class PlayerCombat
 
         foreach (Collider2D hit in hits)
         {
+            EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+
+            if (enemy == null)
+                continue;
+            
             Utils.Log<PlayerCombat>($"공격 적중 : {hit.name}");
 
-            EnemyStats enemyStats = hit.GetComponent<EnemyStats>();
-
-            if (enemyStats != null)
-            {
-                enemyStats.TakeDamage(data.AttackDamage);
-            }
+            enemy.Stats.TakeDamage(data.AttackDamage);
         }        
     }
 

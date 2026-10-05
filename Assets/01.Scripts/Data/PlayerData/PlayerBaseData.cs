@@ -9,7 +9,7 @@ public class PlayerBaseData : ScriptableObject
     [Header("Jump")]
     [SerializeField] private float jumpForce = 10f;
 
-    [Header("Ground CHeck")]
+    [Header("Ground Check")]
     [SerializeField] private Vector2 checkSize = new Vector2(0.8f, 0.1f);
     [SerializeField] private Vector3 checkOffset = new Vector2(0f, -0.4f);
     [SerializeField] private float checkDistance = 0.1f;
@@ -32,9 +32,12 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float comboInputTime = 0.25f;
     [SerializeField] private float attackEndTime = 0.5f;
 
-
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
+    [SerializeField] private float parryDamage = 10f;
+
+    [Header("Hurt")]
+    [SerializeField] private float invincibleTime = 1f;
     
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
@@ -63,6 +66,9 @@ public class PlayerBaseData : ScriptableObject
     public float AttackEndTime => attackEndTime;
 
     public float ParryWindow => parryWindow;
+    public float ParryDamage => parryDamage;
+
+    public float InvincibleTime => invincibleTime;
 
     public LayerMask EnemyLayer => enemyLayer;
 }

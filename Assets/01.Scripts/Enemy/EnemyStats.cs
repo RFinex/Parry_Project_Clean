@@ -35,6 +35,8 @@ public class EnemyStats
 
         if (nowHp <= 0)
             nowHp = 0;
+
+        Utils.Log<EnemyStats>($"남은 체력 : {nowHp}/{maxHp}");
     }
 
     public void TakeBalanceDamage(float damage)
@@ -46,6 +48,8 @@ public class EnemyStats
 
         if(nowBalance <= 0)
             nowBalance = 0;
+
+        Utils.Log<EnemyStats>($"남은 밸런스 : {nowBalance}/{maxBalance}");
     }
 
     public void RestoreBalance()

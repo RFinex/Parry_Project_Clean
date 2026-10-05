@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 9117128348835321587}
   - component: {fileID: -2501056193959246217}
   - component: {fileID: 6957399935696956381}
-  - component: {fileID: -8891142008266027069}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -291,7 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   data: {fileID: 11400000, guid: be9a085361e30404d9b6c9ac0f13ade5, type: 2}
-  stats: {fileID: -8891142008266027069}
+  stats: {fileID: 0}
   frontDir: 1
   isGround: 0
   currentStateName: 
@@ -469,22 +468,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-8891142008266027069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6323719953710832613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6defbe8065a777644a55528fb6e6179c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  nowHp: 0
-  maxHp: 0
-  nowStamina: 0
-  maxStamina: 0
 --- !u!1 &7087049454815086010
 GameObject:
   m_ObjectHideFlags: 0

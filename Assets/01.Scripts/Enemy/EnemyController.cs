@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -30,8 +31,7 @@ public class EnemyController : MonoBehaviour
     public float FrontDir => frontDir;
 
     [Header("State Machine")]
-    private StateMachine<EnemyController> stateMachine;
-    private BaseState<EnemyController> currentState;
+    private EnemyStateMachine stateMachine;
 
     [Header("Debug Check")]
     [SerializeField] private string currentStateName;
@@ -66,24 +66,30 @@ public class EnemyController : MonoBehaviour
 
     protected virtual void InitBlackBoard()
     {
-        blackBoard = new EnemyBlackBoard();
+        blackBoard = new EnemyBlackBoard()
+        {
+            rb = rb,
+            stats = stats,
+            combat = combat
+        };
     }
 
     protected virtual void InitStateMachine()
     {
-        stateMachine = new StateMachine<EnemyController>(this, blackBoard);
+        stateMachine = new EnemyStateMachine(this, blackBoard);
 
         AddStates();
     }
 
     protected virtual void AddStates()
     {
-        stateMachine.AddState<EnemyAttackState>();
-        stateMachine.AddState<EnemyDeadState>();
-        stateMachine.AddState<EnemyIdleState>();
-        stateMachine.AddState<EnemyPatrolState>();
-        stateMachine.AddState<EnemyStaggerState>();
-        stateMachine.AddState<EnemyTraceState>();
+        stateMachine.EnemyAddState<EnemyAttackState>();
+        stateMachine.EnemyAddState<EnemyAttackState>();
+        stateMachine.EnemyAddState<EnemyDeadState>();
+        stateMachine.EnemyAddState<EnemyIdleState>();
+        stateMachine.EnemyAddState<EnemyPatrolState>();
+        stateMachine.EnemyAddState<EnemyStaggerState>();
+        stateMachine.EnemyAddState<EnemyTraceState>();
     }
 
     protected virtual void InitData()

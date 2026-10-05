@@ -38,8 +38,6 @@ public class StateMachine<T> where T : class
         currentState.OnTransition += ChangeState;
 
         currentState.Enter(owner);
-
-        //Utils.Log<StateMachine<T>>($"{type.Name}");
     }
 
     public void AddState<TState>() where TState : BaseState<T>, new()
@@ -78,6 +76,21 @@ public class PlayerStateMachine : StateMachine<PlayerController>
     }
 
     public void PlayerAddState<TState>() where TState : PlayerBaseState, new()
+    {
+        AddState<TState>();
+
+        GetState<TState>().Initialized(blackBoard);
+    }
+}
+
+public class EnemyStateMachine : StateMachine<EnemyController>
+{
+    public EnemyStateMachine(EnemyController owner, EnemyBlackBoard blackBoard) : base(owner, blackBoard)
+    {
+
+    }
+
+    public void EnemyAddState<TState>() where TState : EnemyBaseState, new()
     {
         AddState<TState>();
 

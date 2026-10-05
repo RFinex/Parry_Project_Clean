@@ -4,7 +4,7 @@ public class EnemyCombat
 {
     private EnemyBaseData data;
 
-    private float AttackDamage => data.AttackDamage;
+    private float attackDamage => data.AttackDamage;
 
     public void Initialized(EnemyBaseData data)
     {
@@ -15,6 +15,13 @@ public class EnemyCombat
     {
         if (target == null)
             return;
+
+        PlayerController player = target.GetComponentInParent<PlayerController>();
+
+        if (player == null)
+            return;
+
+        player.TakeDamage(attackDamage);
 
         Utils.Log<EnemyCombat>($"Àû °ø°Ý : {target.name}");
     }

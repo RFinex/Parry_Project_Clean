@@ -1,15 +1,12 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using UnityEngine;
 
 public class EnemyAttackState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {
         owner.StopMove();
-
-        owner.LookAtTarget();
 
         EnterToken(owner.DestroyToken);
 
@@ -29,7 +26,6 @@ public class EnemyAttackState : EnemyBaseState
             {
                 if (owner.Target == null)
                 {
-                    owner.ClearTarget();
                     TransitionState(typeof(EnemyIdleState));
                     return;
                 }
@@ -39,23 +35,12 @@ public class EnemyAttackState : EnemyBaseState
                     TransitionState(typeof(EnemyTraceState));
                     return;
                 }
+
+                owner.LookAtTarget();
 
                 owner.Attack();
 
                 await UniTask.Delay(TimeSpan.FromSeconds(owner.Data.AttackCool), cancellationToken: ctk);
-
-                if (owner.Target == null)
-                {
-                    owner.ClearTarget();
-                    TransitionState(typeof(EnemyIdleState));
-                    return;
-                }
-
-                if (!owner.IsTargetInAttackRange())
-                {
-                    TransitionState(typeof(EnemyTraceState));
-                    return;
-                }
             }
             
         }
