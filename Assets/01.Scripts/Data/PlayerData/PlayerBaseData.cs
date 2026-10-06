@@ -42,6 +42,11 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float invincibleAlpha = 0.35f;
     [SerializeField] private float blinkInterval = 0.1f;
 
+    [Header("Execute Attack")]
+    [SerializeField] private float executeSearchRange = 3f;
+    [SerializeField] private float executeMoveSpeed = 30f;
+    [SerializeField] private float executeBackOffset = 0.8f;
+
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
 
@@ -75,6 +80,10 @@ public class PlayerBaseData : ScriptableObject
     public float InvincibleTime => invincibleTime;
     public float InvincibleAlpha => invincibleAlpha;
     public float BlinkInterval => blinkInterval;
+
+    public float ExecuteSearchRange => executeSearchRange;
+    public float ExecuteMoveSpeed => executeMoveSpeed;
+    public float ExecuteBackOffset => executeBackOffset;
 
     public LayerMask EnemyLayer => enemyLayer;
 }

@@ -244,9 +244,9 @@ public class EnemyController : MonoBehaviour
         SetFrontDir(dir);
     }
 
-    private bool IsDeadState()
+    public bool IsStaggerState()
     {
-        return stateMachine.IsState(typeof(EnemyDeadState));
+        return stateMachine.IsState(typeof(EnemyStaggerState));
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

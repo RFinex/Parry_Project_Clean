@@ -60,6 +60,48 @@ public class PlayerCombat
         }        
     }
 
+    public EnemyController FindExecuteTarget(Vector2 pos)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(pos, data.ExecuteSearchRange, data.EnemyLayer);
+
+        EnemyController target = null;
+
+        float closeDistance = float.MaxValue;
+
+        foreach (Collider2D hit in hits)
+        {
+            EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+
+            if (enemy == null)
+                continue;
+
+            if (!enemy.IsStaggerState())
+                continue;
+
+            Vector2 dir = (Vector2)enemy.transform.position - pos;
+            float distance = dir.magnitude;
+
+            if (distance >= closeDistance)
+                continue;
+
+            closeDistance = distance;
+
+            target = enemy;
+        }
+
+        return target;
+    }
+
+    public void SpecialAttack(EnemyController enemy)
+    {
+        if (enemy == null)
+            return;
+
+        Utils.Log<PlayerCombat>("특수 공격!");
+
+        
+    }
+
     public void RequestCombo()
     {
         if (!isAttacking)
