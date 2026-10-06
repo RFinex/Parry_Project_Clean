@@ -73,6 +73,11 @@ public class PlayerAnimator
         animator.SetTrigger(Attack[index - 1]);
     }
 
+    public void PlayExecuteAttack()
+    {
+        animator.SetTrigger(Attack[1]);
+    }
+
     public void PlayGuard()
     {
         animator.SetTrigger(Block);

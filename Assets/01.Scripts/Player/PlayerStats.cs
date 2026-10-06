@@ -1,3 +1,4 @@
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public class PlayerStats
@@ -9,15 +10,17 @@ public class PlayerStats
     private float maxStamina;
 
     private float invincibleTime;
+    private float invincibleTimer;
 
     public float NowHp => nowHp;
     public float MaxHp => maxHp;
     public float NowStamina => nowStamina;
     public float MaxStamina => maxStamina;
-    public float InvincibleTime => invincibleTime;
-
 
     public bool IsDead => nowHp <= 0f;
+    private bool isInvincible;
+    public bool IsInvincible => isInvincible;
+    public float InvincibleTime => invincibleTime;
     
     public PlayerStats(PlayerBaseData data)
     {
@@ -28,6 +31,7 @@ public class PlayerStats
         nowStamina = maxStamina;
 
         invincibleTime = data.InvincibleTime;
+        invincibleTimer = invincibleTime;
     }
 
     public void TakeDamage(float damage)
@@ -70,5 +74,35 @@ public class PlayerStats
 
         if(nowStamina >= maxStamina)
             nowStamina = maxStamina;
+    }
+
+    public void StartInvincible()
+    {
+        isInvincible = true;
+        invincibleTimer = invincibleTime;
+    }
+
+    /// <summary>
+    /// 피격 후 무적 타이머
+    /// </summary>
+    /// <param name="deltaTime"> Time.deltaTime </param>
+    public void UpdateInvincible(float deltaTime)
+    {
+        if (!isInvincible)
+            return;
+
+        invincibleTimer -= deltaTime;
+
+        if (invincibleTimer <= 0f)
+        {
+            invincibleTimer = 0f;
+            EndInvincible();
+        }
+    }
+
+    public void EndInvincible()
+    {
+        isInvincible = false;
+        invincibleTimer = 0f;
     }
 }

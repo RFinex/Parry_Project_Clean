@@ -16,6 +16,8 @@ public class PlayerBlackBoard : BlackBoard
     public Rigidbody2D rb;
 
     public PlayerAnimator animator;
+
+    public PlayerAfterImage afterImage;
 }
 
 public class EnemyBlackBoard : BlackBoard

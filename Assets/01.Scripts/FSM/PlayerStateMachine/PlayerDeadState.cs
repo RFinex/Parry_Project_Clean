@@ -10,6 +10,8 @@ public class PlayerDeadState : PlayerBaseState
         {
             this.board = board;
         }
+
+        this.board.animator.PlayDeath();
     }
 
     public override void Exit(PlayerController owner)

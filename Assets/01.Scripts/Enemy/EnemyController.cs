@@ -1,9 +1,17 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public interface IExecuteTarget
+{
+    bool CanExecute {  get; }
+
+    Vector2 GetExecutePos(Vector2 attackerPos);
+
+    void Execute();
+}
+
+public class EnemyController : MonoBehaviour, IExecuteTarget
 {
     [Header("Data")]
     [SerializeField] protected EnemyBaseData data;
@@ -27,7 +35,7 @@ public class EnemyController : MonoBehaviour
     protected Transform target;
     public Transform Target => target;
 
-    private float frontDir = 1f;
+    protected float frontDir = 1f;
     public float FrontDir => frontDir;
 
     [Header("State Machine")]
@@ -38,6 +46,14 @@ public class EnemyController : MonoBehaviour
 
     private CancellationToken destroyToken;
     public CancellationToken DestroyToken => destroyToken;
+
+    public bool CanExecute
+    {
+        get
+        {
+            return stateMachine.IsState(typeof(EnemyStaggerState));
+        }
+    }
 
     protected virtual void Awake()
     {
@@ -201,9 +217,31 @@ public class EnemyController : MonoBehaviour
         if (combat == null)
             return;
 
-        combat.Attack(target);
+        combat.Attack(target, this);
     }
     
+    public void TakeDamage(float damage)
+    {
+        stats.TakeDamage(damage);
+
+        if (stats.IsDead)
+        {
+            stateMachine.ChangeState(typeof(EnemyDeadState));
+            return;
+        }
+    }
+
+    public void TakeBalanceDamage(float damage)
+    {
+        stats.TakeBalanceDamage(damage);
+
+        if (stats.IsBalanceBroken)
+        {
+            stateMachine.ChangeState(typeof(EnemyStaggerState));
+            return;
+        }
+    }
+
     protected void SetFrontDir(float direction)
     {
         if (direction == 0f)
@@ -220,7 +258,38 @@ public class EnemyController : MonoBehaviour
         float dir = target.position.x - transform.position.x;
 
         SetFrontDir(dir);
+    }
 
+    public bool IsStaggerState()
+    {
+        return stateMachine.IsState(typeof(EnemyStaggerState));
+    }
+
+    /// <summary>
+    /// 처형 대상(본인)의 위치를 알려줌
+    /// </summary>
+    /// <param name="attackerPos"> 공격자(플레이어)의 위치 </param>
+    /// <returns></returns>
+    public Vector2 GetExecutePos(Vector2 attackerPos)
+    {       
+        float dir = Mathf.Sign(transform.position.x - attackerPos.x);
+
+        return new Vector2(transform.position.x - dir * data.ExecuteBakcOffset, transform.position.y);
+    }
+
+
+    /// <sumamry> 처형 함수 </sumamry>
+    public virtual void Execute()
+    {
+        if (!CanExecute)
+            return;
+
+        stats.TakeDamage(stats.NowHp);
+
+        if (stats.IsDead)
+        {
+            stateMachine.ChangeState(typeof(EnemyDeadState));
+        }
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
