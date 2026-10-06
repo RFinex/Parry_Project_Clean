@@ -15,8 +15,14 @@ MonoBehaviour:
   maxHp: 100
   maxBalance: 100
   moveSpeed: 2
+  minPatrolDistance: 2
+  maxPatrolDistance: 4
+  arrivalDistance: 0.05
   detectRange: 5
   attackRange: 2
+  traceRange: 7
   attackDamage: 5
   attackCool: 1
   staggerDuration: 3
+  minIdleTime: 2
+  maxIdleTime: 5

@@ -7,7 +7,7 @@ public class PlayerHurtState : PlayerBaseState
 {
     private PlayerBlackBoard board;
 
-    private float hurtTimer;
+    private float hurtTimer = (2f / 11f);
 
     public override void Enter(PlayerController owner)
     {
@@ -18,13 +18,9 @@ public class PlayerHurtState : PlayerBaseState
             this.board = board;
         }
 
-        Utils.Log<PlayerHurtState>("Hurt 진입 성공");
-
-        hurtTimer = this.board.stats.InvincibleTime;
-
         this.board.animator.PlayHurt();
 
-        InvincibleTimeAsync(owner, token.Token).Forget();
+        HurtTimeAsync(token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
@@ -32,26 +28,25 @@ public class PlayerHurtState : PlayerBaseState
         ExitToken();
     }
 
-    public async UniTaskVoid InvincibleTimeAsync(PlayerController owner, CancellationToken ctk)
+    public async UniTaskVoid HurtTimeAsync(CancellationToken ctk)
     {
         try
         {
-            Utils.Log<PlayerHurtState>("무적 타이머 시작");
-            while (!ctk.IsCancellationRequested)
+            await UniTask.Delay(TimeSpan.FromSeconds(hurtTimer), cancellationToken: ctk);
+
+            if (!board.movement.isGround)
             {
-                hurtTimer -= Time.deltaTime;
-
-                owner.Move();
-
-                if (hurtTimer <= 0)
-                {
-                    hurtTimer = 0;
-                    TransitionState(typeof(PlayerIdleState));
-                    return;
-                }
-
-                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
+                TransitionState(typeof(PlayerFallState));
+                return;
             }
+
+            if (board.movement.moveInput.x != 0)
+            {
+                TransitionState(typeof(PlayerMoveState));
+                return;
+            }
+
+            TransitionState(typeof(PlayerIdleState));
         }
         catch (OperationCanceledException)
         {

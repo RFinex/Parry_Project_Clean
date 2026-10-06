@@ -1,9 +1,16 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.AdaptivePerformance.Provider.AdaptivePerformanceSubsystemDescriptor;
+
+public enum GuardResult
+{
+    None,
+    Guard,
+    Parry
+}
 
 public class PlayerController : MonoBehaviour
 {
@@ -58,6 +65,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Current State Test")]
     [SerializeField] private string currentStateName;
+
+    [Header("Invincible Visual")]
+    private float invincibleAlpha;
+    private float blinkInterval;
+
+    private float blinkTimer;
+    private bool isInvincibleVisual;
 
     #endregion
 
@@ -138,6 +152,11 @@ public class PlayerController : MonoBehaviour
             dashSpeed = dashSpeed,
             dashCool = dashCool
         };
+
+        invincibleAlpha = data.InvincibleAlpha;
+        blinkInterval = data.BlinkInterval;
+
+        isInvincibleVisual = true;
     }
 
     private void InitBlackBoard()
@@ -235,17 +254,46 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(EnemyAttackInfo info)
     {
-        stats.TakeDamage(damage);
+        if (stats.IsInvincible)
+            return;
+
+        if (TryGuard(info))
+            return;
+
+        stats.TakeDamage(info.attackDamage);
 
         if (stats.IsDead)
         {
             stateMachine.ChangeState(typeof(PlayerDeadState));
             return;
-        }
+        }        
+
+        stats.StartInvincible();
 
         stateMachine.ChangeState(typeof(PlayerHurtState));
+    }
+
+    private bool TryGuard(EnemyAttackInfo info)
+    {
+        GuardResult guardResult = combat.CheckGuard();
+
+        if (guardResult == GuardResult.Parry)
+        {
+            info.attacker.TakeBalanceDamage(data.ParryDamage);
+
+            Utils.Log<PlayerController>("패리 성공");
+            return true;
+        }
+
+        if (guardResult == GuardResult.Guard)
+        {
+            Utils.Log<PlayerController>("가드 성공");
+            return true;
+        }
+
+        return false;
     }
 
     private void GroundCheck()
@@ -259,6 +307,9 @@ public class PlayerController : MonoBehaviour
     private void PlayerStatsUpdate()
     {
         combat.GuardTimeUpdate(Time.deltaTime);
+        stats.UpdateInvincible(Time.deltaTime);
+
+        UpdateInvincibleVisual();
 
         movement.moveInput = moveInput;
         movement.frontDir = frontDir;
@@ -309,11 +360,17 @@ public class PlayerController : MonoBehaviour
     #region InputAction Method
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (IsDeadState())
+            return;
+
         moveInput = context.ReadValue<Vector2>();
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (IsDeadState())
+            return;
+
         if (context.performed)
         {
             if (!isGround)
@@ -335,6 +392,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
+        if (IsDeadState())
+            return;
+
         if (!context.performed)
             return;
 
@@ -355,6 +415,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (IsDeadState())
+            return;
+
         if (!context.performed)
             return;
 
@@ -375,6 +438,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnGuard(InputAction.CallbackContext context)
     {
+        if (IsDeadState())
+            return;
+
         if (context.started)
         {
             if (!combat.CanGuard)
@@ -409,4 +475,41 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+
+    private bool IsDeadState()
+    {
+        return stateMachine.IsState(typeof(PlayerDeadState));
+    }
+
+    public void SetInvincibleVisual(bool value)
+    {
+        Color color = sr.color;
+        color.a = value ? 1f : invincibleAlpha;
+        sr.color = color;
+    }
+
+    public void UpdateInvincibleVisual()
+    {
+        if (!stats.IsInvincible)
+        {
+            if (!isInvincibleVisual)
+            {
+                isInvincibleVisual = true;
+                SetInvincibleVisual(true);
+            }
+
+            blinkTimer = 0f;
+            return;
+        }
+
+        blinkTimer -= Time.deltaTime;
+
+        if (blinkTimer > 0f)
+            return;
+
+        blinkTimer = blinkInterval;
+
+        isInvincibleVisual = !isInvincibleVisual;
+        SetInvincibleVisual(isInvincibleVisual);
+    }
 }

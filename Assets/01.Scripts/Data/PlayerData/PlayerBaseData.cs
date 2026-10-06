@@ -35,10 +35,13 @@ public class PlayerBaseData : ScriptableObject
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
     [SerializeField] private float parryDamage = 10f;
+    [SerializeField] private float guardStaminaCost = 20f;
 
-    [Header("Hurt")]
+    [Header("Invincible")]
     [SerializeField] private float invincibleTime = 1f;
-    
+    [SerializeField] private float invincibleAlpha = 0.35f;
+    [SerializeField] private float blinkInterval = 0.1f;
+
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
 
@@ -67,8 +70,11 @@ public class PlayerBaseData : ScriptableObject
 
     public float ParryWindow => parryWindow;
     public float ParryDamage => parryDamage;
+    public float GuardStaminaCost => guardStaminaCost;
 
     public float InvincibleTime => invincibleTime;
+    public float InvincibleAlpha => invincibleAlpha;
+    public float BlinkInterval => blinkInterval;
 
     public LayerMask EnemyLayer => enemyLayer;
 }

@@ -11,7 +11,7 @@ public class EnemyCombat
         this.data = data;
     }
 
-    public virtual void Attack(Transform target)
+    public virtual void Attack(Transform target, EnemyController attacker)
     {
         if (target == null)
             return;
@@ -21,7 +21,9 @@ public class EnemyCombat
         if (player == null)
             return;
 
-        player.TakeDamage(attackDamage);
+        EnemyAttackInfo attackInfo = new EnemyAttackInfo(attackDamage, attacker);
+
+        player.TakeDamage(attackInfo);
 
         Utils.Log<EnemyCombat>($"Àû °ø°Ý : {target.name}");
     }

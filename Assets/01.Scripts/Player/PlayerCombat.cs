@@ -4,6 +4,7 @@ public class PlayerCombat
 {
     private PlayerBaseData data;
 
+    private bool isGuard;
     private bool isParry;
     private float guardTimer;
 
@@ -11,7 +12,7 @@ public class PlayerCombat
 
     private int attackIndex;
     private float attackTimer;
-    private bool iscomboRequest;
+    private bool isComboRequest;
 
     private const int maxCombo = 3;
     private const float comboInputTime = 0.25f;
@@ -28,6 +29,8 @@ public class PlayerCombat
     private const float guardTime = 0.3f;
 
     public bool CanGuard => guardTimer <= 0f;
+
+    public float GuardStaminaCost => data.GuardStaminaCost;
 
     #endregion
 
@@ -53,7 +56,7 @@ public class PlayerCombat
             
             Utils.Log<PlayerCombat>($"공격 적중 : {hit.name}");
 
-            enemy.Stats.TakeDamage(data.AttackDamage);
+            enemy.TakeDamage(data.AttackDamage);
         }        
     }
 
@@ -62,7 +65,7 @@ public class PlayerCombat
         if (!isAttacking)
             return;
 
-        iscomboRequest = true;
+        isComboRequest = true;
     }
 
     public int UpdateAttack(float deltaTime, Vector2 pos, float frontDir)
@@ -72,7 +75,7 @@ public class PlayerCombat
 
         attackTimer += deltaTime;
 
-        if (!iscomboRequest)
+        if (!isComboRequest)
             return 0;
 
         if (attackTimer < comboInputTime)
@@ -81,7 +84,7 @@ public class PlayerCombat
         if (attackIndex >= maxCombo)
             return 0;
 
-        iscomboRequest = false;
+        isComboRequest = false;
         attackIndex++;
         attackTimer = 0f;
 
@@ -104,7 +107,7 @@ public class PlayerCombat
 
         attackIndex = 1;
         attackTimer = 0;
-        iscomboRequest = false;
+        isComboRequest = false;
 
         Attack(pos, frontDir);
 
@@ -117,7 +120,7 @@ public class PlayerCombat
 
         attackIndex = 0;
         attackTimer = 0f;
-        iscomboRequest = false;
+        isComboRequest = false;
     }
 
     private Vector2 GetAttackPos(Vector2 pos, float frontDir)
@@ -136,6 +139,7 @@ public class PlayerCombat
         if (!CanGuard)
             return;
 
+        isGuard = true;
         // 패리 시작
         isParry = true;
 
@@ -154,6 +158,7 @@ public class PlayerCombat
 
     public void GuardEnd()
     {
+        isGuard = false;
         isParry = false;
 
         Utils.Log<PlayerCombat>("가드 종료");
@@ -173,6 +178,17 @@ public class PlayerCombat
             if (guardTimer <= 0f)
                 guardTimer = 0f;
         }
+    }
+
+    public GuardResult CheckGuard()
+    {
+        if (!isGuard)
+            return GuardResult.None;
+
+        if (isParry)
+            return GuardResult.Parry;
+
+        return GuardResult.Guard;
     }
 
     #endregion

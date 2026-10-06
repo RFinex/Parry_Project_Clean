@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public class EnemyStats
 {
@@ -17,6 +16,9 @@ public class EnemyStats
     public bool IsDead => nowHp <= 0;
     public bool IsBalanceBroken => nowBalance <= 0;
 
+    private float staggerDuration;
+    public float StaggerDuration => staggerDuration;
+
     public void Initialized(EnemyBaseData data)
     {
         maxHp = data.MaxHp;
@@ -24,6 +26,8 @@ public class EnemyStats
 
         maxBalance = data.MaxBalance;
         nowBalance = maxBalance;
+
+        staggerDuration = data.StaggerDuration;
     }
 
     public void TakeDamage(float damage)
@@ -52,8 +56,25 @@ public class EnemyStats
         Utils.Log<EnemyStats>($"³²Àº ¹ë·±½º : {nowBalance}/{maxBalance}");
     }
 
+    public void RestoreBalance(float value)
+    {
+        nowBalance += value;
+
+        if (nowBalance >= maxBalance)
+            nowBalance = maxBalance;
+
+        Utils.Log<EnemyStats>($"¹ë·±½º È¸º¹ : {nowBalance}/{maxBalance}");
+    }
+
     public void RestoreBalance()
     {
         nowBalance = maxBalance;
+
+        Utils.Log<EnemyStats>($"¹ë·±½º È¸º¹ : {nowBalance}/{maxBalance}");
+    }
+
+    public float RestoreBalancePerSec()
+    {
+        return maxBalance / staggerDuration;
     }
 }

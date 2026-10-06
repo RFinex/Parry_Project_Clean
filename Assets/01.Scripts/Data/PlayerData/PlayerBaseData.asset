@@ -25,11 +25,18 @@ MonoBehaviour:
   dashCool: 0.5
   maxHp: 100
   maxStamina: 100
-  attackDamage: 10
+  attackDamage: 50
   attackRange: 0.8
   attackOffset: {x: 0.6, y: 0}
-  attackDuration: 0.3
-  parryWindow: 0.15
+  maxCombo: 3
+  comboInputTime: 0.25
+  attackEndTime: 0.5
+  parryWindow: 0.5
+  parryDamage: 50
+  guardStaminaCost: 20
+  invincibleTime: 2
+  invincibleAlpha: 0.35
+  blinkInterval: 0.1
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

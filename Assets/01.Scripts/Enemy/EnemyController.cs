@@ -27,7 +27,7 @@ public class EnemyController : MonoBehaviour
     protected Transform target;
     public Transform Target => target;
 
-    private float frontDir = 1f;
+    protected float frontDir = 1f;
     public float FrontDir => frontDir;
 
     [Header("State Machine")]
@@ -201,9 +201,31 @@ public class EnemyController : MonoBehaviour
         if (combat == null)
             return;
 
-        combat.Attack(target);
+        combat.Attack(target, this);
     }
     
+    public void TakeDamage(float damage)
+    {
+        stats.TakeDamage(damage);
+
+        if (stats.IsDead)
+        {
+            stateMachine.ChangeState(typeof(EnemyDeadState));
+            return;
+        }
+    }
+
+    public void TakeBalanceDamage(float damage)
+    {
+        stats.TakeBalanceDamage(damage);
+
+        if (stats.IsBalanceBroken)
+        {
+            stateMachine.ChangeState(typeof(EnemyStaggerState));
+            return;
+        }
+    }
+
     protected void SetFrontDir(float direction)
     {
         if (direction == 0f)
@@ -220,7 +242,11 @@ public class EnemyController : MonoBehaviour
         float dir = target.position.x - transform.position.x;
 
         SetFrontDir(dir);
+    }
 
+    private bool IsDeadState()
+    {
+        return stateMachine.IsState(typeof(EnemyDeadState));
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
