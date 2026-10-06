@@ -9,4 +9,6 @@ public class PlayerMovement
 
     public float moveSpeed;
     public float jumpForce;
+
+    public float executeMoveSpeed;
 }

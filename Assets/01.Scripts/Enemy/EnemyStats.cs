@@ -62,8 +62,6 @@ public class EnemyStats
 
         if (nowBalance >= maxBalance)
             nowBalance = maxBalance;
-
-        Utils.Log<EnemyStats>($"¹ë·±½º È¸º¹ : {nowBalance}/{maxBalance}");
     }
 
     public void RestoreBalance()

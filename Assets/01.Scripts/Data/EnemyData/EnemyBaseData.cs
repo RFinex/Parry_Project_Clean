@@ -29,6 +29,9 @@ public class EnemyBaseData : ScriptableObject
     [SerializeField] private float minIdleTime = 2f;
     [SerializeField] private float maxIdleTime = 5f;
 
+    [Header("Execute")]
+    [SerializeField] private float executeBackOffset = -0.8f;
+
 
     public float MaxHp => maxHp;
     public float MaxBalance => maxBalance;
@@ -49,4 +52,6 @@ public class EnemyBaseData : ScriptableObject
 
     public float MinIdleTime => minIdleTime;
     public float MaxIdleTime => maxIdleTime;
+
+    public float ExecuteBakcOffset => executeBackOffset;
 }

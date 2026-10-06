@@ -3,7 +3,6 @@ using System;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.AdaptivePerformance.Provider.AdaptivePerformanceSubsystemDescriptor;
 
 public enum GuardResult
 {
@@ -17,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer sr;
+
+    private PlayerAfterImage afterImage;
 
     #region Black Board
 
@@ -73,6 +74,9 @@ public class PlayerController : MonoBehaviour
     private float blinkTimer;
     private bool isInvincibleVisual;
 
+    private GameObject executeTarget;
+    public GameObject ExecuteTarget => executeTarget;
+
     #endregion
 
     private CancellationTokenSource token;
@@ -107,6 +111,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+
+        afterImage = GetComponent<PlayerAfterImage>();
 
         InitBasePlayerInfo();
 
@@ -144,7 +150,8 @@ public class PlayerController : MonoBehaviour
             isGround = isGround,
             verticalVelocity = rb.linearVelocity.y,
             moveSpeed = moveSpeed,
-            jumpForce = jumpForce
+            jumpForce = jumpForce,
+            executeMoveSpeed = data.ExecuteMoveSpeed
         };
         skill = new PlayerSkill()
         {
@@ -169,7 +176,8 @@ public class PlayerController : MonoBehaviour
             movement = movement,
             stats = stats,
             skill = skill,
-            animator = playerAnimator
+            animator = playerAnimator,
+            afterImage = afterImage
         };
     }
 
@@ -197,6 +205,7 @@ public class PlayerController : MonoBehaviour
         stateMachine.PlayerAddState<PlayerFallState>();
         stateMachine.PlayerAddState<PlayerHurtState>();
         stateMachine.PlayerAddState<PlayerDeadState>();
+        stateMachine.PlayerAddState<PlayerExecuteState>();
     }
 
     private async UniTaskVoid UpdateAsync(CancellationToken ctk)
@@ -432,6 +441,16 @@ public class PlayerController : MonoBehaviour
             stateMachine.IsState(typeof(PlayerGuardState)) ||
             stateMachine.IsState(typeof(PlayerFallState)))
         {
+            GameObject target = combat.FindExecuteTarget(transform.position);
+
+            if (target != null)
+            {
+                executeTarget = target;
+
+                stateMachine.ChangeState(typeof(PlayerExecuteState));
+                return;
+            }
+
             stateMachine.ChangeState(typeof(PlayerAttackState));
         }        
     }
@@ -476,6 +495,11 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    public void ClearExecuteTarget()
+    {
+        executeTarget = null;
+    }
+
     private bool IsDeadState()
     {
         return stateMachine.IsState(typeof(PlayerDeadState));
@@ -511,5 +535,13 @@ public class PlayerController : MonoBehaviour
 
         isInvincibleVisual = !isInvincibleVisual;
         SetInvincibleVisual(isInvincibleVisual);
+    }    
+
+    public void SetFrontDirForExecute(float dir)
+    {
+        if (dir == 0f)
+            return;
+
+        frontDir = Mathf.Sign(dir);
     }
 }

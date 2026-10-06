@@ -37,6 +37,9 @@ MonoBehaviour:
   invincibleTime: 2
   invincibleAlpha: 0.35
   blinkInterval: 0.1
+  executeSearchRange: 5
+  executeMoveSpeed: 80
+  executeBackOffset: 0.8
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

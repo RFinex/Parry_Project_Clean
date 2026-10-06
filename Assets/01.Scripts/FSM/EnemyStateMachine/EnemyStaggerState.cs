@@ -50,6 +50,7 @@ public class EnemyStaggerState : EnemyBaseState
                     board.stats.RestoreBalance();
 
                     TransitionState(typeof(EnemyIdleState));
+                    return;
                 }
 
                 await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);

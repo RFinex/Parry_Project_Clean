@@ -60,25 +60,30 @@ public class PlayerCombat
         }        
     }
 
-    public EnemyController FindExecuteTarget(Vector2 pos)
+    /// <summary>
+    /// 가장 가까운 처형 가능 적 탐색 함수
+    /// </summary>
+    /// <param name="pos"> 기준 위치(transform.position) </param>
+    /// <returns></returns>
+    public GameObject FindExecuteTarget(Vector2 pos)
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(pos, data.ExecuteSearchRange, data.EnemyLayer);
 
-        EnemyController target = null;
+        GameObject target = null;
 
         float closeDistance = float.MaxValue;
 
         foreach (Collider2D hit in hits)
         {
-            EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+            IExecuteTarget enemy = hit.GetComponentInParent<IExecuteTarget>();
 
             if (enemy == null)
                 continue;
 
-            if (!enemy.IsStaggerState())
+            if (!enemy.CanExecute)
                 continue;
 
-            Vector2 dir = (Vector2)enemy.transform.position - pos;
+            Vector2 dir = (Vector2)hit.transform.position - pos;
             float distance = dir.magnitude;
 
             if (distance >= closeDistance)
@@ -86,20 +91,28 @@ public class PlayerCombat
 
             closeDistance = distance;
 
-            target = enemy;
+            target = hit.gameObject;
         }
 
         return target;
     }
 
-    public void SpecialAttack(EnemyController enemy)
+    public void SpecialAttack(GameObject target)
     {
+        if (target == null)
+            return;
+
+        IExecuteTarget enemy = target.GetComponentInParent<IExecuteTarget>();
+
         if (enemy == null)
+            return;
+
+        if (!enemy.CanExecute)
             return;
 
         Utils.Log<PlayerCombat>("특수 공격!");
 
-        
+        enemy.Execute();
     }
 
     public void RequestCombo()

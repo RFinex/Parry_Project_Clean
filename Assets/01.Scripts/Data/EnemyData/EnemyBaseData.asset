@@ -26,3 +26,4 @@ MonoBehaviour:
   staggerDuration: 3
   minIdleTime: 2
   maxIdleTime: 5
+  executeBackOffset: -0.8
