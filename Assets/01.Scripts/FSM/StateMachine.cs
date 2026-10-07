@@ -18,9 +18,9 @@ public class StateMachine<T> where T : class
         this.blackBoard = blackBoard;
     }
 
-    public void ChangeState(Type type)
+    public void ChangeState(Type type, bool isForce = false)
     {
-        if (currentState != null && currentState.GetType() == type)
+        if (!isForce && currentState != null && currentState.GetType() == type)
             return;
 
         if (currentState != null)

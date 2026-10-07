@@ -215,8 +215,6 @@ public class PlayerCombat
     {
         isGuard = false;
         isParry = false;
-
-        Utils.Log<PlayerCombat>("가드 종료");
     }
 
     public bool IsParry()

@@ -24,6 +24,8 @@ public class EnemyBlackBoard : BlackBoard
 {
     public Rigidbody2D rb;
 
+    public SpriteRenderer sr;
+
     public EnemyStats stats;
 
     public EnemyCombat combat;

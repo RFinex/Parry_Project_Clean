@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public interface IExecuteTarget
     void Execute();
 }
 
-public class EnemyController : MonoBehaviour, IExecuteTarget
+public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 {
     [Header("Data")]
     [SerializeField] protected EnemyBaseData data;
@@ -31,6 +32,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
     [SerializeField] protected LayerMask obstacleLayer;
 
     protected Rigidbody2D rb;
+    protected SpriteRenderer sr;
 
     protected Transform target;
     public Transform Target => target;
@@ -44,8 +46,8 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
     [Header("Debug Check")]
     [SerializeField] private string currentStateName;
 
-    private CancellationToken destroyToken;
-    public CancellationToken DestroyToken => destroyToken;
+    private CancellationTokenSource token;
+    public CancellationToken DestroyToken => token.Token;
 
     public bool CanExecute
     {
@@ -55,16 +57,55 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
         }
     }
 
+    private IPool pool;
+    private int objectId;
+
     protected virtual void Awake()
     {
         Initialized();
     }
 
+    protected void OnEnable()
+    {
+        if (token == null || token.IsCancellationRequested)
+        {
+            token?.Dispose();
+            token = new CancellationTokenSource();
+        }
+
+        UpdateAsync(token.Token).Forget();
+    }
+
+    protected void OnDisable()
+    {
+        token?.Cancel();
+    }
+
+    protected async UniTaskVoid UpdateAsync(CancellationToken ctk)
+    {
+        try
+        {
+            while (!ctk.IsCancellationRequested)
+            {
+                SpriteCheck();
+
+                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+    }
+
     protected virtual void Initialized()
     {
-        destroyToken = this.GetCancellationTokenOnDestroy();
+        token?.Cancel();
+        token?.Dispose();
+        token = new CancellationTokenSource();
 
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
 
         InitComponents();
         InitBlackBoard();
@@ -86,7 +127,8 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
         {
             rb = rb,
             stats = stats,
-            combat = combat
+            combat = combat,
+            sr = sr
         };
     }
 
@@ -119,7 +161,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
 
     public bool TryDetectTarget()
     {
-        Vector2 origin = transform.position;
+        Vector2 origin = (Vector2)transform.position + data.DetectOffset;
 
         Vector2 dir = Vector2.right * frontDir;
 
@@ -155,9 +197,9 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
 
     public Vector2 GetRandomPatrolPos()
     {
-        float dir = Random.value < 0.5f ? -1f : 1f;
+        float dir = UnityEngine.Random.value < 0.5f ? -1f : 1f;
 
-        float distance = Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
+        float distance = UnityEngine.Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
 
         return (Vector2)transform.position + Vector2.right * dir * distance;
     }
@@ -193,6 +235,14 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
         float distance = Mathf.Abs(target.position.x - transform.position.x);
 
         return distance <= data.TraceRange;
+    }
+
+    public void SpriteCheck()
+    {
+        if (frontDir > 0f)
+            sr.flipX = false;
+        else if (frontDir < 0f)
+            sr.flipX = true;
     }
 
     public bool Move(Vector2 targetPos)
@@ -292,6 +342,53 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
         }
     }
 
+    #region Object Pool
+
+    public void SetPool(IPool pool, int objectId)
+    {
+        this.pool = pool;
+        this.objectId = objectId;
+    }
+
+    public virtual void InitPool()
+    {
+        ResetPoolState();
+
+        stateMachine.ChangeState(typeof(EnemyIdleState), true);
+    }
+
+    public virtual void InitPoolReturn()
+    {
+        ClearTarget();
+
+        StopMove();
+
+        if(rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    public void ReturnPool()
+    {
+        if (pool == null)
+            return;
+
+        pool?.Return(this, objectId);
+    }
+
+    protected virtual void ResetPoolState()
+    {
+        if (data == null)
+            return;
+
+        stats.Initialized(data);
+
+        target = null;
+        frontDir = 1f;
+
+        rb.linearVelocity = Vector2.zero;
+    }
+    #endregion
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private void Update()
     {
@@ -303,10 +400,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget
         if (data == null)
             return;
 
-        Vector2 origin = transform.position;
+        Vector2 origin = (Vector2)transform.position + data.DetectOffset;
         Vector2 dir = Vector2.right * FrontDir;
 
         Gizmos.DrawRay(origin, dir * Data.DetectRange);
-    }
+    }    
 #endif
 }

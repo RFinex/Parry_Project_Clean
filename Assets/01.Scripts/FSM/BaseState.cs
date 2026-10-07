@@ -6,7 +6,7 @@ public abstract class BaseState<T>
 {
     protected CancellationTokenSource token;
 
-    public event Action<Type> OnTransition;
+    public event Action<Type, bool> OnTransition;
 
     public BlackBoard blackBoard;
 
@@ -33,8 +33,8 @@ public abstract class BaseState<T>
         token = null;
     }
 
-    protected void TransitionState(Type type)
+    protected void TransitionState(Type type, bool isForce = false)
     {
-        OnTransition?.Invoke(type);
+        OnTransition?.Invoke(type, isForce);
     }
 }
