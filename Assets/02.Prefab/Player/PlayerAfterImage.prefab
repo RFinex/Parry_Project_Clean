@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4035278932793442203}
   - component: {fileID: 6970933826280490259}
+  - component: {fileID: 1197369828091796726}
   m_Layer: 0
   m_Name: PlayerAfterImage
   m_TagString: Untagged
@@ -91,3 +92,16 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1197369828091796726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3336636293809782538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c4c7dd2cc8a0074388a58da1dbd77a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AfterImageObject
+  sr: {fileID: 6970933826280490259}

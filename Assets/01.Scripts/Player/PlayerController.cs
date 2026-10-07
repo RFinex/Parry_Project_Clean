@@ -341,13 +341,9 @@ public class PlayerController : MonoBehaviour
         }
 
         if (frontDir > 0f)
-        {
             sr.flipX = false;
-        }
         else if (frontDir < 0f)
-        {
             sr.flipX = true;
-        }
     }
 
     public void Jump()

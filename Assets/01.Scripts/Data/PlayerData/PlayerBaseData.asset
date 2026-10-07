@@ -15,7 +15,7 @@ MonoBehaviour:
   moveSpeed: 5
   jumpForce: 10
   checkSize: {x: 0.7, y: 0.1}
-  checkOffset: {x: 0, y: 0.2, z: 0}
+  checkOffset: {x: 0, y: 0.15, z: 0}
   checkDistance: 0.1
   groundLayer:
     serializedVersion: 2
@@ -38,7 +38,7 @@ MonoBehaviour:
   invincibleAlpha: 0.35
   blinkInterval: 0.1
   executeSearchRange: 5
-  executeMoveSpeed: 80
+  executeMoveSpeed: 70
   executeBackOffset: 0.8
   enemyLayer:
     serializedVersion: 2

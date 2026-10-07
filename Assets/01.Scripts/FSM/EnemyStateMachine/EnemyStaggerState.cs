@@ -23,11 +23,15 @@ public class EnemyStaggerState : EnemyBaseState
 
         balanceRestorePerSec = this.board.stats.RestoreBalancePerSec();
 
+        this.board.sr.color = Color.yellow;
+
         StaggerTimerAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(EnemyController owner)
     {
+        board.sr.color = Color.red;
+
         ExitToken();
     }
 
