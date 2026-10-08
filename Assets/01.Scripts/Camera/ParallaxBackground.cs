@@ -50,7 +50,7 @@ public class ParallaxBackground : MonoBehaviour
             {
                 Vector3 cameraDelta = cameraTransform.position - previousCameraPos;
 
-                transform.position += new Vector3(cameraDelta.x * parallaxFactor, cameraDelta.y * parallaxFactor, 0f);
+                transform.position += new Vector3(cameraDelta.x * parallaxFactor, 0f, 0f);
 
                 previousCameraPos = cameraTransform.position;
 
