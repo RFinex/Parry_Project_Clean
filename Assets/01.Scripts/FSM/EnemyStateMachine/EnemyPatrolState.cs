@@ -34,6 +34,15 @@ public class EnemyPatrolState : EnemyBaseState
                     return;
                 }
 
+                float direction = Mathf.Sign(targetPos.x - owner.transform.position.x);
+
+                // 만약 현재 진행 방향에 땅이 감지되지 않을 경우 반대 방향으로 정찰 위치 재설정
+                if (Mathf.Abs(targetPos.x - owner.transform.position.x) > owner.Data.ArrivalDistance &&
+                    !owner.HasGroundAhead(direction))
+                {
+                    targetPos = owner.GetRandomPatrolPos(-direction);
+                }
+
                 bool goal = owner.Move(targetPos);
 
                 if (goal)

@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using Cysharp.Threading.Tasks.Triggers;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public interface IPoolable
 {
@@ -42,6 +43,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         objectPoolParent = new GameObject("ObjectPoolParent").transform;
         objectPoolParent.SetParent(transform, false);
 
+        // 비동기로 수정
         foreach (PoolDataBase dataBase in dataBases)
         {
             if (dataBase == null)
@@ -102,6 +104,8 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
 
     private readonly IFactory<T> factory;
 
+    private readonly HashSet<T> pooledItems = new HashSet<T>();
+
     public ObjectPool(IFactory<T> factory)
     {
         this.factory = factory;
@@ -130,13 +134,13 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
         {
             T item = Create(objectId);
 
-            if (item == null)
-                continue;
-
-            item.SetPool(this, objectId);
-            item.gameObject.SetActive(false);
-
-            queue.Enqueue(item);
+            if (item != null)
+            {
+                item.SetPool(this, objectId);
+                item.gameObject.SetActive(false);
+                queue.Enqueue(item);
+                pooledItems.Add(item);
+            }
         }
     }
 
@@ -186,6 +190,8 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
             item.SetPool(this, objectId);
         }
 
+        pooledItems.Remove(item);
+
         item.transform.SetParent(parent);
 
         item.transform.position = position;
@@ -203,6 +209,9 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
             return;
 
         if (!poolDic.TryGetValue(objectId, out Queue<T> queue))
+            return;
+
+        if (!pooledItems.Add(target))
             return;
 
         target.InitPoolReturn();
