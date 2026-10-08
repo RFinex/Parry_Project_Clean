@@ -29,4 +29,6 @@ public class EnemyBlackBoard : BlackBoard
     public EnemyStats stats;
 
     public EnemyCombat combat;
+
+    public EnemyAnimator animator;
 }

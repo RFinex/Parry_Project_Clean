@@ -32,6 +32,9 @@ public class EnemyBaseData : ScriptableObject
     [Header("Execute")]
     [SerializeField] private float executeBackOffset = -0.8f;
 
+    [Header("Death")]
+    [SerializeField] private float deathDuration = 1f;
+
     [Header("Offset")]
     [SerializeField] private Vector2 detectOffset = new Vector2(0f, 0.3f);
 
@@ -57,6 +60,8 @@ public class EnemyBaseData : ScriptableObject
     public float MaxIdleTime => maxIdleTime;
 
     public float ExecuteBakcOffset => executeBackOffset;
+
+    public float DeathDuration => deathDuration;
 
     public Vector2 DetectOffset => detectOffset;
 }
