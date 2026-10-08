@@ -1,103 +1,63 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum EnemyAnimationType
+{
+    Idle,
+    Move,
+    Attack,
+    Hurt,
+    Jump,
+    Death
+}
+
+[Serializable]
+public struct EnemyAnimationInfo
+{
+    public EnemyAnimationType type;
+    public string stateName;
+}
 
 public class EnemyAnimator
 {
     private readonly Animator animator;
+    private readonly Dictionary<EnemyAnimationType, int> animHashDic = new Dictionary<EnemyAnimationType, int>();
 
-    #region Animation Hash
-
-    // integer & float
-    private static readonly int AnimState = Animator.StringToHash("AnimState");
-    private static readonly int AirSpeedY = Animator.StringToHash("AirSpeedY");
-
-    // bool
-    private static readonly int Grounded = Animator.StringToHash("Grounded");
-    private static readonly int IdleBlock = Animator.StringToHash("IdleBlock");
-
-    // trigger
-    private static readonly int[] Attack =
-    {
-        Animator.StringToHash("Attack1"),
-        Animator.StringToHash("Attack2"),
-        Animator.StringToHash("Attack3")
-    };
-    private static readonly int Block = Animator.StringToHash("Block");
-    private static readonly int Hurt = Animator.StringToHash("Hurt");
-    private static readonly int Death = Animator.StringToHash("Death");
-    private static readonly int Jump = Animator.StringToHash("Jump");
-    private static readonly int Roll = Animator.StringToHash("Roll");
-
-    #endregion
-
-    public EnemyAnimator(Animator animator)
+    public EnemyAnimator(Animator animator, EnemyAnimationInfo[] infos)
     {
         this.animator = animator;
+
+        foreach (EnemyAnimationInfo info in infos)
+        {
+            if (!string.IsNullOrWhiteSpace(info.stateName))
+            {
+                animHashDic[info.type] = Animator.StringToHash(info.stateName);
+            }
+        }
     }
 
-    #region Move
-
-    public void SetAnimState(int value)
+    public bool Play(EnemyAnimationType type)
     {
-        animator.SetInteger(AnimState, value);
+        if (animator == null || !animHashDic.TryGetValue(type, out int hash) ||
+            !animator.HasState(0, hash))
+        {
+            return false;
+        }
+
+        animator.Play(hash, 0, 0f);
+        return true;
     }
 
-    public void SetGrounded(bool isGround)
+    public bool Finish(EnemyAnimationType type)
     {
-        animator.SetBool(Grounded, isGround);
+        if (animator == null || !animHashDic.TryGetValue(type, out int hash))
+        {
+            return true;
+        }
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+
+        return state.fullPathHash == hash && state.normalizedTime >= 1f;
     }
-
-    public void SetAirSpeed(float value)
-    {
-        animator.SetFloat(AirSpeedY, value);
-    }
-
-    #endregion
-
-    #region Action
-
-    public void PlayJump()
-    {
-        animator.SetTrigger(Jump);
-    }
-
-    public void PlayDash()
-    {
-        animator.SetTrigger(Roll);
-    }
-
-    public void PlayAttack(int index)
-    {
-        if (index <= 0 || index > Attack.Length)
-            return;
-
-        animator.SetTrigger(Attack[index - 1]);
-    }
-
-    public void PlayExecuteAttack()
-    {
-        animator.SetTrigger(Attack[1]);
-    }
-
-    public void PlayGuard()
-    {
-        animator.SetTrigger(Block);
-        animator.SetBool(IdleBlock, true);
-    }
-
-    public void StopGuard()
-    {
-        animator.SetBool(IdleBlock, false);
-    }
-
-    public void PlayHurt()
-    {
-        animator.SetTrigger(Hurt);
-    }
-
-    public void PlayDeath()
-    {
-        animator.SetTrigger(Death);
-    }
-
-    #endregion
 }

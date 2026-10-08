@@ -37,6 +37,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [SerializeField] protected float groundCheckDistance = 0.2f;
     [SerializeField] protected Transform groundCheckPoint;
 
+    [Header("Death")]
+    private float deathDuration;
+    public float DeathDuration => deathDuration;
+
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
     protected Animator animator;
@@ -52,6 +56,9 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     [Header("Debug Check")]
     [SerializeField] private string currentStateName;
+
+    [Header("Animation Info")]
+    [SerializeField] private EnemyAnimationInfo[] animations;
 
     private CancellationTokenSource token;
     public CancellationToken DestroyToken => token.Token;
@@ -115,6 +122,8 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
+        deathDuration = data.DeathDuration;
+
         InitComponents();
         InitBlackBoard();
         InitStateMachine();
@@ -131,7 +140,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual void InitBlackBoard()
     {
-        EnemyAnimator enemyAnimator = new EnemyAnimator(animator);
+        EnemyAnimator enemyAnimator = new EnemyAnimator(animator, animations);
 
         blackBoard = new EnemyBlackBoard()
         {
@@ -371,6 +380,14 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         }
     }
 
+    public event Action<EnemyController> OnDeathFinished;
+
+    public void FinishDeath()
+    {
+        ReturnPool();
+        OnDeathFinished?.Invoke(this);
+    }
+
     #region Object Pool
 
     public void SetPool(IPool pool, int objectId)
@@ -382,6 +399,13 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     public virtual void InitPool()
     {
         ResetPoolState();
+
+        if (sr != null)
+        {
+            Color color = sr.color;
+            color.a = 1f;
+            sr.color = color;
+        }
 
         stateMachine.ChangeState(typeof(EnemyIdleState), true);
     }

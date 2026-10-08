@@ -481,7 +481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAfterImage
   source: {fileID: 2954181336601895002}
-  afterImageId: 0
+  afterImageId: 1
   interval: 0.04
   duration: 0.15
 --- !u!1 &7087049454815086010
