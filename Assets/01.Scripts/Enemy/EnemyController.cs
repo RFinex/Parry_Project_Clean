@@ -39,6 +39,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
+    protected Animator animator;
 
     protected Transform target;
     public Transform Target => target;
@@ -112,6 +113,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
 
         InitComponents();
         InitBlackBoard();
@@ -129,12 +131,15 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual void InitBlackBoard()
     {
+        EnemyAnimator enemyAnimator = new EnemyAnimator(animator);
+
         blackBoard = new EnemyBlackBoard()
         {
             rb = rb,
             stats = stats,
             combat = combat,
-            sr = sr
+            sr = sr,
+            animator = enemyAnimator
         };
     }
 

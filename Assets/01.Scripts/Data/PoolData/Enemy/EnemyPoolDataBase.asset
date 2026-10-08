@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fda09966b3fc8c4295c335dc164fceb, type: 3}
   m_Name: EnemyPoolDataBase
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPoolDataBase
-  enemyList: []
+  enemyList:
+  - id: 1001
+    prefab: {fileID: 7421269532875501959, guid: 7785e38166c50154596075dac1b722b4, type: 3}
