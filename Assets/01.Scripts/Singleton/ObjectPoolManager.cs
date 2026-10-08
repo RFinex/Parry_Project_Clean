@@ -42,6 +42,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         objectPoolParent = new GameObject("ObjectPoolParent").transform;
         objectPoolParent.SetParent(transform, false);
 
+        // 비동기로 수정
         foreach (PoolDataBase dataBase in dataBases)
         {
             if (dataBase == null)
@@ -197,6 +198,7 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
         return item;
     }
 
+    // 중복 예외처리
     public void Return(IPoolable item, int objectId)
     {
         if (item is not T target)
