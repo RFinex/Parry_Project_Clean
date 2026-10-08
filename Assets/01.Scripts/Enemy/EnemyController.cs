@@ -30,6 +30,12 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [Header("Layer Mask")]
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected LayerMask obstacleLayer;
+    [SerializeField] protected LayerMask groundLayer;
+
+    [Header("Ground Check")]
+    [SerializeField] protected float groundCheckForwardOffset = 0.1f;
+    [SerializeField] protected float groundCheckDistance = 0.2f;
+    [SerializeField] protected Transform groundCheckPoint;
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
@@ -202,6 +208,24 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         float distance = UnityEngine.Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
 
         return (Vector2)transform.position + Vector2.right * dir * distance;
+    }
+    public Vector2 GetRandomPatrolPos(float dir)
+    {
+        float distance = UnityEngine.Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
+
+        return (Vector2)transform.position + Vector2.right * Mathf.Sign(dir) * distance;
+    }
+
+    public bool HasGroundAhead(float dir)
+    {
+        if (groundCheckPoint == null)
+            return true;
+
+        Vector2 origin = (Vector2)groundCheckPoint.position + Vector2.right * (Mathf.Sign(dir) * groundCheckForwardOffset);
+
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, groundCheckDistance, groundLayer);
+
+        return hit.collider != null;
     }
 
     /// <summary> 타겟이 공격 범위에 있는지 체크 </summary>
