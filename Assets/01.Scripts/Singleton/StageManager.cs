@@ -4,14 +4,31 @@ using UnityEngine;
 public class StageManager : Singleton<StageManager>
 {
     [SerializeField] private EnemySpawner spawner;
+    [SerializeField] private PlayerController player;
 
     public void StartRooom(Transform room)
     {
-        if (spawner == null)
+        if (room == null)
         {
-            Utils.Log<StageManager>("EnemySpawner가 연결되지 않음");
+            Utils.Log<StageManager>("존재하지 않는 방입니다.");
             return;
         }
+
+        if (spawner == null || player == null)
+        {
+            Utils.Log<StageManager>("EnemySpawner or PlayerController가 연결되지 않음");
+            return;
+        }
+
+        PlayerSpawnPoint startPoint = room.GetComponentInChildren<PlayerSpawnPoint>();
+
+        if (startPoint == null)
+        {
+            Utils.Log<StageManager>("PlayerSpawnPoint를 찾지 못했습니다.");
+            return;
+        }
+
+        player.MoveToRoomStart(startPoint.transform.position);
 
         List<EnemyController> enemies = spawner.Spawn(room);
 

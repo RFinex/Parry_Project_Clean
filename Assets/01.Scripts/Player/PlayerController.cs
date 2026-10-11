@@ -253,6 +253,12 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
+    public void MoveToRoomStart(Vector3 pos)
+    {
+        transform.position = pos;
+        rb.linearVelocity = Vector2.zero;
+    }
+
     public void StopJump()
     {
         if (movement.verticalVelocity > 0f)

@@ -399,6 +399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 177888340}
+  - component: {fileID: 177888341}
   m_Layer: 0
   m_Name: PlayerStartPoint
   m_TagString: Untagged
@@ -421,6 +422,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1425213522}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &177888341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177888339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4ab637506838e543b30252db61fa496, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawnPoint
 --- !u!1 &217666009
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,11 +754,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.23129
+      value: -14.49
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.72366
+      value: -3.76
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1409,6 +1422,17 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1291099905 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -2501056193959246217, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+  m_PrefabInstance: {fileID: 562157241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b73aad52d34b2634180bb44db3c6d5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!1 &1371208250
 GameObject:
   m_ObjectHideFlags: 0
@@ -7494,6 +7518,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   ddol: 1
+  spawner: {fileID: 169363943}
+  player: {fileID: 1291099905}
 --- !u!4 &1928721478
 Transform:
   m_ObjectHideFlags: 0
