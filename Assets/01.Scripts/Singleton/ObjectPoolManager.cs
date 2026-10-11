@@ -21,8 +21,6 @@ public interface IPool
 
 public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
-    protected override bool DDOL => true;
-
     [Header("Pool")]
     [SerializeField] private int poolSize = 10;
     [SerializeField] private List<PoolDataBase> dataBases;

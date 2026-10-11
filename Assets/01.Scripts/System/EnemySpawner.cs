@@ -4,31 +4,24 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
-
-    // 스폰 시도 체크
-    private bool hasSpawned;
-
-    private bool isSpawnFailed;
-
-    public event Action OnRoomClear;
-
-    public bool IsCleared { get; private set; }
-    public int ActiveEnemyCount => activeEnemies.Count;
-
-    private void Start()
+    /// <summary>
+    /// 적 스폰
+    /// </summary>
+    /// <param name="room"> 방 정보 </param>
+    /// <param name="spawnFailed"> 적 스폰 실패 여부 반환 </param>
+    /// <returns></returns>
+    public List<EnemyController> Spawn(Transform room)
     {
-        SpawnEnemies();
-    }
+        List<EnemyController> spawnEnemies = new List<EnemyController>();
 
-    private void SpawnEnemies()
-    {
-        if (hasSpawned)
-            return;
+        if (room == null)
+        {
+            Utils.LogError<EnemySpawner>("방이 지정되지 않았습니다.");
+            return spawnEnemies;
+        }
 
-        hasSpawned = true;
-
-        EnemySpawnPoint[] spawnPoints = GetComponentsInChildren<EnemySpawnPoint>();
+        // 방에 존재하는 적 스폰 포인트 확인
+        EnemySpawnPoint[] spawnPoints = room.GetComponentsInChildren<EnemySpawnPoint>();
 
         foreach (EnemySpawnPoint spawnPoint in spawnPoints)
         {
@@ -36,52 +29,13 @@ public class EnemySpawner : MonoBehaviour
 
             if (enemy == null)
             {
-                isSpawnFailed = true;
-                Utils.LogError<EnemySpawner>($"적 {spawnPoint.EnemyId} 를 풀에서 가져오지 못했습니다.");
+                Utils.LogError<EnemySpawner>($"{spawnPoint.EnemyId} 적을 풀에서 가져오지 못했습니다.");
                 continue;
             }
 
-            activeEnemies.Add(enemy);
-            enemy.OnDeathFinished += OnEnemyDeathFinished;
+            spawnEnemies.Add(enemy);
         }
 
-        if (spawnPoints.Length == 0)
-            ClearRoom();
-    }
-
-    private void OnEnemyDeathFinished(EnemyController enemy)
-    {
-        enemy.OnDeathFinished -= OnEnemyDeathFinished;
-        activeEnemies.Remove(enemy);
-
-        Utils.Log<EnemySpawner>($"남은 적 수 : {activeEnemies.Count}");
-
-        if (activeEnemies.Count == 0 && !isSpawnFailed)
-            ClearRoom();        
-    }
-
-    private void ClearRoom()
-    {
-        if (IsCleared)
-            return;
-
-        Utils.Log<EnemySpawner>("방 클리어");
-
-        IsCleared = true;
-        OnRoomClear?.Invoke();
-    }
-
-    private void OnDestroy()
-    {
-        foreach (EnemyController enemy in activeEnemies)
-        {
-            if (enemy == null)
-                continue;
-
-            enemy.OnDeathFinished -= OnEnemyDeathFinished;
-            enemy.ReturnPool();
-        }
-
-        activeEnemies.Clear();
-    }
+        return spawnEnemies;
+    }    
 }
