@@ -28,7 +28,8 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    protected virtual bool DDOL => false;
+    [SerializeField] private bool ddol;
+    public virtual bool DDOL => ddol;
 
     protected virtual void Awake()
     {
