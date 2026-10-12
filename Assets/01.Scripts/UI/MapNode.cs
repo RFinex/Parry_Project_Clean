@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +8,6 @@ public class MapNode : UIBase
 
     private RectTransform rectTransform;
     private int nodeId;
-    private Action<int> OnSelected;
 
     private void Awake()
     {
@@ -20,13 +18,12 @@ public class MapNode : UIBase
         btn.onClick.AddListener(HandleClick);
     }
 
-    public void Initialized(StageMapNodeData data, bool interact, Action<int> selected)
+    public void Initialized(StageMapNodeData data, bool interact)
     {
         nodeId = data.id;
         icon.sprite = data.icon;
         rectTransform.anchoredPosition = data.mapPosition;
         btn.interactable = interact;
-        OnSelected = selected;
     }
 
     public void SetInteractable(bool interactable)
@@ -36,7 +33,7 @@ public class MapNode : UIBase
 
     private void HandleClick()
     {
-        OnSelected?.Invoke(nodeId);
+        EventBus.Publish<MapNodeSelectedEvent>(new MapNodeSelectedEvent(nodeId));
     }
 
     public override void InitPoolReturn()
@@ -44,6 +41,5 @@ public class MapNode : UIBase
         nodeId = 0;
         icon.sprite = null;
         btn.interactable = false;
-        OnSelected = null;
     }
 }

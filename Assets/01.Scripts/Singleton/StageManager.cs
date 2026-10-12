@@ -15,11 +15,16 @@ public class StageManager : Singleton<StageManager>
 
     private CancellationTokenSource token;
 
+    private RoomManager roomManager;
+
     private void OnEnable()
     {
         token?.Cancel();
         token?.Dispose();
         token = new CancellationTokenSource();
+
+        EventBus.Subscribe<RoomClearedEvent>(HandleRoomClear);
+        EventBus.Subscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
     }
 
     private void OnDisable()
@@ -28,19 +33,20 @@ public class StageManager : Singleton<StageManager>
         token?.Dispose();
         token = null;
 
-        RoomManager.Instance.OnRoomClear -= HandleRoomClear;
+        EventBus.UnSubscribe<RoomClearedEvent>(HandleRoomClear);
+        EventBus.UnSubscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
     }
 
     private void Start()
     {
-        RoomManager.Instance.OnRoomClear += HandleRoomClear;
+        ServiceLocator.Inject(out roomManager);
 
         foreach (StageMapNodeData node in nodes)
         {
-            node.roomPrefab = RoomManager.Instance.GetRandomRoomPrefab(node.roomType);
+            node.roomPrefab = roomManager.GetRandomRoomPrefab(node.roomType);
         }
 
-        map.SetMap(nodes, OnNodeSelected);
+        map.SetMap(nodes);
 
         StageMapNodeData startNode = GetNode(startNodeId);
 
@@ -50,12 +56,13 @@ public class StageManager : Singleton<StageManager>
             return;
         }
 
-        currentNodeId = startNode.id;
+        currentNodeId = startNode.id;        
 
-        RoomManager.Instance.StartRoom(startNode.roomPrefab);
+        roomManager.StartRoom(startNode.roomPrefab);
+        //RoomManager.Instance.StartRoom(startNode.roomPrefab);
     }
 
-    public void HandleRoomClear()
+    public void HandleRoomClear(RoomClearedEvent eventData)
     {
         StageMapNodeData currentNode = GetNode(currentNodeId);
 
@@ -79,8 +86,10 @@ public class StageManager : Singleton<StageManager>
         }
     }
 
-    private void OnNodeSelected(int nodeId)
+    private void HandleMapNodeSelected(MapNodeSelectedEvent eventData)
     {
+        int nodeId = eventData.nodeId;
+
         StageMapNodeData currentNode = GetNode(currentNodeId);
 
         if (currentNode == null || !currentNode.nextNodeIds.Contains(nodeId))
@@ -94,7 +103,7 @@ public class StageManager : Singleton<StageManager>
         map.HideMap();
         currentNodeId = selectedNode.id;
 
-        RoomManager.Instance.StartRoom(selectedNode.roomPrefab);
+        roomManager.StartRoom(selectedNode.roomPrefab);
     }
 
     private StageMapNodeData GetNode(int id)
@@ -106,15 +115,5 @@ public class StageManager : Singleton<StageManager>
         }
 
         return null;
-    }
-
-    protected override void OnDestroy()
-    {
-        if (RoomManager.Instance != null)
-        {
-            RoomManager.Instance.OnRoomClear -= HandleRoomClear;
-        }
-
-        base.OnDestroy();
     }
 }

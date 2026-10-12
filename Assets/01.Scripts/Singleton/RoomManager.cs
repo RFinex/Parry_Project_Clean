@@ -2,6 +2,31 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+public static class ServiceLocator
+{
+    static readonly Dictionary<Type, object> serviceDic = new();
+
+    public static void Register<T>(object service)
+    {
+        if (!serviceDic.TryGetValue(typeof(T), out var value))
+        {
+            serviceDic[typeof(T)] = service;
+        }
+    }
+
+    public static void Inject<T>(out T service)
+    {
+        if (serviceDic.TryGetValue(typeof(T), out var value))
+        {
+            service = (T)value;
+        }
+        else
+        {
+            service = default;
+        }
+    }
+}
+
 public class RoomManager : Singleton<RoomManager>
 {
     [SerializeField] private List<RoomPrefabGroup> roomPrefabGroups;
@@ -14,12 +39,12 @@ public class RoomManager : Singleton<RoomManager>
     // 스폰된 적 리스트
     private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
 
-    public event Action OnRoomClear;
-
     public bool IsCleared { get; private set; }
     public int ActiveEnemyCount => activeEnemies.Count;
 
     private CameraTargetBinder cameraTargetBinder;
+
+    private bool isQuitting;
 
     protected override void Awake()
     {
@@ -37,6 +62,8 @@ public class RoomManager : Singleton<RoomManager>
         {
             roomFactory.Register(group);
         }
+
+        ServiceLocator.Register<RoomManager>(this);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
@@ -175,7 +202,7 @@ public class RoomManager : Singleton<RoomManager>
         IsCleared = true;
         Utils.Log<RoomManager>("방 클리어");
 
-        OnRoomClear?.Invoke();
+        EventBus.Publish(new RoomClearedEvent());
     }
 
     public GameObject GetRandomRoomPrefab(RoomType roomType)
@@ -185,7 +212,14 @@ public class RoomManager : Singleton<RoomManager>
 
     protected override void OnDestroy()
     {
-        EndRoom();
+        if(!isQuitting)
+            EndRoom();
+
         base.OnDestroy();
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 }

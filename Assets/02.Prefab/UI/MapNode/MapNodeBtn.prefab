@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8460812246867f245bc69044e36ad84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  btn: {fileID: 0}
+  icon: {fileID: 0}
 --- !u!222 &5369193263676942139
 CanvasRenderer:
   m_ObjectHideFlags: 0

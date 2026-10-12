@@ -13,7 +13,7 @@ public class MapPanel : UIBase
     /// </summary>
     /// <param name="nodes"></param>
     /// <param name="onSelected"></param>
-    public void SetMap(List<StageMapNodeData> nodes, Action<int> onSelected)
+    public void SetMap(List<StageMapNodeData> nodes)
     {
         foreach (StageMapNodeData data in nodes)
         {
@@ -25,7 +25,7 @@ public class MapPanel : UIBase
                 continue;
             }
 
-            node.Initialized(data, false, onSelected);
+            node.Initialized(data, false);
 
             nodeDic.Add(data.id, node);
         }        
