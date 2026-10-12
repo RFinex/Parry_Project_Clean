@@ -34,6 +34,9 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     public Transform ObjectPoolParent => objectPoolParent;
     public Transform UIPoolParent => uiPoolParent;
 
+    private bool isInitialized;
+    private bool uiPoolsRegistered;
+
     protected override void Awake()
     {
         base.Awake();
@@ -44,16 +47,38 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         // 비동기로 수정
         foreach (PoolDataBase dataBase in dataBases)
         {
-            if (dataBase == null)
+            if (dataBase == null || dataBase is UIPoolDataBase)
                 continue;
 
             dataBase.Register(this);
         }
+
+        isInitialized = true;
+
+        if (uiPoolParent != null)
+            RegisterUIPools();
     }
 
     public void SetUIPoolParent(Transform parent)
     {
         uiPoolParent = parent;
+
+        if (isInitialized)
+            RegisterUIPools();
+    }
+
+    public void RegisterUIPools()
+    {
+        if (uiPoolsRegistered || uiPoolParent == null)
+            return;
+
+        foreach (PoolDataBase dataBase in dataBases)
+        {
+            if (dataBase is UIPoolDataBase)
+                dataBase.Register(this);
+        }
+
+        uiPoolsRegistered = true;
     }
 
     /// <summary>
@@ -81,12 +106,12 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         poolDic.Add(objectId, factory.Pool);
     }
 
-    public T Get<T>(int objectId, Vector3 position) where T : MonoBehaviour, IPoolable
+    public T Get<T>(int objectId, Vector3 position, Transform parent = null) where T : MonoBehaviour, IPoolable
     {
         if (!poolDic.TryGetValue(objectId, out IPool pool))
             return null;
 
-        return pool.Get(objectId, position) as T;
+        return pool.Get(objectId, position, parent) as T;
     }
 }
 
@@ -190,7 +215,7 @@ public class ObjectPool<T> : IPool where T : MonoBehaviour, IPoolable
 
         pooledItems.Remove(item);
 
-        item.transform.SetParent(parent);
+        item.transform.SetParent(parent, false);
 
         item.transform.position = position;
 

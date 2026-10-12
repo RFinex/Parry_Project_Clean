@@ -28,15 +28,22 @@ public class RoomFactory
         }
     }
 
-    public GameObject Create(RoomType roomType)
+    public GameObject GetRandomPrefab(RoomType roomType)
     {
         if (!roomPrefabDic.TryGetValue(roomType, out List<GameObject> prefabs) || prefabs.Count == 0)
         {
-            Utils.LogError<RoomFactory>($"{roomType} 방 프리팹 목록이 비어있음");
+            Utils.Log<RoomFactory>($"{roomType} 방 프리팹 목록이 비어있음");
             return null;
         }
 
-        GameObject prefab = prefabs[Random.Range(0, prefabs.Count)];
+        return prefabs[Random.Range(0, prefabs.Count)];
+    }
+
+    public GameObject Create(GameObject prefab)
+    {
+        if (prefab == null)
+            return null;
+
         return Object.Instantiate(prefab);
     }
 }

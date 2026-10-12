@@ -19,6 +19,8 @@ public class RoomManager : Singleton<RoomManager>
     public bool IsCleared { get; private set; }
     public int ActiveEnemyCount => activeEnemies.Count;
 
+    private CameraTargetBinder cameraTargetBinder;
+
     protected override void Awake()
     {
         base.Awake();
@@ -37,7 +39,43 @@ public class RoomManager : Singleton<RoomManager>
         }
     }
 
-    public void StartRoom(RoomType type)
+    public void RegisterCameraBinder(CameraTargetBinder binder)
+    {
+        if (binder == null)
+            return;
+
+        cameraTargetBinder = binder;
+
+        if (currentRoom != null)
+            ApplyCameraBounds();
+    }
+
+    public void UnRegisterCameraBinder(CameraTargetBinder binder)
+    {
+        if (cameraTargetBinder == binder)
+            cameraTargetBinder = null;
+    }
+
+    private void ApplyCameraBounds()
+    {
+        if (cameraTargetBinder == null || currentRoom == null)
+            return;
+
+        PolygonCollider2D bounds = currentRoom.GetComponentInChildren<PolygonCollider2D>(true);
+
+        if (bounds == null)
+        {
+            Utils.Log<RoomManager>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
+            return;
+        }
+
+        if (!cameraTargetBinder.SetBounds(bounds))
+        {
+            Utils.Log<RoomManager>("Virtual Camera에 CinemachineConfiner2D가 없음");
+        }
+    }
+
+    public void StartRoom(GameObject roomPrefab)
     {
         if (player == null || enemySpawner == null)
         {
@@ -45,17 +83,26 @@ public class RoomManager : Singleton<RoomManager>
             return;
         }
 
+        if (roomPrefab == null)
+        {
+            Utils.LogError<RoomManager>("생성할 방 프리팹이 저장되지 않음");
+            return;
+        }
+
+        // 방 초기화
         EndRoom();
         IsCleared = false;
 
         // 방 생성
-        currentRoom = roomFactory.Create(type);
+        currentRoom = roomFactory.Create(roomPrefab);
 
         if (currentRoom == null)
         {
-            Utils.Log<RoomManager>("방이 존재하지 않습니다.");
+            Utils.Log<RoomManager>("방 생성 실패");
             return;
         }
+
+        ApplyCameraBounds();
 
         // 플레이어를 시작 위치로 이동
         PlayerSpawnPoint spawnPoint = currentRoom.GetComponentInChildren<PlayerSpawnPoint>(true);
@@ -129,6 +176,11 @@ public class RoomManager : Singleton<RoomManager>
         Utils.Log<RoomManager>("방 클리어");
 
         OnRoomClear?.Invoke();
+    }
+
+    public GameObject GetRandomRoomPrefab(RoomType roomType)
+    {
+        return roomFactory.GetRandomPrefab(roomType);
     }
 
     protected override void OnDestroy()

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94efd5e0faefd34ea06ad8b93a764ba, type: 3}
   m_Name: UIPoolDataDataBase
   m_EditorClassIdentifier: Assembly-CSharp::UIPoolDataBase
-  uiList: []
+  uiList:
+  - id: 102
+    prefab: {fileID: 6209755263551545463, guid: c3c264732d17e134da5c18860bee2640, type: 3}
