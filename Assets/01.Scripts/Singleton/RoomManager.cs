@@ -17,7 +17,7 @@ public class RoomManager : Singleton<RoomManager>
     public event Action OnRoomClear;
 
     public bool IsCleared { get; private set; }
-    public int ActiveEnemyCOunt => activeEnemies.Count;
+    public int ActiveEnemyCount => activeEnemies.Count;
 
     protected override void Awake()
     {
