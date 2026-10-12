@@ -2,23 +2,149 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+public static class ServiceLocator
+{
+    static readonly Dictionary<Type, object> serviceDic = new();
+
+    public static void Register<T>(object service)
+    {
+        if (!serviceDic.TryGetValue(typeof(T), out var value))
+        {
+            serviceDic[typeof(T)] = service;
+        }
+    }
+
+    public static void Inject<T>(out T service)
+    {
+        if (serviceDic.TryGetValue(typeof(T), out var value))
+        {
+            service = (T)value;
+        }
+        else
+        {
+            service = default;
+        }
+    }
+}
+
 public class RoomManager : Singleton<RoomManager>
 {
+    [SerializeField] private List<RoomPrefabGroup> roomPrefabGroups;
+    [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private PlayerController player;
+
+    private RoomFactory roomFactory;
+
+    private GameObject currentRoom;
     // 스폰된 적 리스트
     private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
 
-    public event Action OnRoomClear;
-
-    public bool IsCleared {  get; private set; }
+    public bool IsCleared { get; private set; }
     public int ActiveEnemyCount => activeEnemies.Count;
 
-    public void StartRoom(List<EnemyController> enemies)
-    {
-        EndRoom();
+    private CameraTargetBinder cameraTargetBinder;
 
+    private bool isQuitting;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        roomFactory = new RoomFactory();
+
+        if (roomPrefabGroups == null)
+        {
+            Utils.Log<RoomManager>("RoomPrefabGroup 목록이 설정되지 않음");
+            return;
+        }
+
+        foreach (RoomPrefabGroup group in roomPrefabGroups)
+        {
+            roomFactory.Register(group);
+        }
+
+        ServiceLocator.Register<RoomManager>(this);
+    }
+
+    public void RegisterCameraBinder(CameraTargetBinder binder)
+    {
+        if (binder == null)
+            return;
+
+        cameraTargetBinder = binder;
+
+        if (currentRoom != null)
+            ApplyCameraBounds();
+    }
+
+    public void UnRegisterCameraBinder(CameraTargetBinder binder)
+    {
+        if (cameraTargetBinder == binder)
+            cameraTargetBinder = null;
+    }
+
+    private void ApplyCameraBounds()
+    {
+        if (cameraTargetBinder == null || currentRoom == null)
+            return;
+
+        PolygonCollider2D bounds = currentRoom.GetComponentInChildren<PolygonCollider2D>(true);
+
+        if (bounds == null)
+        {
+            Utils.Log<RoomManager>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
+            return;
+        }
+
+        if (!cameraTargetBinder.SetBounds(bounds))
+        {
+            Utils.Log<RoomManager>("Virtual Camera에 CinemachineConfiner2D가 없음");
+        }
+    }
+
+    public void StartRoom(GameObject roomPrefab)
+    {
+        if (player == null || enemySpawner == null)
+        {
+            Utils.LogError<RoomManager>("Player 또는 EnemySpawner가 연결되지 않음");
+            return;
+        }
+
+        if (roomPrefab == null)
+        {
+            Utils.LogError<RoomManager>("생성할 방 프리팹이 저장되지 않음");
+            return;
+        }
+
+        // 방 초기화
+        EndRoom();
         IsCleared = false;
 
-        // 적 리스트를 활성화 적 리스트에 등록
+        // 방 생성
+        currentRoom = roomFactory.Create(roomPrefab);
+
+        if (currentRoom == null)
+        {
+            Utils.Log<RoomManager>("방 생성 실패");
+            return;
+        }
+
+        ApplyCameraBounds();
+
+        // 플레이어를 시작 위치로 이동
+        PlayerSpawnPoint spawnPoint = currentRoom.GetComponentInChildren<PlayerSpawnPoint>(true);
+
+        if (spawnPoint == null)
+        {
+            Utils.Log<RoomManager>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
+            return;
+        }
+
+        player.MoveToRoomStart(spawnPoint.transform.position);
+
+        // 적을 스폰 위치에 소환
+        List<EnemyController> enemies = enemySpawner.Spawn(currentRoom.transform);
+
         foreach (EnemyController enemy in enemies)
         {
             if (enemy == null || activeEnemies.Contains(enemy))
@@ -28,6 +154,7 @@ public class RoomManager : Singleton<RoomManager>
             enemy.OnDeathFinished += OnEnemyDeathFinished;
         }
 
+        // 적이 소환되지 않았으면 클리어 처리
         if (activeEnemies.Count == 0)
             ClearRoom();
     }
@@ -44,6 +171,12 @@ public class RoomManager : Singleton<RoomManager>
         }
 
         activeEnemies.Clear();
+
+        if (currentRoom != null)
+        {
+            Destroy(currentRoom);
+            currentRoom = null;
+        }
     }
 
     /// <summary>
@@ -69,12 +202,24 @@ public class RoomManager : Singleton<RoomManager>
         IsCleared = true;
         Utils.Log<RoomManager>("방 클리어");
 
-        OnRoomClear?.Invoke();
+        EventBus.Publish(new RoomClearedEvent());
+    }
+
+    public GameObject GetRandomRoomPrefab(RoomType roomType)
+    {
+        return roomFactory.GetRandomPrefab(roomType);
     }
 
     protected override void OnDestroy()
     {
-        EndRoom();
+        if(!isQuitting)
+            EndRoom();
+
         base.OnDestroy();
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 }

@@ -14,7 +14,7 @@ public class UIPoolDataBase : PoolDataBase
 
         foreach (UIPoolInfo info in uiList)
         {
-            manager.AddPool(info.ID, info.Prefab, factory, manager.UIPoolParent);
+            manager.AddPool((int)info.ID, info.Prefab, factory, manager.UIPoolParent);
         }
     }
 }

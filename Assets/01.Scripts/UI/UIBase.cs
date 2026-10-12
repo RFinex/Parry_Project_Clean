@@ -16,12 +16,12 @@ public class UIBase : MonoBehaviour, IPoolable
         pool?.Return(this, objectId);
     }
 
-    public void InitPool()
+    public virtual void InitPool()
     {
 
     }
 
-    public void InitPoolReturn()
+    public virtual void InitPoolReturn()
     {
 
     }

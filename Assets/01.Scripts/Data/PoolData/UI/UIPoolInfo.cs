@@ -4,9 +4,9 @@ using UnityEngine;
 [Serializable]
 public class UIPoolInfo
 {
-    [SerializeField] private int id;
+    [SerializeField] private UIName id;
     [SerializeField] private UIBase prefab;
 
-    public int ID => id;
+    public UIName ID => id;
     public UIBase Prefab => prefab;
 }
