@@ -1,4 +1,6 @@
 
+using System;
+
 public class EnemyStats
 {
     private float nowHp;
@@ -19,6 +21,9 @@ public class EnemyStats
     private float staggerDuration;
     public float StaggerDuration => staggerDuration;
 
+    public event Action<float, float> OnHealthChanged;
+    public event Action<float, float> OnBalanceChanged;
+
     public void Initialized(EnemyBaseData data)
     {
         maxHp = data.MaxHp;
@@ -28,6 +33,9 @@ public class EnemyStats
         nowBalance = maxBalance;
 
         staggerDuration = data.StaggerDuration;
+
+        OnHealthChanged?.Invoke(nowHp, maxHp);
+        OnBalanceChanged?.Invoke(nowBalance, maxBalance);
     }
 
     public void TakeDamage(float damage)
@@ -39,6 +47,8 @@ public class EnemyStats
 
         if (nowHp <= 0)
             nowHp = 0;
+
+        OnHealthChanged?.Invoke(nowHp, maxHp);
 
         Utils.Log<EnemyStats>($"남은 체력 : {nowHp}/{maxHp}");
     }
@@ -53,6 +63,8 @@ public class EnemyStats
         if(nowBalance <= 0)
             nowBalance = 0;
 
+        OnBalanceChanged?.Invoke(nowBalance, maxBalance);
+
         Utils.Log<EnemyStats>($"남은 밸런스 : {nowBalance}/{maxBalance}");
     }
 
@@ -62,11 +74,15 @@ public class EnemyStats
 
         if (nowBalance >= maxBalance)
             nowBalance = maxBalance;
+
+        OnBalanceChanged?.Invoke(nowBalance, maxBalance);
     }
 
     public void RestoreBalance()
     {
         nowBalance = maxBalance;
+
+        OnBalanceChanged?.Invoke(nowBalance, maxBalance);
 
         Utils.Log<EnemyStats>($"밸런스 회복 : {nowBalance}/{maxBalance}");
     }

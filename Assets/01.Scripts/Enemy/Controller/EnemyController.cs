@@ -74,6 +74,8 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     private IPool pool;
     private int objectId;
 
+    private EnemyStatusBar statusBar;
+
     protected virtual void Awake()
     {
         Initialized();
@@ -177,6 +179,11 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         stats.Initialized(data);
         combat.Initialized(data);
+    }
+
+    public void SetStatusBar(EnemyStatusBar statusBar)
+    {
+        this.statusBar = statusBar;
     }
 
     public bool TryDetectTarget()
@@ -418,6 +425,12 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         if(rb != null)
             rb.linearVelocity = Vector2.zero;
+
+        if (statusBar != null)
+        {
+            statusBar.ReturnPool();
+            statusBar = null;
+        }
     }
 
     public void ReturnPool()
