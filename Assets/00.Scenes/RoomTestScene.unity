@@ -163,6 +163,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccea95ab007a8d142b15d6c168839796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  statusBarParent: {fileID: 1188915022}
+--- !u!224 &203246764 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2366491493145598406, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
+  m_PrefabInstance: {fileID: 8060087528475402307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &214257239
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,17 +225,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2954181336601895002, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
+      propertyPath: m_SortingOrder
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6323719953710832613, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.49
+      value: -9.48
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.76
+      value: -3.98
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -468,6 +478,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachinePipeline
+--- !u!1 &1188915018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1188915022}
+  - component: {fileID: 1188915021}
+  - component: {fileID: 1188915020}
+  - component: {fileID: 1188915019}
+  m_Layer: 5
+  m_Name: WorldCanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1188915019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188915018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1188915020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188915018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!223 &1188915021
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188915018}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 6
+  m_TargetDisplay: 0
+--- !u!224 &1188915022
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188915018}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1280256448
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,7 +773,7 @@ GameObject:
   - component: {fileID: 1371208252}
   - component: {fileID: 1371208251}
   m_Layer: 0
-  m_Name: RoomManager
+  m_Name: RoomService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -680,13 +791,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5461013e1229eb645b3cf49e8524aa75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
-  ddol: 0
   roomPrefabGroups:
   - roomType: 0
+    mapIcon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
     prefabs:
     - {fileID: 5041004827265094925, guid: 3e6699083fd04e9498e2f4c413f1c15a, type: 3}
     - {fileID: 4895859456917617893, guid: 91b72a9a3cb62f4409447f73c0024b01, type: 3}
     - {fileID: 7680425413014369007, guid: ebe9c15b69b81da4d85fa6070339e4fe, type: 3}
+    - {fileID: 8708854938217391269, guid: 11231efd57aed524da857e299a98bac4, type: 3}
+    - {fileID: 6219357214546975634, guid: bcb2b312c4a13744c95e6e1c9fef8e72, type: 3}
+  - roomType: 4
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 2fccea6ca95696544b874016a22e3725, type: 3}
+  - roomType: 1
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: c45b08198f428f042864d5c0cfe8d205, type: 3}
+  - roomType: 2
+    mapIcon: {fileID: 21300000, guid: 2356afd79c3d94c448d46fc04fb8542a, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 983309472006905428f939ab2d2248d6, type: 3}
+  - roomType: 3
+    mapIcon: {fileID: 21300000, guid: 02f6bf22c2b7b6b4a944ee8d1b80a6b0, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 9ec14fa56af5fa5449a809f40be54a41, type: 3}
   enemySpawner: {fileID: 169363943}
   player: {fileID: 1291099905}
 --- !u!4 &1371208252
@@ -1019,24 +1148,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   ddol: 1
   map: {fileID: 950496427}
-  nodes:
-  - id: 0
-    roomType: 0
-    mapPosition: {x: -800, y: 0}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 0100000002000000
-  - id: 1
-    roomType: 0
-    mapPosition: {x: -650, y: 150}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 010000000200000002000000
-  - id: 2
-    roomType: 0
-    mapPosition: {x: -650, y: -150}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 010000000200000002000000
   startNodeId: 0
   mapShowDelay: 2
+  mapGenerator:
+    floorCount: 8
+    laneCount: 7
+    pathCount: 5
+    eliteFloor: 4
+    horizontalSpacing: 190
+    verticalSpacing: 125
+    treasureRoomCount: 2
+    shopRoomCount: 2
 --- !u!4 &1928721478
 Transform:
   m_ObjectHideFlags: 0
@@ -1068,6 +1190,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
+      propertyPath: connectionLayer
+      value: 
+      objectReference: {fileID: 203246764}
     - target: {fileID: 7826418594761827542, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1167,3 +1293,4 @@ SceneRoots:
   - {fileID: 1928721478}
   - {fileID: 1383454584}
   - {fileID: 1759453001}
+  - {fileID: 1188915022}

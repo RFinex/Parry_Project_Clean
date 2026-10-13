@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [SerializeField] private Transform statusBarParent;
+
     /// <summary>
     /// 적 스폰
     /// </summary>
@@ -31,6 +33,14 @@ public class EnemySpawner : MonoBehaviour
             {
                 Utils.LogError<EnemySpawner>($"{spawnPoint.EnemyId} 적을 풀에서 가져오지 못했습니다.");
                 continue;
+            }
+
+            EnemyStatusBar statusBar = UIManager.Instance.GetUI<EnemyStatusBar>(UIName.Enemy_Status_Bar, enemy.transform.position, statusBarParent);
+
+            if (statusBar != null)
+            {
+                enemy.SetStatusBar(statusBar);
+                statusBar.Bind(enemy);
             }
 
             spawnEnemies.Add(enemy);

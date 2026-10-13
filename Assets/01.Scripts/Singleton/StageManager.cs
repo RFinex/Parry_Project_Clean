@@ -7,15 +7,17 @@ using UnityEngine;
 public class StageManager : Singleton<StageManager>
 {
     [SerializeField] private MapPanel map;
-    [SerializeField] private List<StageMapNodeData> nodes;
     [SerializeField] private int startNodeId;
     [SerializeField] private float mapShowDelay = 2f;
 
+    [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
+
+    private List<StageMapNodeData> nodes;
     private int currentNodeId;
 
     private CancellationTokenSource token;
 
-    private RoomManager roomManager;
+    private RoomService roomManager;
 
     private void OnEnable()
     {
@@ -39,11 +41,18 @@ public class StageManager : Singleton<StageManager>
 
     private void Start()
     {
-        ServiceLocator.Inject(out roomManager);
+        if (ServiceLocator.IsRegister<RoomService>())
+        {
+            ServiceLocator.Inject(out roomManager);
+        }
+
+        nodes = mapGenerator.Generate();
+        startNodeId = nodes[0].id;
 
         foreach (StageMapNodeData node in nodes)
         {
             node.roomPrefab = roomManager.GetRandomRoomPrefab(node.roomType);
+            node.icon = roomManager.GetRoomIcon(node.roomType);
         }
 
         map.SetMap(nodes);
@@ -56,7 +65,7 @@ public class StageManager : Singleton<StageManager>
             return;
         }
 
-        currentNodeId = startNode.id;        
+        currentNodeId = startNode.id;
 
         roomManager.StartRoom(startNode.roomPrefab);
         //RoomManager.Instance.StartRoom(startNode.roomPrefab);
@@ -66,8 +75,15 @@ public class StageManager : Singleton<StageManager>
     {
         StageMapNodeData currentNode = GetNode(currentNodeId);
 
-        if (currentNode == null || currentNode.nextNodeIds.Count == 0)
+        if (currentNode == null)
             return;
+
+        if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
+        {
+            EventBus.Publish(new StageClearedEvent());
+            Utils.Log<StageManager>("스테이지 클리어");
+            return;
+        }
 
         ShowMapAfterDelay(currentNode.nextNodeIds, token.Token).Forget();
     }

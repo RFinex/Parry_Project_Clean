@@ -5,7 +5,7 @@ using System;
 
 public class ParallaxBackground : MonoBehaviour
 {
-    private Camera camera;
+    private Camera mainCamera;
     private Transform cameraTransform;
     private Vector3 previousCameraPos;
 
@@ -15,16 +15,16 @@ public class ParallaxBackground : MonoBehaviour
 
     private void OnEnable()
     {
-        camera = Camera.main;
+        mainCamera = Camera.main;
 
-        if (camera == null)
+        if (mainCamera == null)
         {
             Utils.LogError<ParallaxBackground>("Main Camera 등록 실패");
             enabled = false;
             return;
         }
 
-        cameraTransform = camera.transform;
+        cameraTransform = mainCamera.transform;
 
         previousCameraPos = cameraTransform.position;
 

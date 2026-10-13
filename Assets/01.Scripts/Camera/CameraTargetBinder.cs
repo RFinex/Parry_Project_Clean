@@ -7,6 +7,8 @@ public class CameraTargetBinder : MonoBehaviour
     private CinemachineVirtualCamera virtualCamera;
     private CinemachineConfiner2D confiner;
 
+    private RoomService roomManager;
+
     private void Awake()
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
@@ -15,18 +17,14 @@ public class CameraTargetBinder : MonoBehaviour
 
     private void OnEnable()
     {
-        if (RoomManager.Instance != null)
-        {
-            RoomManager.Instance.RegisterCameraBinder(this);
-        }
+        ServiceLocator.Inject(out roomManager);
+
+        roomManager.RegisterCameraBinder(this);
     }
 
     private void OnDisable()
     {
-        if (RoomManager.Instance != null)
-        {
-            RoomManager.Instance.UnRegisterCameraBinder(this);
-        }
+        roomManager.UnRegisterCameraBinder(this);
     }
 
     private void Start()

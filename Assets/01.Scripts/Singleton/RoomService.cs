@@ -1,33 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
-public static class ServiceLocator
-{
-    static readonly Dictionary<Type, object> serviceDic = new();
-
-    public static void Register<T>(object service)
-    {
-        if (!serviceDic.TryGetValue(typeof(T), out var value))
-        {
-            serviceDic[typeof(T)] = service;
-        }
-    }
-
-    public static void Inject<T>(out T service)
-    {
-        if (serviceDic.TryGetValue(typeof(T), out var value))
-        {
-            service = (T)value;
-        }
-        else
-        {
-            service = default;
-        }
-    }
-}
-
-public class RoomManager : Singleton<RoomManager>
+public class RoomService : MonoBehaviour, IService
 {
     [SerializeField] private List<RoomPrefabGroup> roomPrefabGroups;
     [SerializeField] private EnemySpawner enemySpawner;
@@ -42,19 +16,19 @@ public class RoomManager : Singleton<RoomManager>
     public bool IsCleared { get; private set; }
     public int ActiveEnemyCount => activeEnemies.Count;
 
+    public bool IsDdol { get; set; } = false;
+
     private CameraTargetBinder cameraTargetBinder;
 
     private bool isQuitting;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         roomFactory = new RoomFactory();
 
         if (roomPrefabGroups == null)
         {
-            Utils.Log<RoomManager>("RoomPrefabGroup 목록이 설정되지 않음");
+            Utils.Log<RoomService>("RoomPrefabGroup 목록이 설정되지 않음");
             return;
         }
 
@@ -63,7 +37,7 @@ public class RoomManager : Singleton<RoomManager>
             roomFactory.Register(group);
         }
 
-        ServiceLocator.Register<RoomManager>(this);
+        ServiceLocator.Register<RoomService>(this);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
@@ -92,13 +66,13 @@ public class RoomManager : Singleton<RoomManager>
 
         if (bounds == null)
         {
-            Utils.Log<RoomManager>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
+            Utils.Log<RoomService>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
             return;
         }
 
         if (!cameraTargetBinder.SetBounds(bounds))
         {
-            Utils.Log<RoomManager>("Virtual Camera에 CinemachineConfiner2D가 없음");
+            Utils.Log<RoomService>("Virtual Camera에 CinemachineConfiner2D가 없음");
         }
     }
 
@@ -106,13 +80,13 @@ public class RoomManager : Singleton<RoomManager>
     {
         if (player == null || enemySpawner == null)
         {
-            Utils.LogError<RoomManager>("Player 또는 EnemySpawner가 연결되지 않음");
+            Utils.LogError<RoomService>("Player 또는 EnemySpawner가 연결되지 않음");
             return;
         }
 
         if (roomPrefab == null)
         {
-            Utils.LogError<RoomManager>("생성할 방 프리팹이 저장되지 않음");
+            Utils.LogError<RoomService>("생성할 방 프리팹이 저장되지 않음");
             return;
         }
 
@@ -125,7 +99,7 @@ public class RoomManager : Singleton<RoomManager>
 
         if (currentRoom == null)
         {
-            Utils.Log<RoomManager>("방 생성 실패");
+            Utils.Log<RoomService>("방 생성 실패");
             return;
         }
 
@@ -136,7 +110,7 @@ public class RoomManager : Singleton<RoomManager>
 
         if (spawnPoint == null)
         {
-            Utils.Log<RoomManager>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
+            Utils.Log<RoomService>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
             return;
         }
 
@@ -200,7 +174,7 @@ public class RoomManager : Singleton<RoomManager>
             return;
 
         IsCleared = true;
-        Utils.Log<RoomManager>("방 클리어");
+        Utils.Log<RoomService>("방 클리어");
 
         EventBus.Publish(new RoomClearedEvent());
     }
@@ -210,12 +184,21 @@ public class RoomManager : Singleton<RoomManager>
         return roomFactory.GetRandomPrefab(roomType);
     }
 
-    protected override void OnDestroy()
+    public Sprite GetRoomIcon(RoomType roomType)
+    {
+        foreach (RoomPrefabGroup group in roomPrefabGroups)
+        {
+            if (group != null && group.roomType == roomType)
+                return group.mapIcon;
+        }
+
+        return null;
+    }
+
+    private void OnDestroy()
     {
         if(!isQuitting)
             EndRoom();
-
-        base.OnDestroy();
     }
 
     private void OnApplicationQuit()

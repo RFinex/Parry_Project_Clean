@@ -9,6 +9,8 @@ public class MapNode : UIBase
     private RectTransform rectTransform;
     private int nodeId;
 
+    public Vector2 MapPosition => rectTransform.anchoredPosition;
+
     private void Awake()
     {
         btn = GetComponent<Button>();

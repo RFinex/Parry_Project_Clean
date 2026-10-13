@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopJump()
     {
-        if (movement.verticalVelocity > 0f)
+        if (rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.4f);
         }
@@ -387,9 +387,11 @@ public class PlayerController : MonoBehaviour
             if (!isGround)
                 return;
 
+            Jump();
+            movement.verticalVelocity = rb.linearVelocity.y;
+
             stateMachine.ChangeState(typeof(PlayerJumpState));
 
-            Jump();
         }
         
         if (context.canceled)

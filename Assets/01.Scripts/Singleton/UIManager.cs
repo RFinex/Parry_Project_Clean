@@ -4,7 +4,9 @@ public enum UIName
 {
     None,
     Popup_Map = 101,
-    Popup_Map_Node_Btn = 102
+    Popup_Map_Node_Btn = 102,
+    Popup_Map_Connection = 103,
+    Enemy_Status_Bar = 104
 }
 
 public class UIManager : Singleton<UIManager>
