@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 7532712854290124534}
   - component: {fileID: 6522490581026366305}
   - component: {fileID: 1177301457373953394}
-  - component: {fileID: 7421269532875501959}
   - component: {fileID: 3882265356245811558}
+  - component: {fileID: 7943300529606303964}
+  - component: {fileID: -1460462792415119054}
   m_Layer: 8
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -153,33 +154,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &7421269532875501959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6465543644819581041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9297d9f548bc154ea9a9f10e15ec2e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  data: {fileID: 11400000, guid: ad4647bab80185e4d9a677007711fc3f, type: 2}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckForwardOffset: 0.1
-  groundCheckDistance: 0.2
-  groundCheckPoint: {fileID: 6406536147496673700}
-  currentStateName: 
-  animations: []
 --- !u!61 &3882265356245811558
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -226,3 +200,66 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.8759463, y: 1.3488404}
   m_EdgeRadius: 0
+--- !u!95 &7943300529606303964
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6465543644819581041}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4d07b7b825fab35428262734d6ad60ae, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-1460462792415119054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6465543644819581041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 166b515291e434843b6d1dab21026e18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestEnemyController
+  data: {fileID: 11400000, guid: 8c3fe70d4568d7c40b39480d423dd571, type: 2}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckForwardOffset: 0.1
+  groundCheckDistance: 0.2
+  groundCheckPoint: {fileID: 6406536147496673700}
+  currentStateName: 
+  animations:
+  - type: 0
+    stateName: 
+  - type: 1
+    stateName: 
+  - type: 2
+    stateName: Base Layer.Test Enemy_Attack
+  - type: 3
+    stateName: 
+  - type: 4
+    stateName: 
+  - type: 5
+    stateName: 
+  attackBoxSize: {x: 1.6, y: 1}
+  attackBoxForwardOffset: 0.3

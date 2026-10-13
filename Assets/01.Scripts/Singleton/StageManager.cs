@@ -66,8 +66,15 @@ public class StageManager : Singleton<StageManager>
     {
         StageMapNodeData currentNode = GetNode(currentNodeId);
 
-        if (currentNode == null || currentNode.nextNodeIds.Count == 0)
+        if (currentNode == null)
             return;
+
+        if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
+        {
+            EventBus.Publish(new StageClearedEvent());
+            Utils.Log<StageManager>("스테이지 클리어");
+            return;
+        }
 
         ShowMapAfterDelay(currentNode.nextNodeIds, token.Token).Forget();
     }

@@ -38,7 +38,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [SerializeField] protected Transform groundCheckPoint;
 
     [Header("Death")]
-    private float deathDuration;
+    protected float deathDuration;
     public float DeathDuration => deathDuration;
 
     protected Rigidbody2D rb;
@@ -300,7 +300,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
-    public void Attack()
+    public virtual void Attack()
     {
         if (combat == null)
             return;
