@@ -36,9 +36,6 @@ public class StageMapGenerator
 
         for (int pathIndex = 0; pathIndex < pathCount; pathIndex++)
         {
-            // 첫 경로는 엘리트 노드를 반드시 통과시켜 엘리트 노드가 고립되지 않게 함
-            bool passElite = pathIndex == 0;
-
             List<Vector2Int> path = CreatePath(lastFloor, middleLane, fixedEliteFloor);
 
             StageMapNodeData previousNode = null;
@@ -152,24 +149,24 @@ public class StageMapGenerator
 
         foreach (StageMapNodeData node in nodes)
         {
-            // 시작 노드와 엘리트·보스 노드는 제외
+            // 시작, 엘리트, 보스 노드는 특수 방 배정 대상에서 제외
             if (node.id != 0 && node.roomType == RoomType.Normal)
                 candidates.Add(node);
         }
 
+        int requiredCount = treasureRoomCount + shopRoomCount;
+        bool hasEnoughCandidates = candidates.Count >= requiredCount;
+
         AssignRoomType(candidates, RoomType.Treasure, treasureRoomCount);
         AssignRoomType(candidates, RoomType.Shop, shopRoomCount);
 
-        if (candidates.Count < treasureRoomCount + shopRoomCount)
+        if (hasEnoughCandidates)
         {
-            Utils.LogWarning<StageMapGenerator>("생성된 일반 노드가 부족해 보물방 또는 상점방 수를 채우지 못했습니다.");
+            Utils.LogWarning<StageMapGenerator>("보물방 또는 상점방 개수를 모두 배치할 일반 노드가 부족합니다.");
         }
     }
 
-    private void AssignRoomType(
-        List<StageMapNodeData> candidates,
-        RoomType roomType,
-        int count)
+    private void AssignRoomType(List<StageMapNodeData> candidates, RoomType roomType, int count)
     {
         for (int i = 0; i < count && candidates.Count > 0; i++)
         {

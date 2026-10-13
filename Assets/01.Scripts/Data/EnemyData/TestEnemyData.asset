@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestEnemyData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
   maxHp: 100
-  maxBalance: 100
+  maxBalance: 10
   moveSpeed: 2
   minPatrolDistance: 2
   maxPatrolDistance: 4

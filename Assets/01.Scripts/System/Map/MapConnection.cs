@@ -19,10 +19,10 @@ public class MapConnection : UIBase
 
     public void Initialized(Vector2 startPos, Vector2 endPos)
     {
-        Vector2 direction = endPos - startPos;
+        Vector2 dir = endPos - startPos;
 
         rectTransform.anchoredPosition = (startPos + endPos) * 0.5f;
-        rectTransform.sizeDelta = new Vector2(direction.magnitude, thickness);
-        rectTransform.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        rectTransform.sizeDelta = new Vector2(dir.magnitude, thickness);
+        rectTransform.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
     }
 }

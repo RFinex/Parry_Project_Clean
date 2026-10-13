@@ -7,7 +7,7 @@ public class CameraTargetBinder : MonoBehaviour
     private CinemachineVirtualCamera virtualCamera;
     private CinemachineConfiner2D confiner;
 
-    private RoomManager roomManager;
+    private RoomService roomManager;
 
     private void Awake()
     {

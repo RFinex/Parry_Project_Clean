@@ -45,10 +45,7 @@ public class MapPanel : UIBase
                     continue;
                 }
 
-                MapConnection line = UIManager.Instance.GetUI<MapConnection>(
-                    UIName.Popup_Map_Connection,
-                    Vector3.zero,
-                    connectionLayer);
+                MapConnection line = UIManager.Instance.GetUI<MapConnection>(UIName.Popup_Map_Connection, Vector3.zero, connectionLayer);
 
                 if (line == null)
                 {

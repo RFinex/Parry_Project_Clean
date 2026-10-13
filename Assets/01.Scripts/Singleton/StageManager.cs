@@ -17,7 +17,7 @@ public class StageManager : Singleton<StageManager>
 
     private CancellationTokenSource token;
 
-    private RoomManager roomManager;
+    private RoomService roomManager;
 
     private void OnEnable()
     {
@@ -41,7 +41,10 @@ public class StageManager : Singleton<StageManager>
 
     private void Start()
     {
-        ServiceLocator.Inject(out roomManager);
+        if (ServiceLocator.IsRegister<RoomService>())
+        {
+            ServiceLocator.Inject(out roomManager);
+        }
 
         nodes = mapGenerator.Generate();
         startNodeId = nodes[0].id;

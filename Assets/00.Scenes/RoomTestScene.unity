@@ -163,6 +163,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccea95ab007a8d142b15d6c168839796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+--- !u!224 &203246764 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2366491493145598406, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
+  m_PrefabInstance: {fileID: 8060087528475402307}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &214257239
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5461013e1229eb645b3cf49e8524aa75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
-  ddol: 0
   roomPrefabGroups:
   - roomType: 0
     mapIcon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
@@ -696,13 +700,16 @@ MonoBehaviour:
     - {fileID: 1177233946182304185, guid: 2fccea6ca95696544b874016a22e3725, type: 3}
   - roomType: 1
     mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
-    prefabs: []
+    prefabs:
+    - {fileID: 1177233946182304185, guid: c45b08198f428f042864d5c0cfe8d205, type: 3}
   - roomType: 2
     mapIcon: {fileID: 21300000, guid: 2356afd79c3d94c448d46fc04fb8542a, type: 3}
-    prefabs: []
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 983309472006905428f939ab2d2248d6, type: 3}
   - roomType: 3
     mapIcon: {fileID: 21300000, guid: 02f6bf22c2b7b6b4a944ee8d1b80a6b0, type: 3}
-    prefabs: []
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 9ec14fa56af5fa5449a809f40be54a41, type: 3}
   enemySpawner: {fileID: 169363943}
   player: {fileID: 1291099905}
 --- !u!4 &1371208252
@@ -1077,6 +1084,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
+      propertyPath: connectionLayer
+      value: 
+      objectReference: {fileID: 203246764}
     - target: {fileID: 7826418594761827542, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
