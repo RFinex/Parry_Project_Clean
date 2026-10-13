@@ -225,11 +225,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.49
+      value: -9.48
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.76
+      value: -3.98
       objectReference: {fileID: 0}
     - target: {fileID: 8413529789942519730, guid: 900f0a1adef04964ebdc82a31ff03eac, type: 3}
       propertyPath: m_LocalPosition.z
@@ -683,12 +683,26 @@ MonoBehaviour:
   ddol: 0
   roomPrefabGroups:
   - roomType: 0
+    mapIcon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
     prefabs:
     - {fileID: 5041004827265094925, guid: 3e6699083fd04e9498e2f4c413f1c15a, type: 3}
     - {fileID: 4895859456917617893, guid: 91b72a9a3cb62f4409447f73c0024b01, type: 3}
     - {fileID: 7680425413014369007, guid: ebe9c15b69b81da4d85fa6070339e4fe, type: 3}
     - {fileID: 8708854938217391269, guid: 11231efd57aed524da857e299a98bac4, type: 3}
     - {fileID: 6219357214546975634, guid: bcb2b312c4a13744c95e6e1c9fef8e72, type: 3}
+  - roomType: 4
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 2fccea6ca95696544b874016a22e3725, type: 3}
+  - roomType: 1
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs: []
+  - roomType: 2
+    mapIcon: {fileID: 21300000, guid: 2356afd79c3d94c448d46fc04fb8542a, type: 3}
+    prefabs: []
+  - roomType: 3
+    mapIcon: {fileID: 21300000, guid: 02f6bf22c2b7b6b4a944ee8d1b80a6b0, type: 3}
+    prefabs: []
   enemySpawner: {fileID: 169363943}
   player: {fileID: 1291099905}
 --- !u!4 &1371208252
@@ -1021,44 +1035,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   ddol: 1
   map: {fileID: 950496427}
-  nodes:
-  - id: 0
-    roomType: 0
-    mapPosition: {x: -800, y: 0}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 0100000002000000
-  - id: 1
-    roomType: 0
-    mapPosition: {x: -650, y: 150}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 03000000
-  - id: 2
-    roomType: 0
-    mapPosition: {x: -650, y: -150}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 0400000005000000
-  - id: 3
-    roomType: 0
-    mapPosition: {x: -500, y: 170}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 06000000
-  - id: 4
-    roomType: 0
-    mapPosition: {x: -500, y: 0}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 06000000
-  - id: 5
-    roomType: 0
-    mapPosition: {x: -500, y: -300}
-    icon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
-    nextNodeIds: 06000000
-  - id: 6
-    roomType: 4
-    mapPosition: {x: -350, y: 0}
-    icon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
-    nextNodeIds: 
   startNodeId: 0
   mapShowDelay: 2
+  mapGenerator:
+    floorCount: 8
+    laneCount: 7
+    pathCount: 5
+    eliteFloor: 4
+    horizontalSpacing: 190
+    verticalSpacing: 125
+    treasureRoomCount: 2
+    shopRoomCount: 2
 --- !u!4 &1928721478
 Transform:
   m_ObjectHideFlags: 0

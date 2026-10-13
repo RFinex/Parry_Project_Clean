@@ -187,6 +187,17 @@ public class RoomManager : Singleton<RoomManager>
         return roomFactory.GetRandomPrefab(roomType);
     }
 
+    public Sprite GetRoomIcon(RoomType roomType)
+    {
+        foreach (RoomPrefabGroup group in roomPrefabGroups)
+        {
+            if (group != null && group.roomType == roomType)
+                return group.mapIcon;
+        }
+
+        return null;
+    }
+
     protected override void OnDestroy()
     {
         if(!isQuitting)

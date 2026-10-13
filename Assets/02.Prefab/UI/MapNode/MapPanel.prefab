@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0bf58381a25b048b4a72694a5b704d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPanel
+  connectionLayer: {fileID: 0}
   nodeLayer: {fileID: 1205442063202504595}
 --- !u!1 &5112175306329638276
 GameObject:
@@ -188,8 +189,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2366491493145598406}
   - {fileID: 1205442063202504595}
+  - {fileID: 2366491493145598406}
   m_Father: {fileID: 7826418594761827542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

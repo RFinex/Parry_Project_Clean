@@ -7,10 +7,12 @@ using UnityEngine;
 public class StageManager : Singleton<StageManager>
 {
     [SerializeField] private MapPanel map;
-    [SerializeField] private List<StageMapNodeData> nodes;
     [SerializeField] private int startNodeId;
     [SerializeField] private float mapShowDelay = 2f;
 
+    [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
+
+    private List<StageMapNodeData> nodes;
     private int currentNodeId;
 
     private CancellationTokenSource token;
@@ -41,9 +43,13 @@ public class StageManager : Singleton<StageManager>
     {
         ServiceLocator.Inject(out roomManager);
 
+        nodes = mapGenerator.Generate();
+        startNodeId = nodes[0].id;
+
         foreach (StageMapNodeData node in nodes)
         {
             node.roomPrefab = roomManager.GetRandomRoomPrefab(node.roomType);
+            node.icon = roomManager.GetRoomIcon(node.roomType);
         }
 
         map.SetMap(nodes);
@@ -56,7 +62,7 @@ public class StageManager : Singleton<StageManager>
             return;
         }
 
-        currentNodeId = startNode.id;        
+        currentNodeId = startNode.id;
 
         roomManager.StartRoom(startNode.roomPrefab);
         //RoomManager.Instance.StartRoom(startNode.roomPrefab);

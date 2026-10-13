@@ -15,5 +15,6 @@ public enum RoomType
 public class RoomPrefabGroup
 {
     public RoomType roomType;
+    public Sprite mapIcon;
     public List<GameObject> prefabs = new List<GameObject>();
 }
