@@ -66,6 +66,12 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    #region Map Popup
+
+    /// <summary>
+    /// 맵 데이터 생성 후 지도 생성
+    /// </summary>
+    /// <param name="eventData"></param>
     private void HandleStageMapCreated(StageMapCreatedEvent eventData)
     {
         MapPanel map = GetOrCreatePopup<MapPanel>(UIName.Popup_Map);
@@ -74,6 +80,10 @@ public class UIManager : Singleton<UIManager>
             map.SetMap(eventData.Nodes);
     }
 
+    /// <summary>
+    /// 방 클리어 후 다음 노드 활성화 및 OpenPopup 호출
+    /// </summary>
+    /// <param name="eventData"></param>
     private void HandleStageMapShown(StageMapShownEvent eventData)
     {
         MapPanel map = GetOrCreatePopup<MapPanel>(UIName.Popup_Map);
@@ -85,10 +95,16 @@ public class UIManager : Singleton<UIManager>
         OpenPopup(UIName.Popup_Map);
     }
 
+    /// <summary>
+    /// 노드 선택 후 ClosePopup 호출
+    /// </summary>
+    /// <param name="eventData"></param>
     private void HandleStageMapClosed(StageMapClosedEvent eventData)
     {
         ClosePopup(UIName.Popup_Map);
     }
+
+    #endregion
 
     // 현재 씬의 UI 루트가 Canvas를 등록
     public void RegisterSceneCanvas(Canvas canvas)

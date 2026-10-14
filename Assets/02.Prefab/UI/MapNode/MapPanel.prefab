@@ -125,6 +125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPanel
   uiName: 101
+  rect: {fileID: 7826418594761827542}
+  startY: 1000
+  dropDuration: 0.3
+  openDuration: 0.3
+  foldScaleX: 0.02
   connectionLayer: {fileID: 2366491493145598406}
   nodeLayer: {fileID: 1205442063202504595}
 --- !u!1 &5112175306329638276

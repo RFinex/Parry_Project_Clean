@@ -82,6 +82,7 @@ public class StageManager : Singleton<StageManager>
         {
             EventBus.Publish(new StageClearedEvent());
             Utils.Log<StageManager>("스테이지 클리어");
+            SceneLoadManager.Instance.LoadLobbyScene();
             return;
         }
 
