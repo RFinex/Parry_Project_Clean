@@ -10,15 +10,14 @@ public class EnemyStatusBar : UIBase
     [Header("Hp")]
     [SerializeField] private Image healthFill;
     [SerializeField] private Image delayFill;
-    [SerializeField] private float followDelay = 0.25f;
-    [SerializeField] private float followDuration = 0.4f;
+    [SerializeField] private float followDuration = 0.5f;
 
     [Header("Balance")]
     [SerializeField] private Image balanceFillLeft;
     [SerializeField] private Image balanceFillRight;
 
     [Header("Follow")]
-    [SerializeField] private Vector3 offset = new Vector3(0f, 1f, 0f);
+    [SerializeField] private Vector3 offset = new(0f, 1f, 0f);
 
     private EnemyController target;
     private EnemyStats stats;
@@ -26,14 +25,13 @@ public class EnemyStatusBar : UIBase
     private Tween delayTween;
 
     private CancellationTokenSource token;
+    private CancellationTokenSource barToken;
 
     public void Bind(EnemyController enemy)
     {
         UnBind();
 
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
+        Utils.EnterToken(ref token);
 
         target = enemy;
         stats = enemy.Stats;
@@ -49,9 +47,9 @@ public class EnemyStatusBar : UIBase
 
     public void UnBind()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = null;
+        Utils.ExitToken(ref token);
+
+        Utils.ExitToken(ref barToken);
 
         if (stats != null)
         {
@@ -73,7 +71,9 @@ public class EnemyStatusBar : UIBase
             while (!ctk.IsCancellationRequested)
             {
                 if (target == null)
+                {
                     return;
+                }
 
                 transform.position = target.transform.position + offset;
 
@@ -86,24 +86,30 @@ public class EnemyStatusBar : UIBase
         }
     }
 
+    private async UniTaskVoid SetHealthAsync(float currentHealth, float maxHealth, CancellationToken ctk)
+    {
+        try
+        {
+            float ratio = maxHealth > 0f ? Mathf.Clamp01(currentHealth / maxHealth) : 0f;
+
+            healthFill.fillAmount = ratio;
+
+            await delayFill.DOFillAmount(ratio, followDuration)
+                .SetEase(Ease.OutQuad)
+                .ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, ctk);
+
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+    }
+
     public void SetHealth(float currentHealth, float maxHealth)
     {
-        float ratio = maxHealth > 0f ? Mathf.Clamp01(currentHealth / maxHealth) : 0f;
+        Utils.EnterToken(ref barToken);
 
-        healthFill.fillAmount = ratio;
-
-        if (ratio >= delayFill.fillAmount)
-        {
-            delayTween?.Kill();
-            delayFill.fillAmount = ratio;
-            return;
-        }
-
-        delayTween?.Kill();
-        delayTween = delayFill.DOFillAmount(ratio, followDuration)
-            .SetDelay(followDelay)
-            .SetEase(Ease.OutQuad)
-            .SetLink(gameObject);
+        SetHealthAsync(currentHealth, maxHealth, barToken.Token).Forget();
     }
 
     public void SetBalance(float currentBalance, float maxBalance)

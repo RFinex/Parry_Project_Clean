@@ -504,10 +504,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0ff49856113b574cac338a25298e012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
+  uiName: 0
   healthFill: {fileID: 857130698331785329}
   delayFill: {fileID: 8961053003136590781}
-  followDelay: 0.25
-  followDuration: 0.4
+  followDelay: 0
+  followDuration: 0.5
   balanceFillLeft: {fileID: 2955178031358823035}
   balanceFillRight: {fileID: 7689319114639872958}
   offset: {x: 0, y: -0.5, z: 0}

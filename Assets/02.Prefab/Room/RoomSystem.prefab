@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3528467824813550392
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8798987107960077883}
+  - component: {fileID: 6115807090472416877}
+  m_Layer: 0
+  m_Name: RoomSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8798987107960077883
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528467824813550392}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.49569, y: 0.26356, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6115807090472416877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3528467824813550392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd6aa45a9d4635a438a20bceb7f553fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomManager
+  roomPrefabGroups:
+  - roomType: 0
+    mapIcon: {fileID: 21300000, guid: 96c2585e3b2743541ac25c111dd5ef7c, type: 3}
+    prefabs:
+    - {fileID: 5041004827265094925, guid: 3e6699083fd04e9498e2f4c413f1c15a, type: 3}
+    - {fileID: 4895859456917617893, guid: 91b72a9a3cb62f4409447f73c0024b01, type: 3}
+    - {fileID: 7680425413014369007, guid: ebe9c15b69b81da4d85fa6070339e4fe, type: 3}
+    - {fileID: 8708854938217391269, guid: 11231efd57aed524da857e299a98bac4, type: 3}
+    - {fileID: 6219357214546975634, guid: bcb2b312c4a13744c95e6e1c9fef8e72, type: 3}
+  - roomType: 1
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: c45b08198f428f042864d5c0cfe8d205, type: 3}
+  - roomType: 2
+    mapIcon: {fileID: 21300000, guid: 2356afd79c3d94c448d46fc04fb8542a, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 983309472006905428f939ab2d2248d6, type: 3}
+  - roomType: 3
+    mapIcon: {fileID: 21300000, guid: 02f6bf22c2b7b6b4a944ee8d1b80a6b0, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 9ec14fa56af5fa5449a809f40be54a41, type: 3}
+  - roomType: 4
+    mapIcon: {fileID: 21300000, guid: a8af1ce53c4c7524a86273d7adbdf178, type: 3}
+    prefabs:
+    - {fileID: 1177233946182304185, guid: 2fccea6ca95696544b874016a22e3725, type: 3}
+  enemySpawner: {fileID: 0}
+  player: {fileID: 0}

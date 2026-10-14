@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageManager : Singleton<StageManager>
 {
-    [SerializeField] private MapPanel map;
     [SerializeField] private int startNodeId;
     [SerializeField] private float mapShowDelay = 2f;
 
@@ -14,10 +14,10 @@ public class StageManager : Singleton<StageManager>
 
     private List<StageMapNodeData> nodes;
     private int currentNodeId;
-
+    
     private CancellationTokenSource token;
 
-    private RoomService roomManager;
+    private RoomSystem roomSystem;
 
     private void OnEnable()
     {
@@ -41,9 +41,11 @@ public class StageManager : Singleton<StageManager>
 
     private void Start()
     {
-        if (ServiceLocator.IsRegister<RoomService>())
+        Debug.Log($"StageManager Start | id={GetInstanceID()} | scene={gameObject.scene.name} | frame={Time.frameCount}");
+
+        if (ServiceLocator.IsRegister<RoomSystem>())
         {
-            ServiceLocator.Inject(out roomManager);
+            ServiceLocator.Inject(out roomSystem);
         }
 
         nodes = mapGenerator.Generate();
@@ -51,11 +53,11 @@ public class StageManager : Singleton<StageManager>
 
         foreach (StageMapNodeData node in nodes)
         {
-            node.roomPrefab = roomManager.GetRandomRoomPrefab(node.roomType);
-            node.icon = roomManager.GetRoomIcon(node.roomType);
+            node.roomPrefab = roomSystem.GetRandomRoomPrefab(node.roomType);
+            node.icon = roomSystem.GetRoomIcon(node.roomType);
         }
 
-        map.SetMap(nodes);
+        EventBus.Publish(new StageMapCreatedEvent { Nodes = nodes });
 
         StageMapNodeData startNode = GetNode(startNodeId);
 
@@ -67,8 +69,10 @@ public class StageManager : Singleton<StageManager>
 
         currentNodeId = startNode.id;
 
-        roomManager.StartRoom(startNode.roomPrefab);
-        //RoomManager.Instance.StartRoom(startNode.roomPrefab);
+        if (!roomSystem.StartRoom(startNode.roomPrefab))
+            return;
+
+        SceneLoadManager.Instance.SceneReady();
     }
 
     public void HandleRoomClear(RoomClearedEvent eventData)
@@ -82,19 +86,20 @@ public class StageManager : Singleton<StageManager>
         {
             EventBus.Publish(new StageClearedEvent());
             Utils.Log<StageManager>("스테이지 클리어");
+            SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene).Forget();
             return;
         }
 
         ShowMapAfterDelay(currentNode.nextNodeIds, token.Token).Forget();
     }
 
-    private async UniTaskVoid ShowMapAfterDelay(List<int> nextNoideIds, CancellationToken ctk)
+    private async UniTaskVoid ShowMapAfterDelay(List<int> nextNodeIds, CancellationToken ctk)
     {
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(mapShowDelay), cancellationToken: ctk);
 
-            map.ShowNextNodes(nextNoideIds);
+            EventBus.Publish(new StageMapShownEvent { SelectableNodeIds = nextNodeIds });
         }
         catch (OperationCanceledException)
         {
@@ -116,10 +121,10 @@ public class StageManager : Singleton<StageManager>
         if (selectedNode == null || selectedNode.roomPrefab == null)
             return;
 
-        map.HideMap();
+        EventBus.Publish(new StageMapClosedEvent());
         currentNodeId = selectedNode.id;
 
-        roomManager.StartRoom(selectedNode.roomPrefab);
+        roomSystem.StartRoom(selectedNode.roomPrefab);
     }
 
     private StageMapNodeData GetNode(int id)

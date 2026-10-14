@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: UIPoolDataDataBase
   m_EditorClassIdentifier: Assembly-CSharp::UIPoolDataBase
   uiList:
-  - id: 101
-    prefab: {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
   - id: 102
     prefab: {fileID: 6209755263551545463, guid: c3c264732d17e134da5c18860bee2640, type: 3}
   - id: 103
