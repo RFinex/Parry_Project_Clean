@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapPanel : UIBase
+public class MapPanel : PopupBase
 {
     [SerializeField] private Transform connectionLayer;
     [SerializeField] private Transform nodeLayer;
@@ -68,8 +68,6 @@ public class MapPanel : UIBase
         {
             pair.Value.SetInteractable(nextNodeIds.Contains(pair.Key));
         }
-
-        gameObject.SetActive(true);
     }
 
     public void HideMap()

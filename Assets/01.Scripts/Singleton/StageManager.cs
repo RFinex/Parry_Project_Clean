@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageManager : Singleton<StageManager>
 {
-    [SerializeField] private MapPanel map;
     [SerializeField] private int startNodeId;
     [SerializeField] private float mapShowDelay = 2f;
 
@@ -14,10 +14,10 @@ public class StageManager : Singleton<StageManager>
 
     private List<StageMapNodeData> nodes;
     private int currentNodeId;
-
+    
     private CancellationTokenSource token;
 
-    private RoomService roomManager;
+    private RoomSystem roomManager;
 
     private void OnEnable()
     {
@@ -41,7 +41,7 @@ public class StageManager : Singleton<StageManager>
 
     private void Start()
     {
-        if (ServiceLocator.IsRegister<RoomService>())
+        if (ServiceLocator.IsRegister<RoomSystem>())
         {
             ServiceLocator.Inject(out roomManager);
         }
@@ -55,7 +55,7 @@ public class StageManager : Singleton<StageManager>
             node.icon = roomManager.GetRoomIcon(node.roomType);
         }
 
-        map.SetMap(nodes);
+        EventBus.Publish(new StageMapCreatedEvent { Nodes = nodes });
 
         StageMapNodeData startNode = GetNode(startNodeId);
 
@@ -88,13 +88,13 @@ public class StageManager : Singleton<StageManager>
         ShowMapAfterDelay(currentNode.nextNodeIds, token.Token).Forget();
     }
 
-    private async UniTaskVoid ShowMapAfterDelay(List<int> nextNoideIds, CancellationToken ctk)
+    private async UniTaskVoid ShowMapAfterDelay(List<int> nextNodeIds, CancellationToken ctk)
     {
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(mapShowDelay), cancellationToken: ctk);
 
-            map.ShowNextNodes(nextNoideIds);
+            EventBus.Publish(new StageMapShownEvent { SelectableNodeIds = nextNodeIds });
         }
         catch (OperationCanceledException)
         {
@@ -116,7 +116,7 @@ public class StageManager : Singleton<StageManager>
         if (selectedNode == null || selectedNode.roomPrefab == null)
             return;
 
-        map.HideMap();
+        EventBus.Publish(new StageMapClosedEvent());
         currentNodeId = selectedNode.id;
 
         roomManager.StartRoom(selectedNode.roomPrefab);

@@ -14,7 +14,7 @@ public class EnemySpawner : MonoBehaviour
     /// <returns></returns>
     public List<EnemyController> Spawn(Transform room)
     {
-        List<EnemyController> spawnEnemies = new List<EnemyController>();
+        List<EnemyController> spawnEnemies = new();
 
         if (room == null)
         {

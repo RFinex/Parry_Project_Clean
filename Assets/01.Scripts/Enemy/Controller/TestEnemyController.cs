@@ -3,7 +3,7 @@ using UnityEngine;
 public class TestEnemyController : EnemyController
 {
     [Header("Test Attack")]
-    [SerializeField] private Vector2 attackBoxSize = new Vector2(1.6f, 1f);
+    [SerializeField] private Vector2 attackBoxSize = new(1.6f, 1f);
     [SerializeField] private float attackBoxForwardOffset = 0.3f;
 
     public override void Attack()
@@ -16,9 +16,7 @@ public class TestEnemyController : EnemyController
         if (Target == null || !IsTargetInAttackRange())
             return;
 
-        Vector2 hitBoxCenter =
-            (Vector2)transform.position +
-            Vector2.right * FrontDir * attackBoxForwardOffset;
+        Vector2 hitBoxCenter = (Vector2)transform.position + Vector2.right * FrontDir * attackBoxForwardOffset;
 
         Collider2D hit = Physics2D.OverlapBox(
             hitBoxCenter,
@@ -35,9 +33,7 @@ public class TestEnemyController : EnemyController
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
-        Vector2 hitBoxCenter =
-            (Vector2)transform.position +
-            Vector2.right * FrontDir * attackBoxForwardOffset;
+        Vector2 hitBoxCenter = (Vector2)transform.position + Vector2.right * FrontDir * attackBoxForwardOffset;
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(hitBoxCenter, attackBoxSize);

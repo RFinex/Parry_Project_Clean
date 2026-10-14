@@ -124,7 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0bf58381a25b048b4a72694a5b704d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPanel
-  connectionLayer: {fileID: 0}
+  uiName: 101
+  connectionLayer: {fileID: 2366491493145598406}
   nodeLayer: {fileID: 1205442063202504595}
 --- !u!1 &5112175306329638276
 GameObject:

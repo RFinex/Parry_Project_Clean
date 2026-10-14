@@ -44,6 +44,9 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         objectPoolParent = new GameObject("ObjectPoolParent").transform;
         objectPoolParent.SetParent(transform, false);
 
+        uiPoolParent = new GameObject("UIPoolParent").transform;
+        uiPoolParent.SetParent(objectPoolParent, false);
+
         // 비동기로 수정
         foreach (PoolDataBase dataBase in dataBases)
         {
@@ -55,8 +58,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 
         isInitialized = true;
 
-        if (uiPoolParent != null)
-            RegisterUIPools();
+        RegisterUIPools();
     }
 
     public void SetUIPoolParent(Transform parent)

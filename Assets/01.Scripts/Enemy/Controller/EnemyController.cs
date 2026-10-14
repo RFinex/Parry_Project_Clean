@@ -142,7 +142,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual void InitBlackBoard()
     {
-        EnemyAnimator enemyAnimator = new EnemyAnimator(animator, animations);
+        EnemyAnimator enemyAnimator = new(animator, animations);
 
         blackBoard = new EnemyBlackBoard()
         {

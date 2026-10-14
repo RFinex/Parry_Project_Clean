@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UIPoolDataDataBase", menuName = "Pool/UIPoolDataBase")]
+[CreateAssetMenu(fileName = "UIPoolDataBase", menuName = "Pool/UIPoolDataBase")]
 public class UIPoolDataBase : PoolDataBase
 {
     [SerializeField] private List<UIPoolInfo> uiList;

@@ -5,6 +5,8 @@ public class UIBase : MonoBehaviour, IPoolable
     private IPool pool;
     private int objectId;
 
+    [SerializeField] protected UIName uiName;
+
     public void SetPool(IPool pool, int objectId)
     {
         this.pool = pool;

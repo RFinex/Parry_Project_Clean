@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class RoomService : MonoBehaviour, IService
+public class RoomSystem : MonoBehaviour, IService
 {
     [SerializeField] private List<RoomPrefabGroup> roomPrefabGroups;
     [SerializeField] private EnemySpawner enemySpawner;
@@ -28,7 +28,7 @@ public class RoomService : MonoBehaviour, IService
 
         if (roomPrefabGroups == null)
         {
-            Utils.Log<RoomService>("RoomPrefabGroup 목록이 설정되지 않음");
+            Utils.Log<RoomSystem>("RoomPrefabGroup 목록이 설정되지 않음");
             return;
         }
 
@@ -37,7 +37,7 @@ public class RoomService : MonoBehaviour, IService
             roomFactory.Register(group);
         }
 
-        ServiceLocator.Register<RoomService>(this);
+        ServiceLocator.Register<RoomSystem>(this);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
@@ -66,13 +66,13 @@ public class RoomService : MonoBehaviour, IService
 
         if (bounds == null)
         {
-            Utils.Log<RoomService>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
+            Utils.Log<RoomSystem>($"{currentRoom.name}에 카메라 경계 PolygonCollider2D가 없음");
             return;
         }
 
         if (!cameraTargetBinder.SetBounds(bounds))
         {
-            Utils.Log<RoomService>("Virtual Camera에 CinemachineConfiner2D가 없음");
+            Utils.Log<RoomSystem>("Virtual Camera에 CinemachineConfiner2D가 없음");
         }
     }
 
@@ -80,13 +80,13 @@ public class RoomService : MonoBehaviour, IService
     {
         if (player == null || enemySpawner == null)
         {
-            Utils.LogError<RoomService>("Player 또는 EnemySpawner가 연결되지 않음");
+            Utils.LogError<RoomSystem>("Player 또는 EnemySpawner가 연결되지 않음");
             return;
         }
 
         if (roomPrefab == null)
         {
-            Utils.LogError<RoomService>("생성할 방 프리팹이 저장되지 않음");
+            Utils.LogError<RoomSystem>("생성할 방 프리팹이 저장되지 않음");
             return;
         }
 
@@ -99,7 +99,7 @@ public class RoomService : MonoBehaviour, IService
 
         if (currentRoom == null)
         {
-            Utils.Log<RoomService>("방 생성 실패");
+            Utils.Log<RoomSystem>("방 생성 실패");
             return;
         }
 
@@ -110,7 +110,7 @@ public class RoomService : MonoBehaviour, IService
 
         if (spawnPoint == null)
         {
-            Utils.Log<RoomService>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
+            Utils.Log<RoomSystem>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
             return;
         }
 
@@ -174,7 +174,7 @@ public class RoomService : MonoBehaviour, IService
             return;
 
         IsCleared = true;
-        Utils.Log<RoomService>("방 클리어");
+        Utils.Log<RoomSystem>("방 클리어");
 
         EventBus.Publish(new RoomClearedEvent());
     }
