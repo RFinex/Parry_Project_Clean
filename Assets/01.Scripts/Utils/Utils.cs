@@ -23,4 +23,17 @@ public static class Utils
     {
         UnityEngine.Debug.LogError($"[{typeof(T).Name}] {text}");
     }
+
+    public static void EnterToken(ref CancellationTokenSource token)
+    {
+        ExitToken(ref token);
+        token = new CancellationTokenSource();
+    }
+
+    public static void ExitToken(ref CancellationTokenSource token)
+    {
+        token?.Cancel();
+        token?.Dispose();
+        token = null;
+    }
 }

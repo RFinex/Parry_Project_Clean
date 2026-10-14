@@ -12,8 +12,8 @@ EditorBuildSettings:
     path: Assets/00.Scenes/LobbyScene.unity
     guid: 2e3274a414b2fab488356081321e1bd1
   - enabled: 1
-    path: Assets/00.Scenes/RoomTestScene.unity
-    guid: 976c6eb04b402f24e9cb36ec5504f464
+    path: Assets/00.Scenes/Stage1_Scene.unity
+    guid: bdbb9b390157bd445ad893382f3e3208
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

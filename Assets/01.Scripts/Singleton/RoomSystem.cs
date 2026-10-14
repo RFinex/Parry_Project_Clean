@@ -76,18 +76,18 @@ public class RoomSystem : MonoBehaviour, IService
         }
     }
 
-    public void StartRoom(GameObject roomPrefab)
+    public bool StartRoom(GameObject roomPrefab)
     {
         if (player == null || enemySpawner == null)
         {
             Utils.LogError<RoomSystem>("Player 또는 EnemySpawner가 연결되지 않음");
-            return;
+            return false;
         }
 
         if (roomPrefab == null)
         {
             Utils.LogError<RoomSystem>("생성할 방 프리팹이 저장되지 않음");
-            return;
+            return false;
         }
 
         // 방 초기화
@@ -100,7 +100,7 @@ public class RoomSystem : MonoBehaviour, IService
         if (currentRoom == null)
         {
             Utils.Log<RoomSystem>("방 생성 실패");
-            return;
+            return false;
         }
 
         ApplyCameraBounds();
@@ -111,11 +111,13 @@ public class RoomSystem : MonoBehaviour, IService
         if (spawnPoint == null)
         {
             Utils.Log<RoomSystem>($"{currentRoom.name}에 PlayerSpawnPoint가 존재하지 않음");
-            return;
+            return false;
         }
 
         player.MoveToRoomStart(spawnPoint.transform.position);
 
+
+        Utils.Log<RoomSystem>("Spawn Test");
         // 적을 스폰 위치에 소환
         List<EnemyController> enemies = enemySpawner.Spawn(currentRoom.transform);
 
@@ -131,6 +133,8 @@ public class RoomSystem : MonoBehaviour, IService
         // 적이 소환되지 않았으면 클리어 처리
         if (activeEnemies.Count == 0)
             ClearRoom();
+
+        return true;
     }
 
     public void EndRoom()

@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestSceneLoad : MonoBehaviour
 {
@@ -13,7 +15,8 @@ public class TestSceneLoad : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            SceneLoadManager.Instance.LoadStageScene();
+            SceneLoadManager.Instance.LoadSceneAsync(SceneName.Stage1_Scene).Forget();
+            //SceneLoadManager.Instance.LoadStageScene();
         }
     }
 }

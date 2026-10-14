@@ -59,6 +59,8 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         isInitialized = true;
 
         RegisterUIPools();
+
+        Utils.Log<ObjectPoolManager>("Pool Test");
     }
 
     public void SetUIPoolParent(Transform parent)

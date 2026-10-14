@@ -53,6 +53,8 @@ public static class ServiceLocator
             }
         }
 
+        Utils.Log<StageManager>($"{keyList.Count}");
+
         for (int i = 0; i < keyList.Count; i++)
         {
             serviceDic.Remove(keyList[i]);

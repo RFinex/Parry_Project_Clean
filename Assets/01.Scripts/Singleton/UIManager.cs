@@ -62,7 +62,7 @@ public class UIManager : Singleton<UIManager>
                 continue;
 
             if (!popupPrefabDic.TryAdd(popupPrefab.UiName, popupPrefab))
-                Debug.LogWarning($"중복 팝업 프리팹: {popupPrefab.UiName}");
+                Utils.LogWarning<UIManager>($"중복 팝업 프리팹: {popupPrefab.UiName}");
         }
     }
 
@@ -117,7 +117,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (uiCanvas == null)
         {
-            Debug.LogWarning("현재 씬의 Canvas가 등록되지 않았습니다.");
+            Utils.LogWarning<UIManager>("현재 씬의 Canvas가 등록되지 않았습니다.");
             return;
         }
 
@@ -125,7 +125,7 @@ public class UIManager : Singleton<UIManager>
         {
             if (!popupPrefabDic.TryGetValue(name, out PopupBase prefab))
             {
-                Debug.LogWarning($"등록되지 않은 팝업: {name}");
+                Utils.LogWarning<UIManager>($"등록되지 않은 팝업: {name}");
                 return;
             }
 
@@ -145,7 +145,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (!runtimePopupDic.TryGetValue(name, out PopupBase popup) || popup == null)
         {
-            Debug.LogWarning($"생성되지 않은 팝업: {name}");
+            Utils.LogWarning<UIManager>($"생성되지 않은 팝업: {name}");
             return;
         }
 
@@ -195,7 +195,7 @@ public class UIManager : Singleton<UIManager>
 
         if (popup == null)
         {
-            Debug.LogWarning($"{name} 팝업의 타입이 {typeof(T).Name}과 일치하지 않습니다.");
+            Utils.LogWarning<UIManager>($"{name} 팝업의 타입이 {typeof(T).Name}과 일치하지 않습니다.");
             return null;
         }
 
