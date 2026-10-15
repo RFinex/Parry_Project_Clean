@@ -31,7 +31,7 @@ public class EnemyStatusBar : UIBase
     {
         UnBind();
 
-        Utils.EnterToken(ref token);
+        Utils.EnterToken(ref token, enemy.DestroyToken);
 
         target = enemy;
         stats = enemy.Stats;
@@ -121,6 +121,11 @@ public class EnemyStatusBar : UIBase
     }
 
     public override void InitPoolReturn()
+    {
+        UnBind();
+    }
+
+    private void OnDestroy()
     {
         UnBind();
     }

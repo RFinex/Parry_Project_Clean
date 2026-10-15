@@ -30,6 +30,12 @@ public static class Utils
         token = new CancellationTokenSource();
     }
 
+    public static void EnterToken(ref CancellationTokenSource token, CancellationToken ownerToken)
+    {
+        ExitToken(ref token);
+        token = CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
+    }
+
     public static void ExitToken(ref CancellationTokenSource token)
     {
         token?.Cancel();

@@ -35,18 +35,28 @@ public class InteractScanner : MonoBehaviour
     {
         Utils.ExitToken(ref token);
 
-        foreach (IInteractable target in interactDic.Values)
+        interactCache.Clear();
+
+        foreach (var pair in interactDic)
         {
-            Component targetComponent = target as Component;
+            Component targetComponent = pair.Value as Component;
 
-            if ((targetComponent != null))
-                target.SetTrigger(false);
+            if (targetComponent != null)
+                pair.Value.SetTrigger(false);
 
-            interactDic.Clear();
-            interactCache.Clear();
-            nearestObject = null;
-            nearestTarget = null;
+            // [수정] 딕셔너리 순회 중에는 삭제하지 않고 키를 모음
+            interactCache.Add(pair.Key);
         }
+
+        // [수정] 순회가 끝난 뒤 모아둔 키를 딕셔너리에서 제거
+        for (int i = 0; i < interactCache.Count; i++)
+        {
+            interactDic.Remove(interactCache[i]);
+        }
+
+        interactCache.Clear();
+        nearestObject = null;
+        nearestTarget = null;
     }
 
     private async UniTaskVoid UpdateAsync(CancellationToken ctk)
@@ -157,10 +167,12 @@ public class InteractScanner : MonoBehaviour
 
     private void RemoveTarget(GameObject targetObject)
     {
-        if (targetObject == null || !interactDic.TryGetValue(targetObject, out IInteractable target))
+        if (ReferenceEquals(targetObject, null) || !interactDic.TryGetValue(targetObject, out IInteractable target))
             return;
 
-        if (target != null)
+        Component targetComponent = target as Component;
+
+        if (targetComponent != null)
             target.SetTrigger(false);
 
         interactDic.Remove(targetObject);

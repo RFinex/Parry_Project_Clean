@@ -371,6 +371,7 @@ public class PlayerController : MonoBehaviour
 #endif
 
     #region InputAction Method
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (IsDeadState())
@@ -506,6 +507,15 @@ public class PlayerController : MonoBehaviour
             return;
 
         scanner.TryInteract();
+    }
+
+    #endregion
+
+    #region Animation Event
+
+    public void OnDeathAnimationFinished()
+    {
+        EventBus.Publish(new PlayerDiedEvent());
     }
 
     #endregion
