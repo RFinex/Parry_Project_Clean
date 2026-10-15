@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomExit
   interactIcon: {fileID: 3917517407073258329}
+  sr: {fileID: 4457424745548658058}
+  openDoorSprite: {fileID: 2325145658267342539, guid: 9951656bb17467946b9857ab5ba3dcbc, type: 3}
+  closedDoorSprite: {fileID: 4379119349752113323, guid: 8434e318a4f4e2e4c971b8cff9ada10c, type: 3}
   isOpen: 0
   hasInteracted: 0
 --- !u!61 &5263653767373785455
@@ -82,7 +85,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.07595825, y: -0.31860876}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -92,7 +95,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.2104034, y: 4.604827}
   m_EdgeRadius: 0
 --- !u!1 &3917517407073258329
 GameObject:
@@ -175,7 +178,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: fa78b52c3e5e1d14ca72533afd2692ac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2de94e7d51b53144ebf574a7637a9233, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -266,9 +269,9 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 4379119349752113323, guid: 8434e318a4f4e2e4c971b8cff9ada10c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

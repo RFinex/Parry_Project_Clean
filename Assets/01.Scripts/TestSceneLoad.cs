@@ -6,7 +6,7 @@ public class TestSceneLoad : InteractableBase
 {
     public override bool CanInteract => true;
 
-    public override void Interact()
+    public override void Interact(PlayerController interactor)
     {
         SceneLoadManager.Instance.LoadSceneAsync(SceneName.Stage1_Scene).Forget();
     }

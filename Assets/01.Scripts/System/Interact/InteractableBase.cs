@@ -14,7 +14,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
             interactIcon.SetActive(false);
     }
 
-    public abstract void Interact();
+    public abstract void Interact(PlayerController interactor);
 
     public void SetTrigger(bool isTrigger)
     {

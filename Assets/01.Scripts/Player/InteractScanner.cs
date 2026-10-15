@@ -8,7 +8,7 @@ public interface IInteractable
 {
     bool CanInteract { get; }
     void SetTrigger(bool isTrigger);
-    void Interact();
+    void Interact(PlayerController interactor);
 }
 
 public class InteractScanner : MonoBehaviour
@@ -22,7 +22,14 @@ public class InteractScanner : MonoBehaviour
     private GameObject nearestObject;
     private IInteractable nearestTarget;
 
+    private PlayerController player;
+
     private CancellationTokenSource token;
+
+    private void Awake()
+    {
+        player = GetComponentInParent<PlayerController>();
+    }
 
     private void OnEnable()
     {
@@ -44,11 +51,9 @@ public class InteractScanner : MonoBehaviour
             if (targetComponent != null)
                 pair.Value.SetTrigger(false);
 
-            // [수정] 딕셔너리 순회 중에는 삭제하지 않고 키를 모음
             interactCache.Add(pair.Key);
         }
 
-        // [수정] 순회가 끝난 뒤 모아둔 키를 딕셔너리에서 제거
         for (int i = 0; i < interactCache.Count; i++)
         {
             interactDic.Remove(interactCache[i]);
@@ -115,7 +120,7 @@ public class InteractScanner : MonoBehaviour
         if (nearestTarget == null || !nearestTarget.CanInteract)
             return;
 
-        nearestTarget.Interact();
+        nearestTarget.Interact(player);
     }
 
     private void RefreshNearestTarget()

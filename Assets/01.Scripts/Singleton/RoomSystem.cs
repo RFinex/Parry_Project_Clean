@@ -22,6 +22,8 @@ public class RoomSystem : MonoBehaviour, IService
 
     private bool isQuitting;
 
+    private TreasureRoomSystem treasureRoom;
+
     private void Awake()
     {
         roomFactory = new RoomFactory();
@@ -38,6 +40,16 @@ public class RoomSystem : MonoBehaviour, IService
         }
 
         ServiceLocator.Register<RoomSystem>(this);
+    }
+
+    private void OnEnable()
+    {
+        EventBus.Subscribe<TreasureRoomEndEvent>(HandleTreasureRoomEnd);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.UnSubscribe<TreasureRoomEndEvent>(HandleTreasureRoomEnd);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
@@ -97,6 +109,11 @@ public class RoomSystem : MonoBehaviour, IService
         // 방 생성
         currentRoom = roomFactory.Create(roomPrefab);
 
+        treasureRoom = currentRoom.GetComponentInChildren<TreasureRoomSystem>();
+
+        if (treasureRoom != null)
+            treasureRoom.Initialized();
+
         if (currentRoom == null)
         {
             Utils.Log<RoomSystem>("방 생성 실패");
@@ -131,7 +148,7 @@ public class RoomSystem : MonoBehaviour, IService
         }
 
         // 적이 소환되지 않았으면 클리어 처리
-        if (activeEnemies.Count == 0)
+        if (activeEnemies.Count == 0 && treasureRoom == null)
             ClearRoom();
 
         return true;
@@ -155,6 +172,8 @@ public class RoomSystem : MonoBehaviour, IService
             Destroy(currentRoom);
             currentRoom = null;
         }
+
+        treasureRoom = null;
     }
 
     /// <summary>
@@ -168,8 +187,16 @@ public class RoomSystem : MonoBehaviour, IService
 
         Utils.Log<EnemySpawner>($"남은 적 수 : {activeEnemies.Count}");
 
-        if (activeEnemies.Count == 0)
+        if (activeEnemies.Count == 0 && treasureRoom == null)
             ClearRoom();
+    }
+
+    private void HandleTreasureRoomEnd(TreasureRoomEndEvent eventData)
+    {
+        if (treasureRoom == null || eventData.Obj != treasureRoom)
+            return;
+
+        ClearRoom();
     }
 
     private void ClearRoom()

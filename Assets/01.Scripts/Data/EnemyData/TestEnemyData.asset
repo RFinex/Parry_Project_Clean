@@ -21,7 +21,7 @@ MonoBehaviour:
   detectRange: 5
   attackRange: 1
   traceRange: 7
-  attackDamage: 5
+  attackDamage: 50
   attackCool: 1
   staggerDuration: 3
   minIdleTime: 2

@@ -1,7 +1,12 @@
 using UnityEngine;
 
-public class RoomExit : InteractableBase
+public class RoomExitObject : InteractableBase
 {
+    [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private Sprite openDoorSprite;
+    [SerializeField] private Sprite closedDoorSprite;
+
+
     public bool isOpen;
     public bool hasInteracted;
 
@@ -29,10 +34,11 @@ public class RoomExit : InteractableBase
 
         isOpen = true;
 
+        sr.sprite = openDoorSprite;
         RefreshIcon();
     }
 
-    public override void Interact()
+    public override void Interact(PlayerController interactor)
     {
         if (!CanInteract)
             return;
