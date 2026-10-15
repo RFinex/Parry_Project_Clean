@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sr;
 
     private PlayerAfterImage afterImage;
+    private InteractScanner scanner;
 
     #region Black Board
 
@@ -113,6 +114,7 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         afterImage = GetComponent<PlayerAfterImage>();
+        scanner = GetComponentInChildren<InteractScanner>();
 
         InitBasePlayerInfo();
 
@@ -497,6 +499,15 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (!context.started || IsDeadState())
+            return;
+
+        scanner.TryInteract();
+    }
+
     #endregion
 
     public void ClearExecuteTarget()

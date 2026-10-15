@@ -2,21 +2,13 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TestSceneLoad : MonoBehaviour
+public class TestSceneLoad : InteractableBase
 {
-    Collider2D col;
+    public override bool CanInteract => true;
 
-    private void Awake()
+    public override void Interact()
     {
-        col = GetComponent<Collider2D>();
+        SceneLoadManager.Instance.LoadSceneAsync(SceneName.Stage1_Scene).Forget();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            SceneLoadManager.Instance.LoadSceneAsync(SceneName.Stage1_Scene).Forget();
-            //SceneLoadManager.Instance.LoadStageScene();
-        }
-    }
 }
