@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sr;
 
     private PlayerAfterImage afterImage;
+    private InteractScanner scanner;
 
     #region Black Board
 
@@ -113,6 +114,7 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         afterImage = GetComponent<PlayerAfterImage>();
+        scanner = GetComponentInChildren<InteractScanner>();
 
         InitBasePlayerInfo();
 
@@ -369,6 +371,7 @@ public class PlayerController : MonoBehaviour
 #endif
 
     #region InputAction Method
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (IsDeadState())
@@ -497,6 +500,24 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (!context.started || IsDeadState())
+            return;
+
+        scanner.TryInteract();
+    }
+
+    #endregion
+
+    #region Animation Event
+
+    public void OnDeathAnimationFinished()
+    {
+        EventBus.Publish(new PlayerDiedEvent());
+    }
+
     #endregion
 
     public void ClearExecuteTarget()

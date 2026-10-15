@@ -46,13 +46,14 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
 
     public async UniTask LoadSceneAsync(SceneName name)
     {
+        if (isLoading)
+            return;
+
+        isLoading = true;
+
         try
         {
-            if (isLoading)
-                return;
-
             isReady = false;
-            isLoading = true;
 
             await transitionUI.FadeOutAsync(token.Token);
             transitionUI.ShowLoading();

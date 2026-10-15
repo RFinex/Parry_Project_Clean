@@ -27,6 +27,8 @@ public class StageManager : Singleton<StageManager>
 
         EventBus.Subscribe<RoomClearedEvent>(HandleRoomClear);
         EventBus.Subscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
+        EventBus.Subscribe<RoomExitInteractedEvent>(HandleRoomExitInteracted);
+        EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDied);
     }
 
     private void OnDisable()
@@ -37,6 +39,8 @@ public class StageManager : Singleton<StageManager>
 
         EventBus.UnSubscribe<RoomClearedEvent>(HandleRoomClear);
         EventBus.UnSubscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
+        EventBus.UnSubscribe<RoomExitInteractedEvent>(HandleRoomExitInteracted);
+        EventBus.UnSubscribe<PlayerDiedEvent>(HandlePlayerDied);
     }
 
     private void Start()
@@ -89,22 +93,19 @@ public class StageManager : Singleton<StageManager>
             SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene).Forget();
             return;
         }
-
-        ShowMapAfterDelay(currentNode.nextNodeIds, token.Token).Forget();
     }
 
-    private async UniTaskVoid ShowMapAfterDelay(List<int> nextNodeIds, CancellationToken ctk)
+    private void HandleRoomExitInteracted(RoomExitInteractedEvent eventData)
     {
-        try
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(mapShowDelay), cancellationToken: ctk);
+        StageMapNodeData currentNode = GetNode(currentNodeId);
 
-            EventBus.Publish(new StageMapShownEvent { SelectableNodeIds = nextNodeIds });
-        }
-        catch (OperationCanceledException)
-        {
+        if (currentNode == null)
+            return;
 
-        }
+        if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
+            return;
+
+        EventBus.Publish(new StageMapShownEvent { SelectableNodeIds = currentNode.nextNodeIds });
     }
 
     private void HandleMapNodeSelected(MapNodeSelectedEvent eventData)
@@ -125,6 +126,11 @@ public class StageManager : Singleton<StageManager>
         currentNodeId = selectedNode.id;
 
         roomSystem.StartRoom(selectedNode.roomPrefab);
+    }
+
+    private void HandlePlayerDied(PlayerDiedEvent eventData)
+    {
+        SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene).Forget();
     }
 
     private StageMapNodeData GetNode(int id)
