@@ -10,7 +10,7 @@ public abstract class BaseState<T>
 
     public BlackBoard blackBoard;
 
-    public void Initialized(BlackBoard blackBoard)
+    public virtual void Initialized(BlackBoard blackBoard)
     {
         this.blackBoard = blackBoard;
     }

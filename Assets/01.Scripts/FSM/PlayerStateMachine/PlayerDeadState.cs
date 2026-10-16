@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class PlayerDeadState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     public override void Enter(PlayerController owner)
     {
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        this.board.animator.PlayDeath();
+        playerBoard.animator.PlayDeath();
     }
 
     public override void Exit(PlayerController owner)

@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        this.board.animator.PlayJump();
+        playerBoard.animator.PlayJump();
 
         JumpCheckAsync(owner, token.Token).Forget();
     }
@@ -34,7 +34,7 @@ public class PlayerJumpState : PlayerBaseState
             {
                 owner.Move();
 
-                if (board.movement.verticalVelocity <= 0f)
+                if (playerBoard.movement.verticalVelocity <= 0f)
                 {
                     TransitionState(typeof(PlayerFallState));
                     return;
@@ -46,6 +46,34 @@ public class PlayerJumpState : PlayerBaseState
         catch (OperationCanceledException)
         {
 
+        }
+    }
+
+    public override void HandleInput(PlayerInput input)
+    {
+        switch (input)
+        {
+            case PlayerInput.DashPressed:
+                TryDash();
+                break;
+
+            case PlayerInput.AttackPressed:
+                TryAttackOrExecute();
+                break;
+
+            case PlayerInput.GuardPressed:
+                TryGuard();
+                break;
+
+            case PlayerInput.JumpReleased:
+                if(playerBoard.rb.linearVelocity.y > 0f)
+                {
+                    playerBoard.rb.linearVelocity = new Vector2(playerBoard.rb.linearVelocity.x, playerBoard.rb.linearVelocity.y * 0.4f);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 }

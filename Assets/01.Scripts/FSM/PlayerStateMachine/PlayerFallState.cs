@@ -4,16 +4,16 @@ using System.Threading;
 
 public class PlayerFallState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
         LandingCheckAsync(owner, token.Token).Forget();
     }
@@ -33,9 +33,9 @@ public class PlayerFallState : PlayerBaseState
             {
                 owner.Move();
 
-                if (board.movement.isGround && board.movement.verticalVelocity <= 0f)
+                if (playerBoard.movement.isGround && playerBoard.movement.verticalVelocity <= 0f)
                 {
-                    if (board.movement.moveInput.x != 0f)
+                    if (playerBoard.movement.moveInput.x != 0f)
                         TransitionState(typeof(PlayerMoveState));
                     else
                         TransitionState(typeof(PlayerIdleState));
@@ -49,6 +49,27 @@ public class PlayerFallState : PlayerBaseState
         catch (OperationCanceledException)
         {
 
+        }
+    }
+
+    public override void HandleInput(PlayerInput input)
+    {
+        switch (input)
+        {
+            case PlayerInput.DashPressed:
+                TryDash();
+                break;
+
+            case PlayerInput.AttackPressed:
+                TryAttackOrExecute();
+                break;
+
+            case PlayerInput.GuardPressed:
+                TryGuard();
+                break;
+
+            default:
+                break;
         }
     }
 }

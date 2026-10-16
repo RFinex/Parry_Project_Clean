@@ -2,38 +2,33 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class PlayerGuardState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
-
-    private bool isParryEnd;
+    //private PlayerBlackBoard board;
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
-
-        isParryEnd = false;
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
         owner.StopMove();
 
-        this.board.animator.PlayGuard();
+        playerBoard.animator.PlayGuard();
 
-        owner.Combat.GuardStart();
+        playerBoard.combat.GuardStart();
 
         ParryTimerAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
-        board.animator.StopGuard();
+        playerBoard.animator.StopGuard();
 
-        owner.Combat.GuardEnd();
+        playerBoard.combat.GuardEnd();
 
         ExitToken();
     }
@@ -42,15 +37,30 @@ public class PlayerGuardState : PlayerBaseState
     {
         try
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(owner.Combat.ParryWindow), cancellationToken: ctk);
-                        
-            isParryEnd = true;
+            await UniTask.Delay(TimeSpan.FromSeconds(playerBoard.combat.ParryWindow), cancellationToken: ctk);
 
-            owner.Combat.ParryEnd();
+            playerBoard.combat.ParryEnd();
         }
         catch (OperationCanceledException)
         {
 
+        }
+    }
+
+    public override void HandleInput(PlayerInput input)
+    {
+        switch (input)
+        {
+            case PlayerInput.AttackPressed:
+                TryAttackOrExecute();
+                break;
+
+            case PlayerInput.GuardReleased:
+                ReleaseGuard();
+                break;
+
+            default:
+                break;
         }
     }
 }
