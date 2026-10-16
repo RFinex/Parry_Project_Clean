@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("State Machine")]
     private PlayerStateMachine stateMachine;
+    private PlayerTransitioner transitioner;
 
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
@@ -206,6 +207,8 @@ public class PlayerController : MonoBehaviour
         stateMachine = new PlayerStateMachine(this, blackBoard);
 
         AddStates();
+
+        transitioner = new PlayerTransitioner(blackBoard);
     }
 
     private void AddStates()
@@ -366,10 +369,12 @@ public class PlayerController : MonoBehaviour
             sr.flipX = true;
     }
 
-    //public void Jump()
-    //{
-    //    rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
-    //}
+    public void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
+
+        blackBoard.movement.verticalVelocity = rb.linearVelocity.y;
+    }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private void OnDrawGizmos()
@@ -386,8 +391,19 @@ public class PlayerController : MonoBehaviour
 
     public void InputToCurrentState(PlayerInput input)
     {
-        if (stateMachine.CurrentState is PlayerBaseState state)
-            state.HandleInput(input);
+        var currentState = stateMachine.CurrentState;
+
+        if (currentState == null || transitioner == null)
+            return;
+
+        if (!transitioner.TryResolve(currentState.GetType(), input, out Type nextState))
+            return;
+
+        if (nextState != null)
+            stateMachine.ChangeState(nextState);
+
+        //if (stateMachine.CurrentState is PlayerBaseState state)
+        //    state.HandleInput(input);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -396,6 +412,8 @@ public class PlayerController : MonoBehaviour
             return;
 
         moveInput = context.ReadValue<Vector2>();
+
+        movement.moveInput = moveInput;
     }
 
     public void OnJump(InputAction.CallbackContext context)

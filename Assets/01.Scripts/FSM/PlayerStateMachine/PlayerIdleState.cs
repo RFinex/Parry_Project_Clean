@@ -46,28 +46,28 @@ public class PlayerIdleState : PlayerBaseState
         }
     }
 
-    public override void HandleInput(PlayerInput input)
-    {
-        switch (input)
-        {
-            case PlayerInput.JumpPressed:
-                TryJump();
-                break;
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.JumpPressed:
+    //            TryJump();
+    //            break;
 
-            case PlayerInput.DashPressed:
-                TryDash();
-                break;
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
 
-            case PlayerInput.AttackPressed:
-                TryAttackOrExecute();
-                break;
+    //        case PlayerInput.AttackPressed:
+    //            TryAttackOrExecute();
+    //            break;
 
-            case PlayerInput.GuardPressed:
-                TryGuard();
-                break;
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
 
-            default:
-                break;
-        }
-    }
+    //        default:
+    //            break;
+    //    }
+    //}
 }

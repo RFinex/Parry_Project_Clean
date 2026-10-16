@@ -47,20 +47,20 @@ public class PlayerGuardState : PlayerBaseState
         }
     }
 
-    public override void HandleInput(PlayerInput input)
-    {
-        switch (input)
-        {
-            case PlayerInput.AttackPressed:
-                TryAttackOrExecute();
-                break;
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.AttackPressed:
+    //            TryAttackOrExecute();
+    //            break;
 
-            case PlayerInput.GuardReleased:
-                ReleaseGuard();
-                break;
+    //        case PlayerInput.GuardReleased:
+    //            ReleaseGuard();
+    //            break;
 
-            default:
-                break;
-        }
-    }
+    //        default:
+    //            break;
+    //    }
+    //}
 }

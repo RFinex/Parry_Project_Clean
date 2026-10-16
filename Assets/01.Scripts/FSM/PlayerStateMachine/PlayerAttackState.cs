@@ -70,24 +70,24 @@ public class PlayerAttackState : PlayerBaseState
         }
     }
 
-    public override void HandleInput(PlayerInput input)
-    {
-        switch (input)
-        {
-            case PlayerInput.DashPressed:
-                TryDash();
-                break;
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
 
-            case PlayerInput.AttackPressed:
-                playerBoard.combat.RequestCombo();
-                break;
+    //        case PlayerInput.AttackPressed:
+    //            playerBoard.combat.RequestCombo();
+    //            break;
 
-            case PlayerInput.GuardPressed:
-                TryGuard();
-                break;
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
 
-            default:
-                break;
-        }
-    }
+    //        default:
+    //            break;
+    //    }
+    //}
 }

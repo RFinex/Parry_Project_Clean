@@ -16,6 +16,8 @@ public class PlayerJumpState : PlayerBaseState
         //    this.board = board;
         //}
 
+        owner.Jump();
+
         playerBoard.animator.PlayJump();
 
         JumpCheckAsync(owner, token.Token).Forget();
@@ -49,31 +51,31 @@ public class PlayerJumpState : PlayerBaseState
         }
     }
 
-    public override void HandleInput(PlayerInput input)
-    {
-        switch (input)
-        {
-            case PlayerInput.DashPressed:
-                TryDash();
-                break;
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
 
-            case PlayerInput.AttackPressed:
-                TryAttackOrExecute();
-                break;
+    //        case PlayerInput.AttackPressed:
+    //            TryAttackOrExecute();
+    //            break;
 
-            case PlayerInput.GuardPressed:
-                TryGuard();
-                break;
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
 
-            case PlayerInput.JumpReleased:
-                if(playerBoard.rb.linearVelocity.y > 0f)
-                {
-                    playerBoard.rb.linearVelocity = new Vector2(playerBoard.rb.linearVelocity.x, playerBoard.rb.linearVelocity.y * 0.4f);
-                }
-                break;
+    //        case PlayerInput.JumpReleased:
+    //            if(playerBoard.rb.linearVelocity.y > 0f)
+    //            {
+    //                playerBoard.rb.linearVelocity = new Vector2(playerBoard.rb.linearVelocity.x, playerBoard.rb.linearVelocity.y * 0.4f);
+    //            }
+    //            break;
 
-            default:
-                break;
-        }
-    }
+    //        default:
+    //            break;
+    //    }
+    //}
 }

@@ -20,17 +20,17 @@ public class StateMachine<T> where T : class
 
     public void ChangeState(Type type, bool isForce = false)
     {
-        if (!isForce && currentState != null && currentState.GetType() == type)
+        if (type == null || !stateDic.TryGetValue(type, out var nextState))
+            return;
+
+        if (!isForce && currentState == nextState)
             return;
 
         if (currentState != null)
         {
-            currentState.Exit(owner);
             currentState.OnTransition -= ChangeState;
+            currentState.Exit(owner);
         }
-
-        if (!stateDic.TryGetValue(type, out var nextState))
-            return;
 
         currentState = nextState;
         

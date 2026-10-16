@@ -52,24 +52,24 @@ public class PlayerFallState : PlayerBaseState
         }
     }
 
-    public override void HandleInput(PlayerInput input)
-    {
-        switch (input)
-        {
-            case PlayerInput.DashPressed:
-                TryDash();
-                break;
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
 
-            case PlayerInput.AttackPressed:
-                TryAttackOrExecute();
-                break;
+    //        case PlayerInput.AttackPressed:
+    //            TryAttackOrExecute();
+    //            break;
 
-            case PlayerInput.GuardPressed:
-                TryGuard();
-                break;
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
 
-            default:
-                break;
-        }
-    }
+    //        default:
+    //            break;
+    //    }
+    //}
 }
