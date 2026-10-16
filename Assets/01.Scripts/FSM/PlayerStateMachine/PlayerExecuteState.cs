@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerExecuteState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     private GameObject target;
 
@@ -13,12 +13,12 @@ public class PlayerExecuteState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        target = owner.ExecuteTarget;
+        target = playerBoard.executeTarget;
 
         if (target == null)
         {
@@ -33,9 +33,9 @@ public class PlayerExecuteState : PlayerBaseState
 
     public override void Exit(PlayerController owner)
     {
-        board.afterImage.StopImage();
+        playerBoard.afterImage.StopImage();
 
-        owner.ClearExecuteTarget();
+        playerBoard.executeTarget = null;
 
         owner.StopMove();
 
@@ -60,7 +60,7 @@ public class PlayerExecuteState : PlayerBaseState
                 return;
             }
 
-            board.afterImage.PlayImage(0.3f);
+            playerBoard.afterImage.PlayImage(0.3f);
 
             Vector2 targetPos = enemy.GetExecutePos(owner.transform.position);
             
@@ -80,9 +80,9 @@ public class PlayerExecuteState : PlayerBaseState
                 }
 
                 Vector2 currentPos = owner.transform.position;
-                Vector2 nextPos = Vector2.MoveTowards(currentPos, targetPos, board.movement.executeMoveSpeed * Time.deltaTime);
+                Vector2 nextPos = Vector2.MoveTowards(currentPos, targetPos, playerBoard.movement.executeMoveSpeed * Time.deltaTime);
 
-                board.rb.MovePosition(nextPos);
+                playerBoard.rb.MovePosition(nextPos);
 
                 float targetOffset = 0.05f * 0.05f;
                 float distance = (targetPos - nextPos).sqrMagnitude;
@@ -96,11 +96,11 @@ public class PlayerExecuteState : PlayerBaseState
             if (ctk.IsCancellationRequested)
                 return;
 
-            board.afterImage.StopImage();
+            playerBoard.afterImage.StopImage();
 
-            board.animator.PlayExecuteAttack();
+            playerBoard.animator.PlayExecuteAttack();
 
-            owner.Combat.SpecialAttack(target);
+            playerBoard.combat.SpecialAttack(target);
 
             await UniTask.Delay(TimeSpan.FromSeconds(0.2f), cancellationToken: ctk);
 

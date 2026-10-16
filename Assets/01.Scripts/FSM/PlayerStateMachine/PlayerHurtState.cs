@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerHurtState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     private float hurtTimer = (2f / 11f);
 
@@ -13,12 +13,12 @@ public class PlayerHurtState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        this.board.animator.PlayHurt();
+        playerBoard.animator.PlayHurt();
 
         HurtTimeAsync(token.Token).Forget();
     }
@@ -34,13 +34,13 @@ public class PlayerHurtState : PlayerBaseState
         {
             await UniTask.Delay(TimeSpan.FromSeconds(hurtTimer), cancellationToken: ctk);
 
-            if (!board.movement.isGround)
+            if (!playerBoard.movement.isGround)
             {
                 TransitionState(typeof(PlayerFallState));
                 return;
             }
 
-            if (board.movement.moveInput.x != 0)
+            if (playerBoard.movement.moveInput.x != 0)
             {
                 TransitionState(typeof(PlayerMoveState));
                 return;

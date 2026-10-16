@@ -66,6 +66,8 @@ public class PlayerStats
 
         if (nowHp >= maxHp)
             nowHp = maxHp;
+
+        Utils.Log<PlayerController>($"남은 체력 : {nowHp}/{maxHp}");
     }
 
     public void RestoreStamina(float value)

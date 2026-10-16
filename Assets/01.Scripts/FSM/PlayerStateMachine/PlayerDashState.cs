@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerDashState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     private float dashCheckTimer;
     private float dashCoolTimer;
@@ -14,15 +14,15 @@ public class PlayerDashState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        this.board.animator.PlayDash();
+        playerBoard.animator.PlayDash();
 
         DashAsync(token.Token).Forget();
-        this.board.skill.DashCoolTime(owner.DestroyToken).Forget();
+        playerBoard.skill.DashCoolTime(owner.DestroyToken).Forget();
     }
 
     public override void Exit(PlayerController owner)
@@ -36,11 +36,11 @@ public class PlayerDashState : PlayerBaseState
         {
             dashCheckTimer = 0f;
 
-            while (dashCheckTimer <= board.skill.dashTime)
+            while (dashCheckTimer <= playerBoard.skill.dashTime)
             {
                 dashCheckTimer += Time.deltaTime;
 
-                board.rb.linearVelocity = new Vector2(board.movement.frontDir * board.skill.dashSpeed, 0f);
+                playerBoard.rb.linearVelocity = new Vector2(playerBoard.movement.frontDir * playerBoard.skill.dashSpeed, 0f);
 
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
             }
@@ -52,9 +52,9 @@ public class PlayerDashState : PlayerBaseState
         }
         finally
         {
-            if (!board.movement.isGround)
+            if (!playerBoard.movement.isGround)
                 TransitionState(typeof(PlayerFallState));
-            else if (board.movement.moveInput.x != 0f)
+            else if (playerBoard.movement.moveInput.x != 0f)
                 TransitionState(typeof(PlayerMoveState));
             else
                 TransitionState(typeof(PlayerIdleState));

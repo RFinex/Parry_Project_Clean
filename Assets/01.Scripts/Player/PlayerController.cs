@@ -11,6 +11,31 @@ public enum GuardResult
     Parry
 }
 
+public enum PlayerInput
+{
+    JumpPressed,
+    JumpReleased,
+    DashPressed,
+    AttackPressed,
+    GuardPressed,
+    GuardReleased,
+    MoveChanged
+}
+
+public enum PlayerStateId
+{
+    Idle = 0,
+    Move = 1,
+    Jump = 2,
+    Fall = 3,
+    Attack = 4,
+    Guard = 5,
+    Dash = 6,
+    Hurt = 7,
+    Execute = 8,
+    Dead = 9
+}
+
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -32,13 +57,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Data")]
     [SerializeField] private PlayerBaseData data;
+    [SerializeField] private PlayerTransitionData transitionData;
 
     [Header("Player Info")]
     private PlayerStats stats;
     private PlayerCombat combat;
 
     public PlayerStats Stats => stats;
-    public PlayerCombat Combat => combat;
+    //public PlayerCombat Combat => combat;
 
     [Header("Move")]
     [SerializeField] private float frontDir = 1f;
@@ -61,6 +87,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("State Machine")]
     private PlayerStateMachine stateMachine;
+    private PlayerTransitioner transitioner;
 
     [Header("Bool Check")]
     [SerializeField] private bool isGround;
@@ -75,8 +102,8 @@ public class PlayerController : MonoBehaviour
     private float blinkTimer;
     private bool isInvincibleVisual;
 
-    private GameObject executeTarget;
-    public GameObject ExecuteTarget => executeTarget;
+    //private GameObject executeTarget;
+    //public GameObject ExecuteTarget => executeTarget;
 
     #endregion
 
@@ -177,9 +204,11 @@ public class PlayerController : MonoBehaviour
             rb = rb,
             movement = movement,
             stats = stats,
+            playerTransform = transform,
             skill = skill,
             animator = playerAnimator,
-            afterImage = afterImage
+            afterImage = afterImage,
+            combat = combat
         };
     }
 
@@ -194,6 +223,8 @@ public class PlayerController : MonoBehaviour
         stateMachine = new PlayerStateMachine(this, blackBoard);
 
         AddStates();
+
+        transitioner = new PlayerTransitioner(blackBoard, transitionData);
     }
 
     private void AddStates()
@@ -357,6 +388,8 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
+
+        blackBoard.movement.verticalVelocity = rb.linearVelocity.y;
     }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -372,12 +405,39 @@ public class PlayerController : MonoBehaviour
 
     #region InputAction Method
 
+    public void InputToCurrentState(PlayerInput input)
+    {
+        if (token == null || token.IsCancellationRequested)
+            return;
+
+        if (stateMachine == null || transitioner == null)
+            return;
+        
+        var currentState = stateMachine.CurrentState;
+
+        if (currentState == null)
+            return;
+
+        if (!transitioner.TryResolve(currentState.GetType(), input, out Type nextState))
+            return;
+
+        if (nextState != null)
+            stateMachine.ChangeState(nextState);
+
+        //if (stateMachine.CurrentState is PlayerBaseState state)
+        //    state.HandleInput(input);
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (IsDeadState())
             return;
 
         moveInput = context.ReadValue<Vector2>();
+
+        movement.moveInput = moveInput;
+
+        InputToCurrentState(PlayerInput.MoveChanged);
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -387,22 +447,24 @@ public class PlayerController : MonoBehaviour
 
         if (context.performed)
         {
-            if (!isGround)
-                return;
+            InputToCurrentState(PlayerInput.JumpPressed);
 
-            Jump();
-            movement.verticalVelocity = rb.linearVelocity.y;
+            //if (!isGround)
+            //    return;
 
-            stateMachine.ChangeState(typeof(PlayerJumpState));
+            //Jump();
+            //movement.verticalVelocity = rb.linearVelocity.y;
 
-        }
-        
-        if (context.canceled)
+            //stateMachine.ChangeState(typeof(PlayerJumpState));
+
+        }        
+        else if (context.canceled)
         {
-            if (stateMachine.IsState(typeof(PlayerJumpState)))
-            {
-                StopJump();
-            }            
+            InputToCurrentState(PlayerInput.JumpReleased);
+            //if (stateMachine.IsState(typeof(PlayerJumpState)))
+            //{
+            //    StopJump();
+            //}            
         }
     }
 
@@ -411,22 +473,28 @@ public class PlayerController : MonoBehaviour
         if (IsDeadState())
             return;
 
-        if (!context.performed)
-            return;
-
-        if (stateMachine.IsState(typeof(PlayerDashState)) || skill.dashCoolTimer > 0f)
+        if (context.performed)
         {
-            Utils.Log<PlayerController>("대시중이거나 쿨타임 중");
-            return;
+            InputToCurrentState(PlayerInput.DashPressed);
         }
 
-        if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-            stateMachine.IsState(typeof(PlayerMoveState)) ||
-            stateMachine.IsState(typeof(PlayerFallState)) ||
-            stateMachine.IsState(typeof(PlayerAttackState)))
-        {
-            stateMachine.ChangeState(typeof(PlayerDashState));
-        }
+        //if (!context.performed)
+        //    return;
+
+        //if (stateMachine.IsState(typeof(PlayerDashState)) || skill.dashCoolTimer > 0f)
+        //{
+        //    Utils.Log<PlayerController>("대시중이거나 쿨타임 중");
+        //    return;
+        //}
+
+        //if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+        //    stateMachine.IsState(typeof(PlayerMoveState)) ||
+        //    stateMachine.IsState(typeof(PlayerFallState)) ||
+        //    stateMachine.IsState(typeof(PlayerAttackState)) ||
+        //    stateMachine.IsState(typeof(PlayerJumpState)))
+        //{
+        //    stateMachine.ChangeState(typeof(PlayerDashState));
+        //}
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -434,32 +502,38 @@ public class PlayerController : MonoBehaviour
         if (IsDeadState())
             return;
 
-        if (!context.performed)
-            return;
-
-        if (stateMachine.IsState(typeof(PlayerAttackState)))
+        if (context.performed)
         {
-            combat.RequestCombo();
-            return;
+            InputToCurrentState(PlayerInput.AttackPressed);
         }
 
-        if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-            stateMachine.IsState(typeof(PlayerMoveState)) ||
-            stateMachine.IsState(typeof(PlayerGuardState)) ||
-            stateMachine.IsState(typeof(PlayerFallState)))
-        {
-            GameObject target = combat.FindExecuteTarget(transform.position);
+        //if (!context.performed)
+        //    return;
 
-            if (target != null)
-            {
-                executeTarget = target;
+        //if (stateMachine.IsState(typeof(PlayerAttackState)))
+        //{
+        //    combat.RequestCombo();
+        //    return;
+        //}
 
-                stateMachine.ChangeState(typeof(PlayerExecuteState));
-                return;
-            }
+        //if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+        //    stateMachine.IsState(typeof(PlayerMoveState)) ||
+        //    stateMachine.IsState(typeof(PlayerGuardState)) ||
+        //    stateMachine.IsState(typeof(PlayerFallState)) ||
+        //    stateMachine.IsState(typeof(PlayerJumpState)))
+        //{
+        //    GameObject target = combat.FindExecuteTarget(transform.position);
 
-            stateMachine.ChangeState(typeof(PlayerAttackState));
-        }        
+        //    if (target != null)
+        //    {
+        //        executeTarget = target;
+
+        //        stateMachine.ChangeState(typeof(PlayerExecuteState));
+        //        return;
+        //    }
+
+        //    stateMachine.ChangeState(typeof(PlayerAttackState));
+        //}        
     }
 
     public void OnGuard(InputAction.CallbackContext context)
@@ -469,36 +543,46 @@ public class PlayerController : MonoBehaviour
 
         if (context.started)
         {
-            if (!combat.CanGuard)
-                return;
-
-            if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-                stateMachine.IsState(typeof(PlayerMoveState)) ||
-                stateMachine.IsState(typeof(PlayerAttackState)) ||
-                stateMachine.IsState(typeof(PlayerFallState)))
-            {
-                stateMachine.ChangeState(typeof(PlayerGuardState));
-            }
+            InputToCurrentState(PlayerInput.GuardPressed);
         }
         else if (context.canceled)
         {
-            if (stateMachine.IsState(typeof(PlayerGuardState)))
-            {
-                if (!isGround)
-                {
-                    stateMachine.ChangeState(typeof(PlayerFallState));
-                    return;
-                }
-
-                if (moveInput.x != 0f)
-                {
-                    stateMachine.ChangeState(typeof(PlayerMoveState));
-                    return;
-                }
-
-                stateMachine.ChangeState(typeof(PlayerIdleState));
-            }
+            InputToCurrentState(PlayerInput.GuardReleased);
         }
+
+        //if (context.started)
+        //{
+        //    if (!combat.CanGuard)
+        //        return;
+
+        //    if (stateMachine.IsState(typeof(PlayerIdleState)) ||
+        //        stateMachine.IsState(typeof(PlayerMoveState)) ||
+        //        stateMachine.IsState(typeof(PlayerAttackState)) ||
+        //        stateMachine.IsState(typeof(PlayerFallState)) ||
+        //        stateMachine.IsState(typeof(PlayerJumpState)))
+        //    {
+        //        stateMachine.ChangeState(typeof(PlayerGuardState));
+        //    }
+        //}
+        //else if (context.canceled)
+        //{
+        //    if (stateMachine.IsState(typeof(PlayerGuardState)))
+        //    {
+        //        if (!isGround)
+        //        {
+        //            stateMachine.ChangeState(typeof(PlayerFallState));
+        //            return;
+        //        }
+
+        //        if (moveInput.x != 0f)
+        //        {
+        //            stateMachine.ChangeState(typeof(PlayerMoveState));
+        //            return;
+        //        }
+
+        //        stateMachine.ChangeState(typeof(PlayerIdleState));
+        //    }
+        //}
     }
 
     public void OnInteract(InputAction.CallbackContext context)
@@ -520,10 +604,10 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    public void ClearExecuteTarget()
-    {
-        executeTarget = null;
-    }
+    //public void ClearExecuteTarget()
+    //{
+    //    executeTarget = null;
+    //}
 
     private bool IsDeadState()
     {

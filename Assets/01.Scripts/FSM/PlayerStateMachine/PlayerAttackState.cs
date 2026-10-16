@@ -4,27 +4,27 @@ using System.Threading;
 
 public class PlayerAttackState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
-        int index = owner.Combat.AttackStart(owner.transform.position, this.board.movement.frontDir);
+        int index = playerBoard.combat.AttackStart(owner.transform.position, playerBoard.movement.frontDir);
 
-        this.board.animator.PlayAttack(index);
+        playerBoard.animator.PlayAttack(index);
 
         AttackAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
-        owner.Combat.AttackEnd();
+        playerBoard.combat.AttackEnd();
 
         ExitToken();
     }
@@ -35,24 +35,24 @@ public class PlayerAttackState : PlayerBaseState
         {
             while (!ctk.IsCancellationRequested)
             {
-                int index = owner.Combat.UpdateAttack(UnityEngine.Time.deltaTime, owner.transform.position, board.movement.frontDir);
+                int index = playerBoard.combat.UpdateAttack(UnityEngine.Time.deltaTime, owner.transform.position, playerBoard.movement.frontDir);
 
                 if (index > 0)
                 {
-                    board.animator.PlayAttack(index);
+                    playerBoard.animator.PlayAttack(index);
                 }
 
-                if (owner.Combat.IsAttackFinished())
+                if (playerBoard.combat.IsAttackFinished())
                 {
                     Utils.Log<PlayerAttackState>("공격 상태 종료");
 
-                    if (!board.movement.isGround)
+                    if (!playerBoard.movement.isGround)
                     {
                         TransitionState(typeof(PlayerFallState));
                         return;
                     }
 
-                    if (board.movement.moveInput.x != 0f)
+                    if (playerBoard.movement.moveInput.x != 0f)
                     {
                         TransitionState(typeof(PlayerMoveState));
                         return;
@@ -69,4 +69,25 @@ public class PlayerAttackState : PlayerBaseState
 
         }
     }
+
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
+
+    //        case PlayerInput.AttackPressed:
+    //            playerBoard.combat.RequestCombo();
+    //            break;
+
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
+
+    //        default:
+    //            break;
+    //    }
+    //}
 }

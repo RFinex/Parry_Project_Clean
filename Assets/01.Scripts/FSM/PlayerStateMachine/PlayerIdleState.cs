@@ -4,16 +4,16 @@ using Cysharp.Threading.Tasks;
 
 public class PlayerIdleState : PlayerBaseState
 {
-    private PlayerBlackBoard board;
+    //private PlayerBlackBoard board;
 
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        if (blackBoard is PlayerBlackBoard board)
-        {
-            this.board = board;
-        }
+        //if (blackBoard is PlayerBlackBoard board)
+        //{
+        //    this.board = board;
+        //}
 
         owner.StopMove();
 
@@ -31,7 +31,7 @@ public class PlayerIdleState : PlayerBaseState
         {
             while (!ctk.IsCancellationRequested)
             {
-                if (board.movement.moveInput.x != 0f)
+                if (playerBoard.movement.moveInput.x != 0f)
                 {
                     TransitionState(typeof(PlayerMoveState));
                     return;
@@ -45,4 +45,29 @@ public class PlayerIdleState : PlayerBaseState
 
         }
     }
+
+    //public override void HandleInput(PlayerInput input)
+    //{
+    //    switch (input)
+    //    {
+    //        case PlayerInput.JumpPressed:
+    //            TryJump();
+    //            break;
+
+    //        case PlayerInput.DashPressed:
+    //            TryDash();
+    //            break;
+
+    //        case PlayerInput.AttackPressed:
+    //            TryAttackOrExecute();
+    //            break;
+
+    //        case PlayerInput.GuardPressed:
+    //            TryGuard();
+    //            break;
+
+    //        default:
+    //            break;
+    //    }
+    //}
 }

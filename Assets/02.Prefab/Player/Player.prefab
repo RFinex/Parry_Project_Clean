@@ -291,6 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   data: {fileID: 11400000, guid: be9a085361e30404d9b6c9ac0f13ade5, type: 2}
+  transitionData: {fileID: 11400000, guid: 7f56c6b0e55dd6d44924c613fd0e721a, type: 2}
   frontDir: 1
   isGround: 0
   currentStateName: 
