@@ -16,7 +16,7 @@ public class PlayerJumpState : PlayerBaseState
         //    this.board = board;
         //}
 
-        owner.Jump();
+        //owner.Jump();
 
         playerBoard.animator.PlayJump();
 

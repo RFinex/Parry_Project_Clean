@@ -30,7 +30,7 @@ public class CameraTargetBinder : MonoBehaviour
 
     private void TryRegisterRoomSystem()
     {
-        if (roomSystem != null || ServiceLocator.IsRegister<RoomSystem>())
+        if (roomSystem != null)
             return;
 
         ServiceLocator.Inject(out roomSystem);
@@ -41,6 +41,8 @@ public class CameraTargetBinder : MonoBehaviour
 
     private void Start()
     {
+        TryRegisterRoomSystem();
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (player != null)

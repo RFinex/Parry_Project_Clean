@@ -18,7 +18,22 @@ public enum PlayerInput
     DashPressed,
     AttackPressed,
     GuardPressed,
-    GuardReleased
+    GuardReleased,
+    MoveChanged
+}
+
+public enum PlayerStateId
+{
+    Idle = 0,
+    Move = 1,
+    Jump = 2,
+    Fall = 3,
+    Attack = 4,
+    Guard = 5,
+    Dash = 6,
+    Hurt = 7,
+    Execute = 8,
+    Dead = 9
 }
 
 public class PlayerController : MonoBehaviour
@@ -42,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Data")]
     [SerializeField] private PlayerBaseData data;
+    [SerializeField] private PlayerTransitionData transitionData;
 
     [Header("Player Info")]
     private PlayerStats stats;
@@ -208,7 +224,7 @@ public class PlayerController : MonoBehaviour
 
         AddStates();
 
-        transitioner = new PlayerTransitioner(blackBoard);
+        transitioner = new PlayerTransitioner(blackBoard, transitionData);
     }
 
     private void AddStates()
@@ -391,9 +407,15 @@ public class PlayerController : MonoBehaviour
 
     public void InputToCurrentState(PlayerInput input)
     {
+        if (token == null || token.IsCancellationRequested)
+            return;
+
+        if (stateMachine == null || transitioner == null)
+            return;
+        
         var currentState = stateMachine.CurrentState;
 
-        if (currentState == null || transitioner == null)
+        if (currentState == null)
             return;
 
         if (!transitioner.TryResolve(currentState.GetType(), input, out Type nextState))
@@ -414,6 +436,8 @@ public class PlayerController : MonoBehaviour
         moveInput = context.ReadValue<Vector2>();
 
         movement.moveInput = moveInput;
+
+        InputToCurrentState(PlayerInput.MoveChanged);
     }
 
     public void OnJump(InputAction.CallbackContext context)

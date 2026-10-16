@@ -1,6 +1,18 @@
 using System;
 using System.Collections.Generic;
 
+public interface IPlayerTransitionRule
+{
+    IPlayerInputAction Action { get; }
+    bool CanApply(PlayerBlackBoard board);
+    Type GetNextState(PlayerBlackBoard board);
+}
+
+public interface IPlayerInputAction
+{
+    void PlayerInput(PlayerBlackBoard board);
+}
+
 public class StateMachine<T> where T : class
 {
     private BaseState<T> currentState;
