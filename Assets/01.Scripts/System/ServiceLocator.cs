@@ -9,7 +9,7 @@ public interface IService
 
 public static class ServiceLocator
 {
-    static readonly Dictionary<Type, IService> serviceDic = new();    
+    static readonly Dictionary<Type, IService> serviceDic = new();
 
     public static void Register<T>(IService service)
     {
@@ -52,8 +52,6 @@ public static class ServiceLocator
                 keyList.Add(service.Key);                
             }
         }
-
-        Utils.Log<StageManager>($"{keyList.Count}");
 
         for (int i = 0; i < keyList.Count; i++)
         {

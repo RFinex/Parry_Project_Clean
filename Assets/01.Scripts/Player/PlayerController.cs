@@ -423,7 +423,8 @@ public class PlayerController : MonoBehaviour
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
             stateMachine.IsState(typeof(PlayerMoveState)) ||
             stateMachine.IsState(typeof(PlayerFallState)) ||
-            stateMachine.IsState(typeof(PlayerAttackState)))
+            stateMachine.IsState(typeof(PlayerAttackState)) ||
+            stateMachine.IsState(typeof(PlayerJumpState)))
         {
             stateMachine.ChangeState(typeof(PlayerDashState));
         }
@@ -446,7 +447,8 @@ public class PlayerController : MonoBehaviour
         if (stateMachine.IsState(typeof(PlayerIdleState)) ||
             stateMachine.IsState(typeof(PlayerMoveState)) ||
             stateMachine.IsState(typeof(PlayerGuardState)) ||
-            stateMachine.IsState(typeof(PlayerFallState)))
+            stateMachine.IsState(typeof(PlayerFallState)) ||
+            stateMachine.IsState(typeof(PlayerJumpState)))
         {
             GameObject target = combat.FindExecuteTarget(transform.position);
 
@@ -475,7 +477,8 @@ public class PlayerController : MonoBehaviour
             if (stateMachine.IsState(typeof(PlayerIdleState)) ||
                 stateMachine.IsState(typeof(PlayerMoveState)) ||
                 stateMachine.IsState(typeof(PlayerAttackState)) ||
-                stateMachine.IsState(typeof(PlayerFallState)))
+                stateMachine.IsState(typeof(PlayerFallState)) ||
+                stateMachine.IsState(typeof(PlayerJumpState)))
             {
                 stateMachine.ChangeState(typeof(PlayerGuardState));
             }
