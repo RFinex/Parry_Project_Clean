@@ -58,7 +58,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [SerializeField] private string currentStateName;
 
     [Header("Animation Info")]
-    [SerializeField] private EnemyAnimationInfo[] animations;
+    [SerializeField] private Enemy
+        
+        
+        [] animations;
 
     private CancellationTokenSource token;
     public CancellationToken DestroyToken => token.Token;
