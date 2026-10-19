@@ -52,12 +52,21 @@ public class EnemyAnimator
     public bool Finish(EnemyAnimationType type)
     {
         if (animator == null || !animHashDic.TryGetValue(type, out int hash))
-        {
             return true;
-        }
 
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
 
-        return state.fullPathHash == hash && state.normalizedTime >= 1f;
+        if (state.fullPathHash != hash)
+            return true;
+
+        if (animator.IsInTransition(0))
+        {
+            AnimatorStateInfo nextState = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (nextState.fullPathHash != hash)
+                return true;
+        }
+
+        return state.normalizedTime >= 1f;
     }
 }

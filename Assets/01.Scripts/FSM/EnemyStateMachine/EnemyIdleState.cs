@@ -6,6 +6,12 @@ public class EnemyIdleState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {
+        if (!owner.UseStateMachineBehavior)
+        {
+            owner.StopMove();
+            return;
+        }
+
         owner.StopMove();
 
         EnterToken(owner.DestroyToken);

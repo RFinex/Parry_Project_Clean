@@ -53,6 +53,7 @@ public class EnemyStaggerState : EnemyBaseState
 
                     board.stats.RestoreBalance();
 
+                    owner.OnStaggerFinished();
                     TransitionState(typeof(EnemyIdleState));
                     return;
                 }

@@ -27,4 +27,19 @@ public class EnemyCombat
 
         Utils.Log<EnemyCombat>($"Àû °ø°Ý : {target.name}");
     }
+
+    public virtual void Attack(Transform target, EnemyController attacker, float damage)
+    {
+        if (target == null)
+            return;
+
+        PlayerController player = target.GetComponentInParent<PlayerController>();
+
+        if (player == null)
+            return;
+
+        EnemyAttackInfo attackInfo = new EnemyAttackInfo(damage, attacker);
+
+        player.TakeDamage(attackInfo);
+    }
 }
