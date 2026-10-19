@@ -32,7 +32,7 @@ MonoBehaviour:
   comboInputTime: 0.25
   attackEndTime: 0.5
   parryWindow: 0.5
-  parryDamage: 50
+  parryDamage: 10
   guardStaminaCost: 20
   invincibleTime: 2
   invincibleAlpha: 0.35

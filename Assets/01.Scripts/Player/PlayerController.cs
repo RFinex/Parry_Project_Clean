@@ -117,6 +117,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
+        GameManager.Instance.RegisterPlayer(this);
+
         if (token == null)
         {
             token?.Cancel();
@@ -129,6 +131,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
+        GameManager.Instance.UnregisterPlayer(this);
+
         token?.Cancel();
         token?.Dispose();
         token = null;

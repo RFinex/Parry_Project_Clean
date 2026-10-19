@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BlackBoard
 {
@@ -25,13 +26,16 @@ public class PlayerBlackBoard : BlackBoard
 
 public class EnemyBlackBoard : BlackBoard
 {
+    public bool combatStarted;
+
     public Rigidbody2D rb;
-
     public SpriteRenderer sr;
-
     public EnemyStats stats;
-
     public EnemyCombat combat;
-
     public EnemyAnimator animator;
+
+    public LayerMask playerLayer;
+
+    public List<EnemySkill> skills = new();
+    public EnemySkill currentSkill;
 }

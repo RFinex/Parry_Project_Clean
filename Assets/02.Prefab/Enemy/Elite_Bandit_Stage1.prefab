@@ -44,9 +44,9 @@ GameObject:
   - component: {fileID: 1177301457373953394}
   - component: {fileID: 3882265356245811558}
   - component: {fileID: 7943300529606303964}
-  - component: {fileID: -3633034214612902003}
+  - component: {fileID: -6333217743914996791}
   m_Layer: 8
-  m_Name: Elite_Stage1
+  m_Name: Elite_Bandit_Stage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-3633034214612902003
+--- !u!114 &-6333217743914996791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,10 +231,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6465543644819581041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 166b515291e434843b6d1dab21026e18, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bb3874b81cae6b4aad185fab83380dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestEnemyController
-  data: {fileID: 11400000, guid: 8c3fe70d4568d7c40b39480d423dd571, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::EliteEnemyController
+  data: {fileID: 11400000, guid: 638f4df089db0044489f81aa3954d677, type: 2}
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -247,6 +247,7 @@ MonoBehaviour:
   groundCheckForwardOffset: 0.1
   groundCheckDistance: 0.2
   groundCheckPoint: {fileID: 6406536147496673700}
+  isLeftFaces: 1
   currentStateName: 
   animations:
   - type: 0
@@ -255,9 +256,10 @@ MonoBehaviour:
     stateName: Base Layer.Run
   - type: 2
     stateName: Base Layer.Attack
-  - type: 3
-    stateName: Base Layer.Hurt
+  - type: 4
+    stateName: Base Layer.Jump
   - type: 5
     stateName: Base Layer.Death
-  attackBoxSize: {x: 1.6, y: 1}
-  attackBoxForwardOffset: 0.3
+  meleeData: {fileID: 11400000, guid: 54da69a8a0f747b4fad41af2c2ab53a8, type: 2}
+  chargeData: {fileID: 11400000, guid: ee4586f92ba12b54eb145e00d739292a, type: 2}
+  jumpAttackData: {fileID: 11400000, guid: 396c8080d1bc2a541a7a07dbd6415682, type: 2}

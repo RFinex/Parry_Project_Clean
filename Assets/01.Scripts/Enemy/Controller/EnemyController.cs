@@ -54,17 +54,20 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [Header("State Machine")]
     private EnemyStateMachine stateMachine;
 
+    [Header("Left Facses")]
+    [SerializeField] private bool isLeftFaces;
+
     [Header("Debug Check")]
     [SerializeField] private string currentStateName;
 
     [Header("Animation Info")]
-    [SerializeField] private Enemy
-        
-        
-        [] animations;
+    [SerializeField] private EnemyAnimationInfo[] animations;
 
     private CancellationTokenSource token;
     public CancellationToken DestroyToken => token.Token;
+
+    protected virtual bool UseStateMachine => true;
+    public bool UseStateMachineBehavior => UseStateMachine;
 
     public bool CanExecute
     {
@@ -84,7 +87,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         Initialized();
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
         if (token == null || token.IsCancellationRequested)
         {
@@ -95,7 +98,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         UpdateAsync(token.Token).Forget();
     }
 
-    protected void OnDisable()
+    protected virtual void OnDisable()
     {
         token?.Cancel();
     }
@@ -119,9 +122,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual void Initialized()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
+        token = token.ResetToken();
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -134,7 +135,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         InitStateMachine();
         InitData();
 
-        stateMachine.ChangeState(typeof(EnemyIdleState));       
+        if (UseStateMachine)
+        {
+            stateMachine.ChangeState(typeof(EnemyIdleState));
+        } 
     }
 
     protected virtual void InitComponents()
@@ -287,10 +291,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public void SpriteCheck()
     {
-        if (frontDir > 0f)
-            sr.flipX = false;
-        else if (frontDir < 0f)
-            sr.flipX = true;
+        if (sr == null || frontDir == 0f)
+            return;
+
+        sr.flipX = frontDir > 0f == isLeftFaces;
     }
 
     public bool Move(Vector2 targetPos)
@@ -324,6 +328,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         if (stats.IsDead)
         {
+            OnDeathStarted();
             stateMachine.ChangeState(typeof(EnemyDeadState));
             return;
         }
@@ -335,6 +340,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         if (stats.IsBalanceBroken)
         {
+            OnStaggerStarted();
             stateMachine.ChangeState(typeof(EnemyStaggerState));
             return;
         }
@@ -417,7 +423,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
             sr.color = color;
         }
 
-        stateMachine.ChangeState(typeof(EnemyIdleState), true);
+        if (UseStateMachine)
+        {
+            stateMachine.ChangeState(typeof(EnemyIdleState), true);
+        }
     }
 
     public virtual void InitPoolReturn()
@@ -461,7 +470,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     private void Update()
     {
-        currentStateName = stateMachine.CurrentState.GetType().Name;
+        if (stateMachine.CurrentState != null)
+        {
+            currentStateName = stateMachine.CurrentState.GetType().Name;
+        }
     }
 
     private void OnDrawGizmos()
@@ -475,4 +487,27 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         Gizmos.DrawRay(origin, dir * Data.DetectRange);
     }    
 #endif
+
+    public bool IsGround()
+    {
+        if (groundCheckPoint == null)
+            return false;
+
+        return Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckDistance, groundLayer).collider != null;
+    }
+
+    protected virtual void OnDeathStarted()
+    {
+
+    }
+
+    protected virtual void OnStaggerStarted()
+    {
+
+    }
+
+    public virtual void OnStaggerFinished()
+    {
+
+    }
 }
