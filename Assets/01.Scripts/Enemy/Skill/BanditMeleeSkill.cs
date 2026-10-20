@@ -20,5 +20,7 @@ public class BanditMeleeSkill : EnemySkill
         await WaitAndApplyAttack(owner, board, ctk);
 
         await UniTask.WaitUntil(() => board.animator.Finish(EnemyAnimationType.Attack), cancellationToken: ctk);
+
+        await WaitRecovery(ctk);
     }
 }

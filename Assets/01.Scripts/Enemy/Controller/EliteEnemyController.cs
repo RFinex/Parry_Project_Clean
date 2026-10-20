@@ -271,6 +271,10 @@ public class EliteEnemyController : EnemyController
             return;
 
         TakeDamage(Stats.MaxHp * 0.25f);
+
+        // 처형 당한 후 생존 시 밸런스 즉시 회복
+        if (!Stats.IsDead)
+            RecoverFromStagger();
     }
 
     public override void InitPool()

@@ -45,6 +45,20 @@ public class EnemyAnimator
             return false;
         }
 
+        AnimatorStateInfo currentAnim = animator.GetCurrentAnimatorStateInfo(0);
+
+        // 이미 재생중인 애니메이션이면 재생X
+        if (currentAnim.fullPathHash == hash)
+        {
+            if (!animator.IsInTransition(0))
+                return true;
+
+            AnimatorStateInfo nextAnim = animator.GetNextAnimatorStateInfo(0);
+
+            if (nextAnim.fullPathHash == hash)
+                return true;
+        }
+
         animator.Play(hash, 0, 0f);
         return true;
     }
@@ -59,12 +73,9 @@ public class EnemyAnimator
         if (state.fullPathHash != hash)
             return true;
 
-        if (animator.IsInTransition(0))
+        if (animator.IsInTransition(0) && animator.GetNextAnimatorStateInfo(0).fullPathHash != hash)
         {
-            AnimatorStateInfo nextState = animator.GetCurrentAnimatorStateInfo(0);
-
-            if (nextState.fullPathHash != hash)
-                return true;
+            return true;
         }
 
         return state.normalizedTime >= 1f;

@@ -396,6 +396,17 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         }
     }
 
+    /// <summary> 처형당한 후 밸런스 회복 </summary>
+    public void RecoverFromStagger()
+    {
+        if (!IsStaggerState())
+            return;
+
+        stats.RestoreBalance();
+        stateMachine.ChangeState(typeof(EnemyIdleState));
+        OnStaggerFinished();
+    }
+
     public event Action<EnemyController> OnDeathFinished;
 
     public void FinishDeath()

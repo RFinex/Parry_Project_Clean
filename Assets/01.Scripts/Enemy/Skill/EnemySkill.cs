@@ -160,4 +160,30 @@ public abstract class EnemySkill
         CancelCooldown();
         target = null;
     }
+
+    /// <summary>
+    /// º±µÙ∑π¿Ã
+    /// </summary>
+    /// <param name="ctk"></param>
+    /// <returns></returns>
+    protected UniTask WaitStartup(CancellationToken ctk)
+    {
+        if (data.StartupDelay <= 0f)
+            return UniTask.CompletedTask;
+
+        return UniTask.Delay(TimeSpan.FromSeconds(data.StartupDelay), cancellationToken: ctk);
+    }
+
+    /// <summary>
+    /// »ƒµÙ∑π¿Ã
+    /// </summary>
+    /// <param name="ctk"></param>
+    /// <returns></returns>
+    protected UniTask WaitRecovery(CancellationToken ctk)
+    {
+        if (data.RecoveryDelay <= 0f)
+            return UniTask.CompletedTask;
+
+        return UniTask.Delay(TimeSpan.FromSeconds(data.RecoveryDelay), cancellationToken: ctk);
+    }
 }

@@ -13,7 +13,11 @@ public class BanditJumpAttackSkill : EnemySkill
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
+        owner.StopMove();
         owner.LookAtTarget();
+
+        board.animator.Play(EnemyAnimationType.Idle);
+        await WaitStartup(ctk);
 
         if (!board.animator.Play(data.AnimationType))
             return;
@@ -25,5 +29,7 @@ public class BanditJumpAttackSkill : EnemySkill
         ApplyAttack(owner, board);
 
         owner.StopMove();
+
+        await WaitRecovery(ctk);
     }
 }

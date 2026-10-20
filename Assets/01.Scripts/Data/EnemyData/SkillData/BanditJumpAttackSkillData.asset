@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BanditJumpAttackSkillData
   minRange: 5
   maxRange: 8
-  cooldown: 20
+  cooldown: 10
   damage: 50
   attackDelay: 0
   animationType: 4
   hitboxSize: {x: 1, y: 1}
   hitboxXOffset: 0
+  startupDelay: 0.5
+  recoveryDelay: 0
   horizontalSpeed: 8
   jumpForce: 8
