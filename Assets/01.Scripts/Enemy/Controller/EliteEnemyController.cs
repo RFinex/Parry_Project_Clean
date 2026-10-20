@@ -13,7 +13,6 @@ public abstract class EliteEnemyController : EnemyController
 
     private bool isCombatStart;
     private bool isIdle;
-    private bool isIntroRunning;
 
     protected override bool UseStateMachine => false;
 
@@ -38,7 +37,7 @@ public abstract class EliteEnemyController : EnemyController
     {
         SequenceNode combatSequence = new();
         combatSequence.Add(new ActionNode(CheckCombatStarted));
-        combatSequence.Add(BuildCombatTree());
+        combatSequence.Add(BuildCombatBT());
 
         SelectorNode root = new();
         root.Add(combatSequence);
@@ -47,7 +46,7 @@ public abstract class EliteEnemyController : EnemyController
         rootNode = root;
     }
 
-    protected abstract INode BuildCombatTree();
+    protected abstract INode BuildCombatBT();
 
     internal void StartBT(CancellationToken ctk)
     {
@@ -83,69 +82,36 @@ public abstract class EliteEnemyController : EnemyController
         return player;
     }
 
-    private UniTask<INode.State> CheckCombatStarted(CancellationToken ctk)
+    public void FacePlayer(PlayerController player)
     {
-        if (GetPlayer() == null)
-            return UniTask.FromResult(INode.State.Failure);
+        if (player == null)
+            return;
 
-        if (isCombatStart)
-        {
-            target = player.transform;
-            isIdle = false;
-            return UniTask.FromResult(INode.State.Success);
-        }
-
-        if (isIntroRunning)
-            return UniTask.FromResult(INode.State.Running);
-
-        Vector2 playerPos = player.transform.position;
-        Vector2 enemyPos = transform.position;
-        float distance = (playerPos - enemyPos).sqrMagnitude;
-        float sqrDetectRange = data.DetectRange * data.DetectRange;
-
-        if (distance > sqrDetectRange)
-            return UniTask.FromResult(INode.State.Failure);
-
-        isIntroRunning = true;
+        this.player = player;
         target = player.transform;
-        IntroAsync(player, ctk).Forget();
-
-        return UniTask.FromResult(INode.State.Running);
+        LookAtTarget();
     }
 
-    private async UniTaskVoid IntroAsync(PlayerController introPlayer, CancellationToken ctk)
+    public void StartCombat(PlayerController player)
     {
-        StopMove();
-        gameManager.SetGameState(GameState.Cutscene);
+        if (player == null)
+            return;
 
-        try
-        {
-            gameManager.SetCameraTarget(transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(data.IntroFocusDuration), cancellationToken: ctk);
+        this.player = player;
+        target = player.transform;
+        isCombatStart = true;
+        isIdle = false;
+    }
 
-            target = introPlayer.transform;
-            LookAtTarget();
-            await UniTask.Delay(TimeSpan.FromSeconds(data.IntroFaceDuration), cancellationToken: ctk);
+    private UniTask<INode.State> CheckCombatStarted(CancellationToken ctk)
+    {
+        if (!isCombatStart || GetPlayer() == null)
+            return UniTask.FromResult(INode.State.Failure);
 
-            gameManager.SetCameraTarget(introPlayer.transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(data.IntroReturnDuration), cancellationToken: ctk);
+        target = player.transform;
+        isIdle = false;
 
-            isCombatStart = true;
-            isIdle = false;
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        finally
-        {
-            if (gameManager != null && gameManager.Player != null)
-                gameManager.SetCameraTarget(gameManager.Player.transform);
-
-            if (gameManager != null && gameManager.CurrentState == GameState.Cutscene)
-                gameManager.SetGameState(GameState.Play);
-
-            isIntroRunning = false;
-        }
+        return UniTask.FromResult(INode.State.Running);
     }
 
     protected UniTask<INode.State> CheckPlayerAlive(CancellationToken ctk)
@@ -205,7 +171,6 @@ public abstract class EliteEnemyController : EnemyController
 
         isCombatStart = false;
         isIdle = false;
-        isIntroRunning = false;
         player = null;
 
         EnemyChangeState(typeof(EliteBTState), true);

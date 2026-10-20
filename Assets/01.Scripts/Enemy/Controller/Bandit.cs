@@ -29,7 +29,7 @@ public class Bandit : EliteEnemyController
         blackBoard.skills.Add(jumpAttackSkill);
     }
 
-    protected override INode BuildCombatTree()
+    protected override INode BuildCombatBT()
     {
         SequenceNode jumpSequence = new();
         jumpSequence.Add(new ActionNode(CheckJumpRange));

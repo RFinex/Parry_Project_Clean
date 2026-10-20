@@ -21,6 +21,7 @@ public class EnemyBaseData : ScriptableObject
     [Header("Attack")]
     [SerializeField] private float attackDamage = 5f;
     [SerializeField] private float attackCool = 1f;
+    [SerializeField] private float attackDelay = (5f / 14f);
 
     [Header("Stagger")]
     [SerializeField] private float staggerDuration = 3f;
@@ -37,7 +38,7 @@ public class EnemyBaseData : ScriptableObject
     [SerializeField] private float deathDuration = 1f;
 
     [Header("Offset")]
-    [SerializeField] private Vector2 detectOffset = new Vector2(0f, 0.3f);
+    [SerializeField] private Vector2 detectOffset = new(0f, 0.3f);
 
     [Header("Intro Duration")]
     [SerializeField] private float introFocusDuration = 0.6f;
@@ -59,6 +60,7 @@ public class EnemyBaseData : ScriptableObject
 
     public float AttackDamage => attackDamage;
     public float AttackCool => attackCool;
+    public float AttackDelay => attackDelay;
 
     public float StaggerDuration => staggerDuration;
 

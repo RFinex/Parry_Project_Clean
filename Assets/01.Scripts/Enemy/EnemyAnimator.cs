@@ -43,11 +43,8 @@ public class EnemyAnimator
     // 나중에 최적화 필요
     public bool Play(EnemyAnimationType type)
     {
-        if (animator == null || !animHashDic.TryGetValue(type, out int hash) ||
-            !animator.HasState(0, hash))
-        {
+        if (animator == null || !animHashDic.TryGetValue(type, out int hash) || !animator.HasState(0, hash))
             return false;
-        }
 
         AnimatorStateInfo currentAnim = animator.GetCurrentAnimatorStateInfo(0);
 
@@ -62,6 +59,15 @@ public class EnemyAnimator
             if (nextAnim.fullPathHash == hash)
                 return true;
         }
+
+        animator.Play(hash, 0, 0f);
+        return true;
+    }
+
+    public bool PlayFromStart(EnemyAnimationType type)
+    {
+        if (animator == null || !animHashDic.TryGetValue(type, out int hash) || !animator.HasState(0, hash))
+            return false;
 
         animator.Play(hash, 0, 0f);
         return true;
