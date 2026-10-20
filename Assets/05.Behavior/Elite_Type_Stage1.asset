@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Elite_Type_Stage1 Blackboard
   m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorBlackboardAuthoringAsset
   AssetID:
-    m_Value0: 0
-    m_Value1: 0
+    m_Value0: 4944255769051878924
+    m_Value1: 2938926795256226090
   m_Variables:
   - rid: 4462996183457464547
-  m_VersionTimestamp: 639279635587925082
+  - rid: 4462996216432558169
+  m_VersionTimestamp: 639280923008878326
   m_CommandBuffer:
     m_Commands: []
   m_RuntimeBlackboardAsset: {fileID: 2680840808548548485}
@@ -34,6 +35,16 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: {fileID: 0}
+    - rid: 4462996216432558169
+      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 721207285151019684
+          m_Value1: 11054352141881257370
+        Name: cooltime
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
 --- !u!114 &-5292233789829800654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,8 +77,8 @@ MonoBehaviour:
           rid: 4462996183457464549
         BlackboardGroupReferences: []
         Root:
-          rid: 4462996183457464558
-        m_VersionTimestamp: 639279641392957770
+          rid: 4462996216432558218
+        m_VersionTimestamp: 639280926352088556
     - rid: 4462996183457464549
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -78,8 +89,9 @@ MonoBehaviour:
       type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         m_Variables:
-        - rid: 4462996183457464552
-    - rid: 4462996183457464552
+        - rid: 4462996216432558177
+        - rid: 4462996216432558178
+    - rid: 4462996216432558177
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -87,7 +99,15 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
-    - rid: 4462996183457464558
+    - rid: 4462996216432558178
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 721207285151019684
+          m_Value1: 11054352141881257370
+        Name: cooltime
+        m_Value: 0
+    - rid: 4462996216432558218
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -98,9 +118,32 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: -2
+          rid: 4462996216432558219
         Repeat: 1
         AllowMultipleRepeatsPerTick: 0
+    - rid: 4462996216432558219
+      type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 1146747108740975965
+          m_Value1: 8474605508601058801
+        Graph:
+          rid: 4462996183457464548
+        m_Parent:
+          rid: 4462996216432558218
+        m_Children:
+        - rid: 4462996216432558220
+        m_RegisteredObservers: []
+    - rid: 4462996216432558220
+      type: {class: AttackTestAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 2230881784761279252
+          m_Value1: 7961718446643036589
+        Graph:
+          rid: 4462996183457464548
+        m_Parent:
+          rid: 4462996216432558219
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,7 +160,9 @@ MonoBehaviour:
   m_Description: 
   m_Nodes:
   - rid: 4462996183457464553
-  m_VersionTimestamp: 639279641392957770
+  - rid: 4462996216432558160
+  - rid: 4462996216432558207
+  m_VersionTimestamp: 639280926352088556
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: 9088403490620234256}
   m_RuntimeGraph: {fileID: -5292233789829800654}
@@ -139,6 +184,26 @@ MonoBehaviour:
     Variables: []
     NamedChildren: []
     IsPlaceholder: 0
+  - Name: AttackTest
+    Story: Test
+    RuntimeTypeString: AttackTestAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 18280594020748863574
+      m_Value1: 13718122091031915357
+    Variables: []
+    NamedChildren: []
+    IsPlaceholder: 0
+  - Name: Try In Order
+    Story: 
+    RuntimeTypeString: Unity.Behavior.SelectorComposite, Unity.Behavior, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    RuntimeTypeID:
+      m_Value0: 11477120919463386923
+      m_Value1: 7730102824742023565
+    Variables: []
+    NamedChildren: []
+    IsPlaceholder: 0
   m_Blackboards: []
   m_MainBlackboardAuthoringAsset: {fileID: -8665983960709890575}
   m_CommandBuffer:
@@ -155,7 +220,7 @@ MonoBehaviour:
     - rid: 4462996183457464553
       type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
-        Position: {x: -205.25711, y: -379.4285}
+        Position: {x: -162.79277, y: -475.5978}
         ID:
           m_Value0: 5656918104312394798
           m_Value1: 3525469559923789282
@@ -179,7 +244,83 @@ MonoBehaviour:
         m_IsFloating: 0
         m_NodeModel:
           rid: 4462996183457464553
+        m_Connections:
+        - rid: 4462996216432558208
+    - rid: 4462996216432558160
+      type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: -480.31302, y: -74.6124}
+        ID:
+          m_Value0: 2230881784761279252
+          m_Value1: 7961718446643036589
+        Parents: []
+        PortModels:
+        - rid: 4462996216432558161
+        - rid: 4462996216432558162
+        NodeType:
+          m_SerializableType: AttackTestAction, Assembly-CSharp, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 18280594020748863574
+          m_Value1: 13718122091031915357
+        m_FieldValues: []
+    - rid: 4462996216432558161
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4462996216432558160
+        m_Connections:
+        - rid: 4462996216432558209
+    - rid: 4462996216432558162
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4462996216432558160
         m_Connections: []
+    - rid: 4462996216432558207
+      type: {class: CompositeNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        Position: {x: -162.45544, y: -332.52063}
+        ID:
+          m_Value0: 1146747108740975965
+          m_Value1: 8474605508601058801
+        Parents: []
+        PortModels:
+        - rid: 4462996216432558208
+        - rid: 4462996216432558209
+        NodeType:
+          m_SerializableType: Unity.Behavior.SelectorComposite, Unity.Behavior, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+        NodeTypeID:
+          m_Value0: 11477120919463386923
+          m_Value1: 7730102824742023565
+        m_FieldValues: []
+    - rid: 4462996216432558208
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: InputPort
+        m_PortDataFlowType: 0
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4462996216432558207
+        m_Connections:
+        - rid: 4462996183457464554
+    - rid: 4462996216432558209
+      type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        m_Name: OutputPort
+        m_PortDataFlowType: 1
+        m_IsFloating: 0
+        m_NodeModel:
+          rid: 4462996216432558207
+        m_Connections:
+        - rid: 4462996216432558161
 --- !u!114 &2680840808548548485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,13 +333,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: Elite_Type_Stage1 Blackboard
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
-  VersionTimestamp: 639279635587925082
+  VersionTimestamp: 639280923008878326
   AssetID:
-    m_Value0: 0
-    m_Value1: 0
+    m_Value0: 4944255769051878924
+    m_Value1: 2938926795256226090
   m_Blackboard:
     m_Variables:
     - rid: 4462996183457464555
+    - rid: 4462996216432558174
   m_SharedBlackboardVariableGuids: []
   references:
     version: 2
@@ -211,6 +353,14 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
+    - rid: 4462996216432558174
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 721207285151019684
+          m_Value1: 11054352141881257370
+        Name: cooltime
+        m_Value: 0
 --- !u!114 &9088403490620234256
 MonoBehaviour:
   m_ObjectHideFlags: 0

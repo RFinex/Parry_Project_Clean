@@ -10,6 +10,8 @@ public class EnemyStaggerState : EnemyBaseState
     private float staggerTimer;
     private float balanceRestorePerSec;
 
+    private Color originColor;
+
     public override void Enter(EnemyController owner)
     {
         EnterToken(owner.DestroyToken);
@@ -23,14 +25,17 @@ public class EnemyStaggerState : EnemyBaseState
 
         balanceRestorePerSec = this.board.stats.RestoreBalancePerSec();
 
+        originColor = this.board.sr.color;
         this.board.sr.color = Color.yellow;
+
+        this.board.animator.Play(EnemyAnimationType.Stagger);
 
         StaggerTimerAsync(owner, token.Token).Forget();
     }
 
     public override void Exit(EnemyController owner)
     {
-        board.sr.color = Color.red;
+        board.sr.color = originColor;
 
         ExitToken();
     }
@@ -54,7 +59,6 @@ public class EnemyStaggerState : EnemyBaseState
                     board.stats.RestoreBalance();
 
                     owner.OnStaggerFinished();
-                    TransitionState(typeof(EnemyIdleState));
                     return;
                 }
 

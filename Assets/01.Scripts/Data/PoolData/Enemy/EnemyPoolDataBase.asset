@@ -15,3 +15,5 @@ MonoBehaviour:
   enemyList:
   - id: 1001
     prefab: {fileID: -1460462792415119054, guid: 7785e38166c50154596075dac1b722b4, type: 3}
+  - id: 1002
+    prefab: {fileID: -6333217743914996791, guid: d94ed1e7ed3013b48907121a0665116d, type: 3}

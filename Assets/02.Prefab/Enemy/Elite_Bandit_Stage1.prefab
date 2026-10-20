@@ -210,7 +210,7 @@ Animator:
   m_GameObject: {fileID: 6465543644819581041}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b95265f99b6d90e438df1308a89c8bab, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7216020fea0ab3348be9cefd10fb37c6, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -231,9 +231,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6465543644819581041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bb3874b81cae6b4aad185fab83380dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 125b34ab3a9d63944853faecb6e06c4f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EliteEnemyController
+  m_EditorClassIdentifier: Assembly-CSharp::Bandit
   data: {fileID: 11400000, guid: 638f4df089db0044489f81aa3954d677, type: 2}
   playerLayer:
     serializedVersion: 2
@@ -252,14 +252,25 @@ MonoBehaviour:
   animations:
   - type: 0
     stateName: Base Layer.Idle
+    duration: 0
   - type: 1
     stateName: Base Layer.Run
+    duration: 0
   - type: 2
     stateName: Base Layer.Attack
+    duration: 0.7
   - type: 4
     stateName: Base Layer.Jump
+    duration: 0
   - type: 5
     stateName: Base Layer.Death
+    duration: 0
+  - type: 3
+    stateName: Base Layer.Hurt
+    duration: 0.625
+  - type: 6
+    stateName: Base Layer.Stagger
+    duration: 0
   meleeData: {fileID: 11400000, guid: 54da69a8a0f747b4fad41af2c2ab53a8, type: 2}
   chargeData: {fileID: 11400000, guid: ee4586f92ba12b54eb145e00d739292a, type: 2}
   jumpAttackData: {fileID: 11400000, guid: 396c8080d1bc2a541a7a07dbd6415682, type: 2}

@@ -11,7 +11,7 @@ public class RoomSystem : MonoBehaviour, IService
 
     private GameObject currentRoom;
     // 스폰된 적 리스트
-    private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
+    private readonly List<EnemyController> activeEnemies = new();
 
     public bool IsCleared { get; private set; }
     public int ActiveEnemyCount => activeEnemies.Count;
@@ -138,14 +138,27 @@ public class RoomSystem : MonoBehaviour, IService
         // 적을 스폰 위치에 소환
         List<EnemyController> enemies = enemySpawner.Spawn(currentRoom.transform);
 
+        EliteRoomEncounter encounter = currentRoom.GetComponentInChildren<EliteRoomEncounter>(true);
+
+        EliteEnemyController elite = null;
+
         foreach (EnemyController enemy in enemies)
         {
-            if (enemy == null || activeEnemies.Contains(enemy))
+            if (enemy == null)
+                continue;
+
+            if (elite == null && enemy is EliteEnemyController eliteEnemy)
+                elite = eliteEnemy;
+
+            if (activeEnemies.Contains(enemy))
                 continue;
 
             activeEnemies.Add(enemy);
             enemy.OnDeathFinished += OnEnemyDeathFinished;
         }
+
+        if (encounter != null && elite != null)
+            encounter.Initialized(elite, player);
 
         // 적이 소환되지 않았으면 클리어 처리
         if (activeEnemies.Count == 0 && treasureRoom == null)

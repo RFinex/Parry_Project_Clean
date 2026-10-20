@@ -48,15 +48,15 @@ MonoBehaviour:
   treasureObj: {fileID: 0}
   treasureSr: {fileID: 0}
   chestTypes:
-  - closedSprite: {fileID: -1070725870934005777, guid: df29196c86c96d44fa39be373235c9d2, type: 3}
-    openSprite: {fileID: -1070725870934005777, guid: df29196c86c96d44fa39be373235c9d2, type: 3}
+  - closedSprite: {fileID: 526432443, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
+    openSprite: {fileID: -397965613, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
     weight: 10
     minItemGrade: 0
-  - closedSprite: {fileID: 9101201794013696648, guid: 26f6ff08d0c1b124b802fec3a394b3e4, type: 3}
-    openSprite: {fileID: 9101201794013696648, guid: 26f6ff08d0c1b124b802fec3a394b3e4, type: 3}
+  - closedSprite: {fileID: 526432443, guid: 04df3fe748a326341b44f9b82e8f3073, type: 3}
+    openSprite: {fileID: -397965613, guid: 04df3fe748a326341b44f9b82e8f3073, type: 3}
     weight: 8
     minItemGrade: 0
-  - closedSprite: {fileID: 7764551662881734164, guid: 11a8216ac15f9ba4196a726bda5c2712, type: 3}
-    openSprite: {fileID: 7764551662881734164, guid: 11a8216ac15f9ba4196a726bda5c2712, type: 3}
+  - closedSprite: {fileID: 526432443, guid: c44fc00902932a04a964d427b28ed439, type: 3}
+    openSprite: {fileID: -397965613, guid: c44fc00902932a04a964d427b28ed439, type: 3}
     weight: 6
     minItemGrade: 0

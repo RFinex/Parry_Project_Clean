@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BanditMeleeSkillData
   minRange: 0
   maxRange: 1
-  cooldown: 1
+  cooldown: 0.5
   damage: 20
   attackDelay: 0.4
   animationType: 2
   hitboxSize: {x: 1, y: 1.5}
   hitboxXOffset: 0.3
+  startupDelay: 0
+  recoveryDelay: 0

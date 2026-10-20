@@ -110,6 +110,10 @@ public class PlayerController : MonoBehaviour
     private CancellationTokenSource token;
     public CancellationToken DestroyToken => token.Token;
 
+    private bool canInput = true;
+
+    private GameManager gameManager;
+
     private void Awake()
     {
         Initialized();
@@ -117,13 +121,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.RegisterPlayer(this);
+        gameManager = GameManager.Instance;
+
+        if (gameManager != null)
+        {
+            gameManager.RegisterPlayer(this);
+            SetInputGameState(gameManager.CurrentState);
+        }
+
+        EventBus.Subscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
 
         if (token == null)
         {
-            token?.Cancel();
-            token?.Dispose();
-            token = new CancellationTokenSource();
+            token = token.ResetToken();
         }
 
         UpdateAsync(token.Token).Forget();
@@ -131,11 +141,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.Instance.UnregisterPlayer(this);
+        token = token.Cancel_DisposeToken();
 
-        token?.Cancel();
-        token?.Dispose();
-        token = null;
+        EventBus.UnSubscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
+
+        if (gameManager != null)
+            gameManager.UnregisterPlayer(this);
+
+        gameManager = null;
     }
 
     private void Initialized()
@@ -434,7 +447,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (IsDeadState())
+        if (!canInput || IsDeadState())
             return;
 
         moveInput = context.ReadValue<Vector2>();
@@ -446,7 +459,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (IsDeadState())
+        if (!canInput || IsDeadState())
             return;
 
         if (context.performed)
@@ -474,7 +487,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        if (IsDeadState())
+        if (!canInput || IsDeadState())
             return;
 
         if (context.performed)
@@ -503,7 +516,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (IsDeadState())
+        if (!canInput || IsDeadState())
             return;
 
         if (context.performed)
@@ -542,7 +555,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnGuard(InputAction.CallbackContext context)
     {
-        if (IsDeadState())
+        if (!canInput || IsDeadState())
             return;
 
         if (context.started)
@@ -591,7 +604,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (!context.started || IsDeadState())
+        if (!canInput || !context.started || IsDeadState())
             return;
 
         scanner.TryInteract();
@@ -656,5 +669,22 @@ public class PlayerController : MonoBehaviour
             return;
 
         frontDir = Mathf.Sign(dir);
+    }
+
+    private void HandleGmaeStateChanged(GameStateChangedEvent eventData)
+    {
+        SetInputGameState(eventData.state);
+    }
+
+    public void SetInputGameState(GameState state)
+    {
+        canInput = state == GameState.Play;
+
+        if (canInput)
+            return;
+
+        moveInput = Vector2.zero;
+        movement.moveInput = Vector2.zero;
+        StopMove();
     }
 }

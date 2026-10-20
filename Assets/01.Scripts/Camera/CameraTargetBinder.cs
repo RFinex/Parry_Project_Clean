@@ -18,12 +18,18 @@ public class CameraTargetBinder : MonoBehaviour
     private void OnEnable()
     {
         TryRegisterRoomSystem();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.RegisterCameraBinder(this);
     }
 
     private void OnDisable()
     {
         if(roomSystem != null)
             roomSystem.UnRegisterCameraBinder(this);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.UnRegisterCameraBinder(this);
 
         roomSystem = null;
     }
@@ -43,12 +49,10 @@ public class CameraTargetBinder : MonoBehaviour
     {
         TryRegisterRoomSystem();
 
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player != null)
+        if (GameManager.Instance != null)
         {
-            GetComponent<CinemachineVirtualCamera>().Follow = player.transform;
-        }
+            SetFollowTarget(GameManager.Instance.Player.transform);
+        }      
     }
 
     public bool SetBounds(PolygonCollider2D bounds)
@@ -60,5 +64,11 @@ public class CameraTargetBinder : MonoBehaviour
         confiner.InvalidateCache();
 
         return true;
+    }
+
+    public void SetFollowTarget(Transform target)
+    {
+        if (virtualCamera != null && target != null)
+            virtualCamera.Follow = target;
     }
 }

@@ -179,6 +179,25 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         stateMachine.EnemyAddState<EnemyTraceState>();
     }
 
+    #region State Machine
+
+    protected void EnemyAddState<TState>() where TState : EnemyBaseState, new()
+    {
+        stateMachine.EnemyAddState<TState>();
+    }
+
+    protected void EnemyChangeState(Type stateType, bool isForce = false)
+    {
+        stateMachine.ChangeState(stateType, isForce);
+    }
+
+    protected bool IsEnemyState(Type stateType)
+    {
+        return stateMachine.IsState(stateType);
+    }
+
+    #endregion
+
     protected virtual void InitData()
     {
         if (data == null)
@@ -314,11 +333,41 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
-    public virtual void Attack()
+    public virtual async UniTask AttackAsync(CancellationToken ctk)
     {
-        if (combat == null)
-            return;
+        try
+        {
+            LookAtTarget();
+            blackBoard.animator.PlayFromStart(EnemyAnimationType.Attack);
 
+            if (data.AttackDelay > 0f)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(data.AttackDelay), cancellationToken: ctk);
+            }
+
+            // 공격 선딜 도중 목표가 벗어나면 타격X
+            if (target == null || !IsTargetInAttackRange())
+                return;
+
+            // 실제 공격 판정
+            ApplyAttackHit();
+
+            // 선딜을 뺀 쿨타임
+            float cool = data.AttackCool - data.AttackDelay;
+
+            if (cool > 0f)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(cool), cancellationToken: ctk);
+            }
+        }
+        catch(OperationCanceledException)
+        {
+
+        }
+    }
+
+    protected virtual void ApplyAttackHit()
+    {
         combat.Attack(target, this);
     }
     
@@ -394,6 +443,16 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         {
             stateMachine.ChangeState(typeof(EnemyDeadState));
         }
+    }
+
+    /// <summary> 처형당한 후 밸런스 회복 </summary>
+    public void RecoverFromStagger()
+    {
+        if (!IsStaggerState())
+            return;
+
+        stats.RestoreBalance();
+        OnStaggerFinished();
     }
 
     public event Action<EnemyController> OnDeathFinished;
@@ -508,6 +567,6 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public virtual void OnStaggerFinished()
     {
-
+        EnemyChangeState(typeof(EnemyIdleState));
     }
 }

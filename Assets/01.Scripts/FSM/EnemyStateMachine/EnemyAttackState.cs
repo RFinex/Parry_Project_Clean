@@ -38,9 +38,7 @@ public class EnemyAttackState : EnemyBaseState
 
                 owner.LookAtTarget();
 
-                owner.Attack();
-
-                await UniTask.Delay(TimeSpan.FromSeconds(owner.Data.AttackCool), cancellationToken: ctk);
+                await owner.AttackAsync(ctk);
             }
             
         }

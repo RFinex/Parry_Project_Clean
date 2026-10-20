@@ -14,7 +14,11 @@ public class BanditChargeSkill : EnemySkill
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
+        owner.StopMove();
         owner.LookAtTarget();
+
+        board.animator.Play(EnemyAnimationType.Idle);
+        await WaitStartup(ctk);
 
         if (!board.animator.Play(data.AnimationType))
             return;
@@ -34,6 +38,8 @@ public class BanditChargeSkill : EnemySkill
         }
 
         await UniTask.WaitUntil(() => board.animator.Finish(data.AnimationType), cancellationToken: ctk);
+
+        await WaitRecovery(ctk);
     }
 
     private async UniTask CheckHitCharge(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
