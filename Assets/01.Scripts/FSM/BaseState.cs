@@ -21,16 +21,12 @@ public abstract class BaseState<T>
 
     protected void EnterToken(CancellationToken ownerToken)
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
+        token = token.LinkToken(ownerToken);        
     }
 
     protected void ExitToken()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = null;
+        token = token.Cancel_DisposeToken();
     }
 
     protected void TransitionState(Type type, bool isForce = false)

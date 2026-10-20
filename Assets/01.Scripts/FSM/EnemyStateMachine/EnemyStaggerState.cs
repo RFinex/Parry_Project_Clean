@@ -28,6 +28,7 @@ public class EnemyStaggerState : EnemyBaseState
         originColor = this.board.sr.color;
         this.board.sr.color = Color.yellow;
 
+        this.board.animator.Play(EnemyAnimationType.Stagger);
 
         StaggerTimerAsync(owner, token.Token).Forget();
     }
@@ -58,7 +59,6 @@ public class EnemyStaggerState : EnemyBaseState
                     board.stats.RestoreBalance();
 
                     owner.OnStaggerFinished();
-                    TransitionState(typeof(EnemyIdleState));
                     return;
                 }
 

@@ -179,6 +179,25 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         stateMachine.EnemyAddState<EnemyTraceState>();
     }
 
+    #region State Machine
+
+    protected void EnemyAddState<TState>() where TState : EnemyBaseState, new()
+    {
+        stateMachine.EnemyAddState<TState>();
+    }
+
+    protected void EnemyChangeState(Type stateType, bool isForce = false)
+    {
+        stateMachine.ChangeState(stateType, isForce);
+    }
+
+    protected bool IsEnemyState(Type stateType)
+    {
+        return stateMachine.IsState(stateType);
+    }
+
+    #endregion
+
     protected virtual void InitData()
     {
         if (data == null)
@@ -403,7 +422,6 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
             return;
 
         stats.RestoreBalance();
-        stateMachine.ChangeState(typeof(EnemyIdleState));
         OnStaggerFinished();
     }
 
@@ -519,6 +537,6 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public virtual void OnStaggerFinished()
     {
-
+        EnemyChangeState(typeof(EnemyIdleState));
     }
 }

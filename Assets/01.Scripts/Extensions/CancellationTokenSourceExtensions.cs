@@ -1,3 +1,5 @@
+using System.Threading;
+
 public static class CancellationTokenSourceExtensions
 {
     public static System.Threading.CancellationTokenSource ResetToken(this System.Threading.CancellationTokenSource token)
@@ -12,5 +14,12 @@ public static class CancellationTokenSourceExtensions
         token?.Cancel();
         token?.Dispose();
         return null;
+    }
+
+    public static System.Threading.CancellationTokenSource LinkToken(this System.Threading.CancellationTokenSource token, CancellationToken ownerToken)
+    {
+        token?.Cancel();
+        token?.Dispose();
+        return CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
     }
 }

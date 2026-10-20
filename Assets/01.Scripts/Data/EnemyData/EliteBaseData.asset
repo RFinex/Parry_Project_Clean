@@ -27,5 +27,9 @@ MonoBehaviour:
   minIdleTime: 2
   maxIdleTime: 5
   executeBackOffset: -0.8
+  executeDamageRatio: 0.25
   deathDuration: 1
   detectOffset: {x: 0, y: 0.3}
+  introFocusDuration: 0.6
+  introFaceDuration: 0.5
+  introReturnDuration: 0.6

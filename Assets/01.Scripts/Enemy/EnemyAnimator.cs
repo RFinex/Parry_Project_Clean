@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public enum EnemyAnimationType
 {
@@ -9,7 +10,8 @@ public enum EnemyAnimationType
     Attack,
     Hurt,
     Jump,
-    Death
+    Death,
+    Stagger
 }
 
 [Serializable]
@@ -17,12 +19,13 @@ public struct EnemyAnimationInfo
 {
     public EnemyAnimationType type;
     public string stateName;
+    public float duration;
 }
 
 public class EnemyAnimator
 {
     private readonly Animator animator;
-    private readonly Dictionary<EnemyAnimationType, int> animHashDic = new Dictionary<EnemyAnimationType, int>();
+    private readonly Dictionary<EnemyAnimationType, int> animHashDic = new();
 
     public EnemyAnimator(Animator animator, EnemyAnimationInfo[] infos)
     {
@@ -37,6 +40,7 @@ public class EnemyAnimator
         }
     }
 
+    // 나중에 최적화 필요
     public bool Play(EnemyAnimationType type)
     {
         if (animator == null || !animHashDic.TryGetValue(type, out int hash) ||
@@ -63,6 +67,7 @@ public class EnemyAnimator
         return true;
     }
 
+    // 나중에 최적화 필요
     public bool Finish(EnemyAnimationType type)
     {
         if (animator == null || !animHashDic.TryGetValue(type, out int hash))
