@@ -19,6 +19,8 @@ public class StageManager : Singleton<StageManager>
 
     private RoomSystem roomSystem;
 
+    private bool isRoomTransition;
+
     private void OnEnable()
     {
         token?.Cancel();
@@ -61,7 +63,7 @@ public class StageManager : Singleton<StageManager>
             node.icon = roomSystem.GetRoomIcon(node.roomType);
         }
 
-        EventBus.Publish(new StageMapCreatedEvent { Nodes = nodes });
+        EventBus.Publish(new StageMapCreatedEvent(nodes));
 
         StageMapNodeData startNode = GetNode(startNodeId);
 
@@ -105,7 +107,8 @@ public class StageManager : Singleton<StageManager>
         if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
             return;
 
-        EventBus.Publish(new StageMapShownEvent { SelectableNodeIds = currentNode.nextNodeIds });
+        EventBus.Publish(new GameStateRequestEvent(GameState.Map));
+        EventBus.Publish(new StageMapShownEvent(currentNode.nextNodeIds));
     }
 
     private void HandleMapNodeSelected(MapNodeSelectedEvent eventData)
@@ -122,10 +125,54 @@ public class StageManager : Singleton<StageManager>
         if (selectedNode == null || selectedNode.roomPrefab == null)
             return;
 
-        EventBus.Publish(new StageMapClosedEvent());
-        currentNodeId = selectedNode.id;
+        ChangeRoomAsync(selectedNode, currentNodeId, token.Token).Forget();
+    }
 
-        roomSystem.StartRoom(selectedNode.roomPrefab);
+    private async UniTaskVoid ChangeRoomAsync(StageMapNodeData node, int previousNodeId, CancellationToken ctk)
+    {
+        isRoomTransition = true;
+        bool isRoomChanged = false;
+
+        try
+        {
+            // 화면 전환 상태
+            EventBus.Publish(new GameStateRequestEvent(GameState.SceneTransition));
+
+            // 페이드 아웃
+            await roomSystem.FadeOutAsync(ctk);
+            ctk.ThrowIfCancellationRequested();
+
+            // 방 불러오기
+            currentNodeId = node.id;
+            isRoomChanged = roomSystem.StartRoom(node.roomPrefab);
+
+            if (!isRoomChanged)
+            {
+                currentNodeId = previousNodeId;
+                return;
+            }
+
+            // 지도 닫기
+            EventBus.Publish(new StageMapClosedEvent());
+        }
+        catch (OperationCanceledException)
+        {
+            currentNodeId = previousNodeId;
+        }
+        finally
+        {
+            // 반드시 페이드 인
+            await roomSystem.FadeInAsync(ctk);
+
+            if (!ctk.IsCancellationRequested)
+            {
+                // 방이 성공적으로 바뀌었으면 Play, 그렇지 않으면 Map 상태
+                GameState state = isRoomChanged ? GameState.Play : GameState.Map;
+                EventBus.Publish(new GameStateRequestEvent(state));
+            }
+
+            isRoomTransition = false;
+        }
     }
 
     private void HandlePlayerDied(PlayerDiedEvent eventData)

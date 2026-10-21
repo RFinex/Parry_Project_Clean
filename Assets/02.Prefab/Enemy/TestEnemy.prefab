@@ -244,22 +244,31 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallCheckDistance: 1
+  wallCheckHeight: 0.3
   groundCheckForwardOffset: 0.1
   groundCheckDistance: 0.2
   groundCheckPoint: {fileID: 6406536147496673700}
+  isLeftFaces: 0
   currentStateName: 
   animations:
   - type: 0
     stateName: 
+    duration: 0
   - type: 1
     stateName: 
+    duration: 0
   - type: 2
     stateName: Base Layer.Test Enemy_Attack
+    duration: 0
   - type: 3
     stateName: 
+    duration: 0
   - type: 4
     stateName: 
+    duration: 0
   - type: 5
     stateName: 
+    duration: 0
   attackBoxSize: {x: 1.6, y: 1}
   attackBoxForwardOffset: 0.3

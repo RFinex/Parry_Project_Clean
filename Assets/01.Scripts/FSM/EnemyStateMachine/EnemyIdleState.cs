@@ -28,7 +28,7 @@ public class EnemyIdleState : EnemyBaseState
     {
         try
         {
-            await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
+            float detectInterval = 0.1f;
 
             if (owner.TryDetectTarget())
             {
@@ -36,17 +36,23 @@ public class EnemyIdleState : EnemyBaseState
                 return;
             }
 
-            float waitTime = UnityEngine.Random.Range(owner.Data.MinIdleTime, owner.Data.MaxIdleTime);
+            float remainingIdleTime = UnityEngine.Random.Range(owner.Data.MinIdleTime, owner.Data.MaxIdleTime);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: ctk);
-
-            if (owner.TryDetectTarget())
+            while (remainingIdleTime > 0f)
             {
-                TransitionState(typeof(EnemyTraceState));
-                return;
+                float waitTime = detectInterval < remainingIdleTime ? detectInterval : remainingIdleTime;
+                await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: ctk);
+                remainingIdleTime -= waitTime;
+
+                // 타겟이 감지됐는지 0.1초마다 검사
+                if (owner.TryDetectTarget())
+                {
+                    TransitionState(typeof(EnemyTraceState));
+                    return;
+                }
             }
 
-            TransitionState(typeof(EnemyPatrolState));            
+            TransitionState(typeof(EnemyPatrolState));
         }
         catch (OperationCanceledException)
         {

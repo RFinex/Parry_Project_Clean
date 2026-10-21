@@ -24,6 +24,8 @@ public class UIManager : Singleton<UIManager>
 
     private int popupSceneHandle = -1;
 
+    private GameObject dim;
+
     protected override void Awake()
     {
         base.Awake();
@@ -77,7 +79,7 @@ public class UIManager : Singleton<UIManager>
         MapPanel map = GetOrCreatePopup<MapPanel>(UIName.Popup_Map);
 
         if (map != null)
-            map.SetMap(eventData.Nodes);
+            map.SetMap(eventData.nodes);
     }
 
     /// <summary>
@@ -91,7 +93,7 @@ public class UIManager : Singleton<UIManager>
         if (map == null)
             return;
 
-        map.ShowNextNodes(eventData.SelectableNodeIds);
+        map.ShowNextNodes(eventData.selectableNodeIds);
         OpenPopup(UIName.Popup_Map);
     }
 
@@ -107,10 +109,14 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
     // 현재 씬의 UI 루트가 Canvas를 등록
-    public void RegisterSceneCanvas(Canvas canvas)
+    public void RegisterSceneCanvas(Canvas canvas, GameObject dim)
     {
         uiCanvas = canvas;
+        this.dim = dim;
         popupSceneHandle = canvas.gameObject.scene.handle;
+
+        if (dim != null)
+            dim.SetActive(false);
     }
 
     public void OpenPopup(UIName name)
@@ -139,6 +145,9 @@ public class UIManager : Singleton<UIManager>
 
         popup.gameObject.SetActive(true);
         popup.OpenPopup();
+        popup.transform.SetAsLastSibling();
+
+        RefreshPopupDim();
     }
 
     public void ClosePopup(UIName name)
@@ -150,6 +159,42 @@ public class UIManager : Singleton<UIManager>
         }
 
         popup.ClosePopup();
+        RefreshPopupDim();
+    }
+
+    private void RefreshPopupDim()
+    {
+        if (dim == null)
+            return;
+
+        int popupIndex = int.MaxValue;
+
+        foreach (PopupBase popup in runtimePopupDic.Values)
+        {
+            // 꺼져있거나 dim이 필요없다면 넘기기
+            if (popup == null || !popup.gameObject.activeSelf || !popup.UseDim)
+                continue;
+
+            int index = popup.transform.GetSiblingIndex();
+
+            if (index < popupIndex)
+                popupIndex = index;
+        }
+
+        if (popupIndex == int.MaxValue)
+        {
+            dim.SetActive(false);
+            return;
+        }
+
+        dim.SetActive(true);
+
+        int currentDimIndex = dim.transform.GetSiblingIndex();
+
+        if (currentDimIndex < popupIndex)
+            popupIndex--;
+
+        dim.transform.SetSiblingIndex(popupIndex);
     }
 
     private void OnSceneUnloaded(Scene scene)
@@ -161,6 +206,7 @@ public class UIManager : Singleton<UIManager>
         runtimePopupDic.Clear();
         uiCanvas = null;
         popupSceneHandle = -1;
+        dim = null;
     }
 
     public T GetUI<T>(UIName name, Vector3 pos, Transform parent) where T : UIBase

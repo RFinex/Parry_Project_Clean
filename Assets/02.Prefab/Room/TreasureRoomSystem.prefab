@@ -46,17 +46,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TreasureRoomSystem
   recoveryObj: {fileID: 0}
   treasureObj: {fileID: 0}
-  treasureSr: {fileID: 0}
   chestTypes:
   - closedSprite: {fileID: 526432443, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
-    openSprite: {fileID: -397965613, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
+    openAnimName: Base Layer.Open_Normal
     weight: 10
     minItemGrade: 0
   - closedSprite: {fileID: 526432443, guid: 04df3fe748a326341b44f9b82e8f3073, type: 3}
-    openSprite: {fileID: -397965613, guid: 04df3fe748a326341b44f9b82e8f3073, type: 3}
+    openAnimName: Base Layer.Open_Rare
     weight: 8
     minItemGrade: 0
   - closedSprite: {fileID: 526432443, guid: c44fc00902932a04a964d427b28ed439, type: 3}
-    openSprite: {fileID: -397965613, guid: c44fc00902932a04a964d427b28ed439, type: 3}
+    openAnimName: Base Layer.Open_Unique
     weight: 6
+    minItemGrade: 0
+  - closedSprite: {fileID: 526432443, guid: c90ee9c1bd3ea814699e8645bf19d05f, type: 3}
+    openAnimName: Base Layer.Open_Epic
+    weight: 4
+    minItemGrade: 0
+  - closedSprite: {fileID: 526432443, guid: ee81f38cbdc83bf49ac187601b2cefee, type: 3}
+    openAnimName: Base Layer.Open_Legendary
+    weight: 2
     minItemGrade: 0

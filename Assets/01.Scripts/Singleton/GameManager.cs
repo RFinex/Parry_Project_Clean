@@ -16,6 +16,16 @@ public class GameManager : Singleton<GameManager>
 
     private CameraTargetBinder cameraBinder;
 
+    private void OnEnable()
+    {
+        EventBus.Subscribe<GameStateRequestEvent>(HandleGameStateRequest);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.UnSubscribe<GameStateRequestEvent>(HandleGameStateRequest);
+    }
+
     public void RegisterPlayer(PlayerController player)
     {
         if (player != null)
@@ -53,5 +63,10 @@ public class GameManager : Singleton<GameManager>
     {
         if (cameraBinder != null)
             cameraBinder.SetFollowTarget(target);
+    }
+
+    private void HandleGameStateRequest(GameStateRequestEvent eventData)
+    {
+        SetGameState(eventData.state);
     }
 }

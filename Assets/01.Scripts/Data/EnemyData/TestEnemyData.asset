@@ -23,9 +23,14 @@ MonoBehaviour:
   traceRange: 7
   attackDamage: 10
   attackCool: 1
+  attackDelay: 0.14285715
   staggerDuration: 3
   minIdleTime: 2
   maxIdleTime: 5
   executeBackOffset: -0.8
+  executeDamageRatio: 1
   deathDuration: 1
   detectOffset: {x: 0, y: 0.8}
+  introFocusDuration: 0.6
+  introFaceDuration: 0.5
+  introReturnDuration: 0.6

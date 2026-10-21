@@ -32,6 +32,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     [SerializeField] protected LayerMask obstacleLayer;
     [SerializeField] protected LayerMask groundLayer;
 
+    [Header("Wall Check")]
+    [SerializeField] private float wallCheckDistance = 1f;
+    [SerializeField] private float wallCheckHeight = 0.3f;
+
     [Header("Ground Check")]
     [SerializeField] protected float groundCheckForwardOffset = 0.1f;
     [SerializeField] protected float groundCheckDistance = 0.2f;
@@ -263,7 +267,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         return (Vector2)transform.position + Vector2.right * Mathf.Sign(dir) * distance;
     }
 
-    public bool HasGroundAhead(float dir)
+    public bool IsGroundAhead(float dir)
     {
         if (groundCheckPoint == null)
             return true;
@@ -271,6 +275,18 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         Vector2 origin = (Vector2)groundCheckPoint.position + Vector2.right * (Mathf.Sign(dir) * groundCheckForwardOffset);
 
         RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, groundCheckDistance, groundLayer);
+
+        return hit.collider != null;
+    }
+
+    public bool IsWallAhead(float dir)
+    {
+        if (dir == 0f)
+            return false;
+
+        Vector2 origin = (Vector2)transform.position + Vector2.up * wallCheckHeight;
+
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.right * dir, wallCheckDistance, obstacleLayer);
 
         return hit.collider != null;
     }
@@ -371,7 +387,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         combat.Attack(target, this);
     }
     
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         stats.TakeDamage(damage);
 
@@ -544,6 +560,11 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         Vector2 dir = Vector2.right * FrontDir;
 
         Gizmos.DrawRay(origin, dir * Data.DetectRange);
+
+        Vector2 origin2 = (Vector2)transform.position + Vector2.up * wallCheckHeight;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(origin2, dir * wallCheckDistance);
     }    
 #endif
 

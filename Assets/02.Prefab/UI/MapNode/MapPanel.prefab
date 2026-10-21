@@ -125,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPanel
   uiName: 101
+  useDim: 1
   rect: {fileID: 7826418594761827542}
   startY: 1000
   dropDuration: 0.3

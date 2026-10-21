@@ -33,7 +33,7 @@ public abstract class EliteEnemyController : EnemyController
         EnemyAddState<EliteExecuteHurtState>();
     }
 
-    private void BuildBT()
+    protected void BuildBT()
     {
         SequenceNode combatSequence = new();
         combatSequence.Add(new ActionNode(CheckCombatStarted));
@@ -111,7 +111,7 @@ public abstract class EliteEnemyController : EnemyController
         target = player.transform;
         isIdle = false;
 
-        return UniTask.FromResult(INode.State.Running);
+        return UniTask.FromResult(INode.State.Success);
     }
 
     protected UniTask<INode.State> CheckPlayerAlive(CancellationToken ctk)

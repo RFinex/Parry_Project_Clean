@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
     [Header("Move")]
     [SerializeField] private float frontDir = 1f;
     private Vector2 moveInput;
+    private Vector2 cacheMoveInput;
     private float moveSpeed;
 
     [Header("Jump")]
@@ -307,6 +309,11 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = pos;
         rb.linearVelocity = Vector2.zero;
+
+        moveInput = Vector2.zero;
+        movement.moveInput = Vector2.zero;
+
+        stateMachine.ChangeState(typeof(PlayerIdleState), true);
     }
 
     public void StopJump()
@@ -447,11 +454,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!canInput || IsDeadState())
+        if (IsDeadState())
             return;
 
-        moveInput = context.ReadValue<Vector2>();
+        // 조작이 막힌 상태에서 눌렸을 시에도 인풋 값을 저장
+        cacheMoveInput = context.ReadValue<Vector2>();
 
+        if (!canInput)
+            return;
+
+        // 실제 움직임
+        moveInput = cacheMoveInput;
         movement.moveInput = moveInput;
 
         InputToCurrentState(PlayerInput.MoveChanged);
@@ -680,11 +693,17 @@ public class PlayerController : MonoBehaviour
     {
         canInput = state == GameState.Play;
 
-        if (canInput)
+        if (!canInput)
+        {
+            moveInput = Vector2.zero;
+            movement.moveInput = Vector2.zero;
+            StopMove();
             return;
+        }
 
-        moveInput = Vector2.zero;
-        movement.moveInput = Vector2.zero;
-        StopMove();
+        moveInput = cacheMoveInput;
+        movement.moveInput = moveInput;
+
+        InputToCurrentState(PlayerInput.MoveChanged);
     }
 }

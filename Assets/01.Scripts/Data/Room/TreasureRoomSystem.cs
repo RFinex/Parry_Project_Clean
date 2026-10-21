@@ -10,7 +10,9 @@ public class TreasureRoomSystem : MonoBehaviour
     private class ChestType
     {
         public Sprite closedSprite;
-        public Sprite openSprite;
+
+        [Header("Animation Name")]
+        public string openAnimName;
 
         // 가중치
         [Min(1)] public int weight = 1;
@@ -21,7 +23,6 @@ public class TreasureRoomSystem : MonoBehaviour
 
     [SerializeField] private RecoveryObject recoveryObj;
     [SerializeField] private TreasureObject treasureObj;
-    [SerializeField] private SpriteRenderer treasureSr;
     [SerializeField] private List<ChestType> chestTypes;
 
     private ChestType currentChestType;
@@ -55,7 +56,7 @@ public class TreasureRoomSystem : MonoBehaviour
             return;
         }
 
-        treasureSr.sprite = currentChestType.closedSprite;
+        treasureObj.SetupChest(currentChestType.closedSprite, currentChestType.openAnimName);
     }
 
     /// <summary>
@@ -89,7 +90,8 @@ public class TreasureRoomSystem : MonoBehaviour
 
         recoveryObj.SetAvailable(false);
         treasureObj.SetAvailable(false);
-        treasureSr.sprite = currentChestType.openSprite;
+
+        treasureObj.Open();
 
         // 아이템, 골드 드랍
 

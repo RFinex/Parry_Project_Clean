@@ -4,6 +4,9 @@ public class PopupBase : UIBase
 {
     public UIName UiName => uiName;
 
+    [SerializeField] private bool useDim;
+    public bool UseDim => useDim;
+
     public virtual void OpenPopup()
     {
         Initialized();
