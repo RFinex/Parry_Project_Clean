@@ -113,6 +113,10 @@ public class StageManager : Singleton<StageManager>
 
     private void HandleMapNodeSelected(MapNodeSelectedEvent eventData)
     {
+        // 중복 전환 방지
+        if (isRoomTransition)
+            return;
+
         int nodeId = eventData.nodeId;
 
         StageMapNodeData currentNode = GetNode(currentNodeId);
@@ -125,12 +129,13 @@ public class StageManager : Singleton<StageManager>
         if (selectedNode == null || selectedNode.roomPrefab == null)
             return;
 
+        isRoomTransition = true;
+
         ChangeRoomAsync(selectedNode, currentNodeId, token.Token).Forget();
     }
 
     private async UniTaskVoid ChangeRoomAsync(StageMapNodeData node, int previousNodeId, CancellationToken ctk)
     {
-        isRoomTransition = true;
         bool isRoomChanged = false;
 
         try

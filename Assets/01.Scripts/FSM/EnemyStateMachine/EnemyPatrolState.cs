@@ -43,10 +43,7 @@ public class EnemyPatrolState : EnemyBaseState
                     bool noGroundAhead = !owner.IsGroundAhead(direction);
 
                     if (wallAhead || noGroundAhead)
-                    {
                         targetPos = owner.GetRandomPatrolPos(-direction);
-                        continue;
-                    }
                 }
 
                 bool goal = owner.Move(targetPos);

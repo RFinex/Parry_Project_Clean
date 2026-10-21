@@ -14,6 +14,8 @@ public abstract class EliteEnemyController : EnemyController
     private bool isCombatStart;
     private bool isIdle;
 
+    protected bool isIntroRunning;
+
     protected override bool UseStateMachine => false;
 
     protected override void Initialized()
@@ -140,6 +142,9 @@ public abstract class EliteEnemyController : EnemyController
 
     protected UniTask<INode.State> Idle(CancellationToken ctk)
     {
+        if (isIntroRunning)
+            return UniTask.FromResult(INode.State.Running);
+
         StopMove();
 
         if (!isIdle)
