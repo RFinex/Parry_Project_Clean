@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3285e16716d480a4781a2a8d3269bf61, type: 3}
-  m_Name: EliteBaseData
+  m_Name: BanditBaseData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
-  maxHp: 1000
+  maxHp: 3000
   maxBalance: 50
   moveSpeed: 4
   minPatrolDistance: 2
@@ -23,6 +23,7 @@ MonoBehaviour:
   traceRange: 7
   attackDamage: 5
   attackCool: 1
+  attackDelay: 0.35714287
   staggerDuration: 10
   minIdleTime: 2
   maxIdleTime: 5

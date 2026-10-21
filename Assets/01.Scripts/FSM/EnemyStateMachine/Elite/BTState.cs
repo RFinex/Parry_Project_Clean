@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EliteBTState : EnemyBaseState
+public class BTState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {

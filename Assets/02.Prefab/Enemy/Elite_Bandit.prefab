@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 7943300529606303964}
   - component: {fileID: -6333217743914996791}
   m_Layer: 8
-  m_Name: Elite_Bandit_Stage1
+  m_Name: Elite_Bandit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

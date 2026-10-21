@@ -29,7 +29,7 @@ public abstract class EliteEnemyController : EnemyController
     {
         base.AddStates();
 
-        EnemyAddState<EliteBTState>();
+        EnemyAddState<BTState>();
         EnemyAddState<EliteExecuteHurtState>();
     }
 
@@ -67,8 +67,8 @@ public abstract class EliteEnemyController : EnemyController
 
     protected virtual void Start()
     {
-        if (!IsEnemyState(typeof(EliteBTState)))
-            EnemyChangeState(typeof(EliteBTState));
+        if (!IsEnemyState(typeof(BTState)))
+            EnemyChangeState(typeof(BTState));
     }
 
     protected PlayerController GetPlayer()
@@ -173,7 +173,7 @@ public abstract class EliteEnemyController : EnemyController
         isIdle = false;
         player = null;
 
-        EnemyChangeState(typeof(EliteBTState), true);
+        EnemyChangeState(typeof(BTState), true);
     }
 
     /// <summary>
@@ -181,6 +181,6 @@ public abstract class EliteEnemyController : EnemyController
     /// </summary>
     public override void OnStaggerFinished()
     {
-        EnemyChangeState(typeof(EliteBTState));
+        EnemyChangeState(typeof(BTState));
     }
 }
