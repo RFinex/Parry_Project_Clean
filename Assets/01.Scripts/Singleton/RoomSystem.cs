@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class RoomSystem : MonoBehaviour, IService
 {
     [SerializeField] private List<RoomPrefabGroup> roomPrefabGroups;
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private PlayerController player;
+
+    [SerializeField] private RoomFadeUI roomFade;
 
     private RoomFactory roomFactory;
 
@@ -237,6 +241,16 @@ public class RoomSystem : MonoBehaviour, IService
         }
 
         return null;
+    }
+
+    public UniTask FadeOutAsync(CancellationToken ctk)
+    {
+        return roomFade.FadeOutAsync(ctk);
+    }
+
+    public UniTask FadeInAsync(CancellationToken ctk)
+    {
+        return roomFade.FadeInAsync(ctk);
     }
 
     private void OnDestroy()

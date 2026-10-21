@@ -60,6 +60,7 @@ public class Bandit : EliteEnemyController
         return combatSelector;
     }
 
+    #region BT Method
     private UniTask<INode.State> CheckJumpRange(CancellationToken ctk)
     {
         return CheckSkillRange(jumpAttackSkill);
@@ -116,6 +117,7 @@ public class Bandit : EliteEnemyController
     {
         return meleeSkill.TryUse(this, blackBoard, ctk);
     }
+    #endregion
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
@@ -123,8 +125,7 @@ public class Bandit : EliteEnemyController
         if (blackBoard == null || blackBoard.currentSkill == null)
             return;
 
-        Vector2 center = (Vector2)transform.position +
-                         Vector2.right * frontDir * blackBoard.currentSkill.HitboxXOffset;
+        Vector2 center = (Vector2)transform.position + (frontDir * blackBoard.currentSkill.HitboxXOffset) * Vector2.right;
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(center, blackBoard.currentSkill.HitboxSize);

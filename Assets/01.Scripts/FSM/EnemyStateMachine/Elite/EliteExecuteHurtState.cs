@@ -20,7 +20,7 @@ public class EliteExecuteHurtState : EnemyBaseState
 
         if (!this.board.animator.Play(EnemyAnimationType.Hurt))
         {
-            TransitionState(typeof(EliteBTState));
+            TransitionState(typeof(BTState));
             return;
         }
 
@@ -40,7 +40,7 @@ public class EliteExecuteHurtState : EnemyBaseState
 
             await UniTask.WaitUntil(() => board.animator.Finish(EnemyAnimationType.Hurt), cancellationToken: ctk);
 
-            TransitionState(typeof(EliteBTState));
+            TransitionState(typeof(BTState));
         }
         catch (OperationCanceledException)
         {

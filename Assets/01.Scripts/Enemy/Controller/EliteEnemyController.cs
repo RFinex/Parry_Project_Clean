@@ -14,6 +14,8 @@ public abstract class EliteEnemyController : EnemyController
     private bool isCombatStart;
     private bool isIdle;
 
+    protected bool isIntroRunning;
+
     protected override bool UseStateMachine => false;
 
     protected override void Initialized()
@@ -29,11 +31,11 @@ public abstract class EliteEnemyController : EnemyController
     {
         base.AddStates();
 
-        EnemyAddState<EliteBTState>();
+        EnemyAddState<BTState>();
         EnemyAddState<EliteExecuteHurtState>();
     }
 
-    private void BuildBT()
+    protected void BuildBT()
     {
         SequenceNode combatSequence = new();
         combatSequence.Add(new ActionNode(CheckCombatStarted));
@@ -67,8 +69,8 @@ public abstract class EliteEnemyController : EnemyController
 
     protected virtual void Start()
     {
-        if (!IsEnemyState(typeof(EliteBTState)))
-            EnemyChangeState(typeof(EliteBTState));
+        if (!IsEnemyState(typeof(BTState)))
+            EnemyChangeState(typeof(BTState));
     }
 
     protected PlayerController GetPlayer()
@@ -111,7 +113,7 @@ public abstract class EliteEnemyController : EnemyController
         target = player.transform;
         isIdle = false;
 
-        return UniTask.FromResult(INode.State.Running);
+        return UniTask.FromResult(INode.State.Success);
     }
 
     protected UniTask<INode.State> CheckPlayerAlive(CancellationToken ctk)
@@ -140,6 +142,9 @@ public abstract class EliteEnemyController : EnemyController
 
     protected UniTask<INode.State> Idle(CancellationToken ctk)
     {
+        if (isIntroRunning)
+            return UniTask.FromResult(INode.State.Running);
+
         StopMove();
 
         if (!isIdle)
@@ -173,7 +178,7 @@ public abstract class EliteEnemyController : EnemyController
         isIdle = false;
         player = null;
 
-        EnemyChangeState(typeof(EliteBTState), true);
+        EnemyChangeState(typeof(BTState), true);
     }
 
     /// <summary>
@@ -181,6 +186,6 @@ public abstract class EliteEnemyController : EnemyController
     /// </summary>
     public override void OnStaggerFinished()
     {
-        EnemyChangeState(typeof(EliteBTState));
+        EnemyChangeState(typeof(BTState));
     }
 }

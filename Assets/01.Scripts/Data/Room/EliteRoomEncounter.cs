@@ -30,6 +30,7 @@ public class EliteRoomEncounter : MonoBehaviour
     {
         this.elite = elite;
         this.player = player;
+
         isStarted = false;
 
         if (introTrigger != null)

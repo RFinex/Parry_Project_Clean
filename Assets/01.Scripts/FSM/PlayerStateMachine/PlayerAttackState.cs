@@ -4,16 +4,23 @@ using System.Threading;
 
 public class PlayerAttackState : PlayerBaseState
 {
-    //private PlayerBlackBoard board;
-
     public override void Enter(PlayerController owner)
     {
         EnterToken(owner.DestroyToken);
 
-        //if (blackBoard is PlayerBlackBoard board)
-        //{
-        //    this.board = board;
-        //}
+        UnityEngine.Vector2 velocity = playerBoard.rb.linearVelocity;
+        bool isAir = !playerBoard.movement.isGround || velocity.y > 0f;
+
+        if (isAir)
+        {            
+            velocity.x = 0f;
+
+            if (velocity.y > 0f)
+                velocity.y = 0f;
+
+            playerBoard.rb.linearVelocity = velocity;
+            playerBoard.movement.verticalVelocity = velocity.y;
+        }
 
         int index = playerBoard.combat.AttackStart(owner.transform.position, playerBoard.movement.frontDir);
 
@@ -69,25 +76,4 @@ public class PlayerAttackState : PlayerBaseState
 
         }
     }
-
-    //public override void HandleInput(PlayerInput input)
-    //{
-    //    switch (input)
-    //    {
-    //        case PlayerInput.DashPressed:
-    //            TryDash();
-    //            break;
-
-    //        case PlayerInput.AttackPressed:
-    //            playerBoard.combat.RequestCombo();
-    //            break;
-
-    //        case PlayerInput.GuardPressed:
-    //            TryGuard();
-    //            break;
-
-    //        default:
-    //            break;
-    //    }
-    //}
 }
