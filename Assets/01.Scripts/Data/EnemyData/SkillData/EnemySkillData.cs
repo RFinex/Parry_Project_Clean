@@ -22,6 +22,10 @@ public class EnemySkillData : ScriptableObject
     [SerializeField] private float startupDelay;
     [SerializeField] private float recoveryDelay;
 
+    [Header("Guard/Parry")]
+    [SerializeField] private bool canGuard = true;
+    [SerializeField] private bool canParry = true;
+
     public float MinRange => minRange;
     public float MaxRange => maxRange;
     public float Cooldown => cooldown;
@@ -36,4 +40,7 @@ public class EnemySkillData : ScriptableObject
 
     public float StartupDelay => startupDelay;
     public float RecoveryDelay => recoveryDelay;
+
+    public bool CanGuard => canGuard;
+    public bool CanParry => canParry;
 }

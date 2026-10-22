@@ -34,6 +34,8 @@ public class PlayerCombat
 
     #endregion
 
+    private bool isHit;
+
     public PlayerCombat(PlayerBaseData data)
     {
         this.data = data;
@@ -130,22 +132,41 @@ public class PlayerCombat
 
         attackTimer += deltaTime;
 
-        if (!isComboRequest)
-            return 0;
+        if (isComboRequest && attackTimer >= comboInputTime && attackIndex < maxCombo)
+        {
+            isComboRequest = false;
+            attackIndex++;
+            attackTimer = 0f;
+            isHit = false;
 
-        if (attackTimer < comboInputTime)
-            return 0;
+            return attackIndex;
+        }
 
-        if (attackIndex >= maxCombo)
-            return 0;
+        //if (!isComboRequest)
+        //    return 0;
 
-        isComboRequest = false;
-        attackIndex++;
-        attackTimer = 0f;
+        //if (attackTimer < comboInputTime)
+        //    return 0;
 
-        Attack(pos, frontDir);
+        //if (attackIndex >= maxCombo)
+        //    return 0;
 
-        return attackIndex;
+        if (!isHit && attackTimer >= GetCurrentAttackHitDelay())
+        {
+            Attack(pos, frontDir);
+            isHit = true;
+        }
+
+        return 0;
+    }
+
+    // 애니메이션 딜레이
+    private float GetCurrentAttackHitDelay()
+    {
+        if (data.AttackHitDelays == null || attackIndex <= 0 || attackIndex > data.AttackHitDelays.Count)
+            return 0f;
+
+        return data.AttackHitDelays[attackIndex - 1];
     }
 
     public bool IsAttackFinished()
@@ -163,8 +184,7 @@ public class PlayerCombat
         attackIndex = 1;
         attackTimer = 0;
         isComboRequest = false;
-
-        Attack(pos, frontDir);
+        isHit = false;
 
         return attackIndex;
     }
@@ -176,6 +196,7 @@ public class PlayerCombat
         attackIndex = 0;
         attackTimer = 0f;
         isComboRequest = false;
+        isHit = false;
     }
 
     private Vector2 GetAttackPos(Vector2 pos, float frontDir)

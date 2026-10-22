@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class Bandit_Boss : BossController
     [SerializeField] private BanditMeleeSkillData phase2MeleeData;
     [SerializeField] private BanditChargeSkillData phase2ChargeData;
     [SerializeField] private BanditJumpAttackSkillData phase2JumpAttackData;
+    [SerializeField] private BanditEvadeSkillData phase2EvadeData;
+    [SerializeField] private BanditDaggerSkillData phase2DaggerSkillData;
 
     private BanditMeleeSkill meleeSkill;
     private BanditChargeSkill chargeSkill;
@@ -21,6 +24,8 @@ public class Bandit_Boss : BossController
     private BanditMeleeSkill phase2MeleeSkill;
     private BanditChargeSkill phase2ChargeSkill;
     private BanditJumpAttackSkill phase2JumpAttackSkill;
+    private BanditEvadeSkill phase2EvadeSkill;
+    private BanditDaggerSkill phase2DaggerSkill;
 
     protected override void InitBlackBoard()
     {
@@ -35,6 +40,8 @@ public class Bandit_Boss : BossController
         phase2MeleeSkill = new BanditMeleeSkill(phase2MeleeData);
         phase2ChargeSkill = new BanditChargeSkill(phase2ChargeData);
         phase2JumpAttackSkill = new BanditJumpAttackSkill(phase2JumpAttackData);
+        phase2EvadeSkill = new BanditEvadeSkill(phase2EvadeData);
+        phase2DaggerSkill = new BanditDaggerSkill(phase2DaggerSkillData);
 
         blackBoard.skills.Clear();
         blackBoard.skills.Add(meleeSkill);
@@ -43,6 +50,8 @@ public class Bandit_Boss : BossController
         blackBoard.skills.Add(phase2MeleeSkill);
         blackBoard.skills.Add(phase2ChargeSkill);
         blackBoard.skills.Add(phase2JumpAttackSkill);
+        blackBoard.skills.Add(phase2EvadeSkill);
+        blackBoard.skills.Add(phase2DaggerSkill);
     }
 
     protected override INode BuildPhase1BT()
@@ -78,10 +87,20 @@ public class Bandit_Boss : BossController
 
     protected override INode BuildPhase2BT()
     {
+        SequenceNode evadeSequence = new();
+        evadeSequence.Add(new ActionNode(CheckPhase2Evade));
+        evadeSequence.Add(new ActionNode(CheckPhase2EvadeCooldown));
+        evadeSequence.Add(new ActionNode(UsePhase2Evade));
+
         SequenceNode jumpSequence = new();
         jumpSequence.Add(new ActionNode(CheckPhase2JumpRange));
         jumpSequence.Add(new ActionNode(CheckPhase2JumpCooldown));
         jumpSequence.Add(new ActionNode(UsePhase2JumpAttack));
+
+        SequenceNode daggerSequence = new();
+        daggerSequence.Add(new ActionNode(CheckPhase2DaggerRange));
+        daggerSequence.Add(new ActionNode(CheckPhase2DaggerCooldown));
+        daggerSequence.Add(new ActionNode(UsePhase2Dagger));
 
         SequenceNode chargeSequence = new();
         chargeSequence.Add(new ActionNode(CheckPhase2ChargeRange));
@@ -98,7 +117,9 @@ public class Bandit_Boss : BossController
         traceSequence.Add(new ActionNode(TracePlayer));
 
         SelectorNode phase2Selector = new();
+        phase2Selector.Add(evadeSequence);
         phase2Selector.Add(jumpSequence);
+        phase2Selector.Add(daggerSequence);
         phase2Selector.Add(chargeSequence);
         phase2Selector.Add(meleeSequence);
         phase2Selector.Add(traceSequence);
@@ -108,6 +129,8 @@ public class Bandit_Boss : BossController
     }
 
     #region BT Method
+
+    // 거리 체크
     private UniTask<INode.State> CheckJumpRange(CancellationToken ctk)
     {
         return CheckSkillRange(jumpAttackSkill);
@@ -123,48 +146,7 @@ public class Bandit_Boss : BossController
         return CheckSkillRange(meleeSkill);
     }
 
-    private UniTask<INode.State> CheckSkillRange(EnemySkill skill)
-    {
-        bool inRange = GetPlayer() != null && skill != null && skill.IsInRange(this);
-        return UniTask.FromResult(inRange ? INode.State.Success : INode.State.Failure);
-    }
-
-    private UniTask<INode.State> CheckJumpCooldown(CancellationToken ctk)
-    {
-        return CheckSkillReady(jumpAttackSkill);
-    }
-
-    private UniTask<INode.State> CheckChargeCooldown(CancellationToken ctk)
-    {
-        return CheckSkillReady(chargeSkill);
-    }
-
-    private UniTask<INode.State> CheckMeleeCooldown(CancellationToken ctk)
-    {
-        return CheckSkillReady(meleeSkill);
-    }
-
-    private UniTask<INode.State> CheckSkillReady(EnemySkill skill)
-    {
-        bool isReady = skill != null && skill.IsReady;
-        return UniTask.FromResult(isReady ? INode.State.Success : INode.State.Failure);
-    }
-
-    private UniTask<INode.State> UseJumpAttack(CancellationToken ctk)
-    {
-        return jumpAttackSkill.TryUse(this, blackBoard, ctk);
-    }
-
-    private UniTask<INode.State> UseChargeAttack(CancellationToken ctk)
-    {
-        return chargeSkill.TryUse(this, blackBoard, ctk);
-    }
-
-    private UniTask<INode.State> UseMeleeAttack(CancellationToken ctk)
-    {
-        return meleeSkill.TryUse(this, blackBoard, ctk);
-    }
-
+    // 2페이즈
     private UniTask<INode.State> CheckPhase2JumpRange(CancellationToken ctk)
     {
         return CheckSkillRange(phase2JumpAttackSkill);
@@ -180,6 +162,47 @@ public class Bandit_Boss : BossController
         return CheckSkillRange(phase2MeleeSkill);
     }
 
+    private UniTask<INode.State> CheckPhase2Evade(CancellationToken ctk)
+    {
+        PlayerController player = GetPlayer();
+
+        if (player == null)
+            return UniTask.FromResult(INode.State.Failure);
+
+        bool canEvade = player.IsAttacking && phase2EvadeSkill != null && phase2EvadeSkill.IsInRange(this);
+
+        return UniTask.FromResult(canEvade ? INode.State.Success : INode.State.Failure);
+    }
+
+    private UniTask<INode.State> CheckPhase2DaggerRange(CancellationToken ctk)
+    {
+        return CheckSkillRange(phase2DaggerSkill);
+    }
+
+    // 사거리 체크 공용 함수
+    private UniTask<INode.State> CheckSkillRange(EnemySkill skill)
+    {
+        bool inRange = GetPlayer() != null && skill != null && skill.IsInRange(this);
+        return UniTask.FromResult(inRange ? INode.State.Success : INode.State.Failure);
+    }
+
+    // 쿨타임 체크
+    private UniTask<INode.State> CheckJumpCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(jumpAttackSkill);
+    }
+
+    private UniTask<INode.State> CheckChargeCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(chargeSkill);
+    }
+
+    private UniTask<INode.State> CheckMeleeCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(meleeSkill);
+    }
+
+    // 2페이즈
     private UniTask<INode.State> CheckPhase2JumpCooldown(CancellationToken ctk)
     {
         return CheckSkillReady(phase2JumpAttackSkill);
@@ -195,6 +218,40 @@ public class Bandit_Boss : BossController
         return CheckSkillReady(phase2MeleeSkill);
     }
 
+    private UniTask<INode.State> CheckPhase2EvadeCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(phase2EvadeSkill);
+    }
+    
+    private UniTask<INode.State> CheckPhase2DaggerCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(phase2DaggerSkill);
+    }
+
+    // 쿨타임 체크 공용 함수
+    private UniTask<INode.State> CheckSkillReady(EnemySkill skill)
+    {
+        bool isReady = skill != null && skill.IsReady;
+        return UniTask.FromResult(isReady ? INode.State.Success : INode.State.Failure);
+    }
+
+    // 사용 가능 체크
+    private UniTask<INode.State> UseJumpAttack(CancellationToken ctk)
+    {
+        return jumpAttackSkill.TryUse(this, blackBoard, ctk);
+    }
+
+    private UniTask<INode.State> UseChargeAttack(CancellationToken ctk)
+    {
+        return chargeSkill.TryUse(this, blackBoard, ctk);
+    }
+
+    private UniTask<INode.State> UseMeleeAttack(CancellationToken ctk)
+    {
+        return meleeSkill.TryUse(this, blackBoard, ctk);
+    }
+    
+    // 2페이즈
     private UniTask<INode.State> UsePhase2JumpAttack(CancellationToken ctk)
     {
         return phase2JumpAttackSkill.TryUse(this, blackBoard, ctk);
@@ -209,5 +266,52 @@ public class Bandit_Boss : BossController
     {
         return phase2MeleeSkill.TryUse(this, blackBoard, ctk);
     }
+
+    private UniTask<INode.State> UsePhase2Evade(CancellationToken ctk)
+    {
+        return phase2EvadeSkill.TryUse(this, blackBoard, ctk);
+    }
+
+    private UniTask<INode.State> UsePhase2Dagger(CancellationToken ctk)
+    {
+        return phase2DaggerSkill.TryUse(this, blackBoard, ctk);
+    }
     #endregion
+
+    public override async UniTask PlayIntroAsync(PlayerController player, Transform jumpPoint, Transform jumpPoint2, CancellationToken ctk)
+    {
+        if (player == null || jumpPoint == null || jumpPoint2 == null)
+            return;
+
+        isIntroRunning = true;
+
+        try
+        {
+            FacePlayer(player);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+
+            blackBoard.animator.Play(EnemyAnimationType.Move);
+
+            await UniTask.WaitUntil(() => Move(jumpPoint.position), cancellationToken: ctk);
+
+            StopMove();
+
+            SetFrontDir(jumpPoint2.position.x - transform.position.x);
+            blackBoard.animator.Play(EnemyAnimationType.Jump);
+
+            blackBoard.rb.linearVelocity = new Vector2(FrontDir * BossData.IntroJumpSpeed, BossData.IntroJumpForce);
+
+            await UniTask.WaitUntil(() => IsGround() && blackBoard.rb.linearVelocity.y <= 0f, cancellationToken: ctk);
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+        finally
+        {
+            StopMove();
+            isIntroRunning = false;
+        }
+    }
 }

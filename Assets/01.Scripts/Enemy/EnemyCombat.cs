@@ -21,14 +21,14 @@ public class EnemyCombat
         if (player == null)
             return;
 
-        EnemyAttackInfo attackInfo = new EnemyAttackInfo(attackDamage, attacker);
+        EnemyAttackInfo attackInfo = new EnemyAttackInfo(attackDamage, attacker, data.CanGuard, data.CanParry);
 
         player.TakeDamage(attackInfo);
 
         Utils.Log<EnemyCombat>($"Àû °ø°Ý : {target.name}");
     }
 
-    public virtual void Attack(Transform target, EnemyController attacker, float damage)
+    public virtual void Attack(Transform target, EnemyController attacker, float damage, bool canGuard, bool canParry)
     {
         if (target == null)
             return;
@@ -38,7 +38,7 @@ public class EnemyCombat
         if (player == null)
             return;
 
-        EnemyAttackInfo attackInfo = new EnemyAttackInfo(damage, attacker);
+        EnemyAttackInfo attackInfo = new EnemyAttackInfo(damage, attacker, canGuard, canParry);
 
         player.TakeDamage(attackInfo);
     }

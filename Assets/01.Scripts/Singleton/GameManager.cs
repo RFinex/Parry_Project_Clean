@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum GameState
@@ -16,6 +17,8 @@ public class GameManager : Singleton<GameManager>
 
     private CameraTargetBinder cameraBinder;
 
+    public event Action<PlayerController> OnPlayerChanged;
+
     private void OnEnable()
     {
         EventBus.Subscribe<GameStateRequestEvent>(HandleGameStateRequest);
@@ -28,14 +31,20 @@ public class GameManager : Singleton<GameManager>
 
     public void RegisterPlayer(PlayerController player)
     {
-        if (player != null)
-            Player = player;
+        if (player == null)
+            return;
+
+        Player = player;
+        OnPlayerChanged?.Invoke(Player);
     }
 
     public void UnregisterPlayer(PlayerController player)
     {
-        if(Player == player)
-            Player = null;
+        if (Player != player)
+            return;
+
+        Player = null;
+        OnPlayerChanged?.Invoke(null);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)

@@ -86,6 +86,8 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     private EnemyStatusBar statusBar;
 
+    public bool IsInvincible { get; private set; }
+
     protected virtual void Awake()
     {
         Initialized();
@@ -346,6 +348,9 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public void StopMove()
     {
+        if (rb == null)
+            return;
+
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
@@ -389,6 +394,9 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     
     public virtual void TakeDamage(float damage)
     {
+        if (IsInvincible)
+            return;
+
         stats.TakeDamage(damage);
 
         if (stats.IsDead)
@@ -401,6 +409,9 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public void TakeBalanceDamage(float damage)
     {
+        if (IsInvincible)
+            return;
+
         stats.TakeBalanceDamage(damage);
 
         if (stats.IsBalanceBroken)
@@ -537,6 +548,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         target = null;
         frontDir = 1f;
+        IsInvincible = false;
 
         rb.linearVelocity = Vector2.zero;
     }
@@ -589,5 +601,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     public virtual void OnStaggerFinished()
     {
         EnemyChangeState(typeof(EnemyIdleState));
+    }
+
+    public void SetInvincible(bool value)
+    {
+        IsInvincible = value;
     }
 }

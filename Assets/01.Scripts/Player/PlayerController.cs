@@ -64,8 +64,10 @@ public class PlayerController : MonoBehaviour
     private PlayerStats stats;
     private PlayerCombat combat;
 
+    // 플레이어가 공격중인지 판단
+    public bool IsAttacking => combat != null && combat.isAttacking;
+
     public PlayerStats Stats => stats;
-    //public PlayerCombat Combat => combat;
 
     [Header("Move")]
     [SerializeField] private float frontDir = 1f;
@@ -351,15 +353,19 @@ public class PlayerController : MonoBehaviour
     {
         GuardResult guardResult = combat.CheckGuard();
 
-        if (guardResult == GuardResult.Parry)
+        if (guardResult == GuardResult.None)
+            return false;
+
+        if (guardResult == GuardResult.Parry && info.canParry)
         {
-            info.attacker.TakeBalanceDamage(data.ParryDamage);
+            if (info.damageAttackerBalanceOnParry && info.attacker != null)
+                info.attacker.TakeBalanceDamage(data.ParryDamage);
 
             Utils.Log<PlayerController>("패리 성공");
             return true;
         }
 
-        if (guardResult == GuardResult.Guard)
+        if (info.canGuard)
         {
             Utils.Log<PlayerController>("가드 성공");
             return true;

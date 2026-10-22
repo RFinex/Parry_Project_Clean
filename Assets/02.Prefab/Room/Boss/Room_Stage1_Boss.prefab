@@ -8055,8 +8055,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3850428649504320192}
   - component: {fileID: 1870671026815163750}
+  - component: {fileID: 3366500095883315858}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: IntroTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8107,7 +8108,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -8123,6 +8124,24 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &3366500095883315858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2838408002981141979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7372fb28faed7e9409867775626f7ac3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossRoomEncounter
+  introTrigger: {fileID: 1870671026815163750}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  bossJumpPoint_1: {fileID: 4246095021572756508}
+  bossJumpPoint_2: {fileID: 6768663853917285082}
 --- !u!1 &2978257152224375967
 GameObject:
   m_ObjectHideFlags: 0

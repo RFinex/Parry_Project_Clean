@@ -24,3 +24,4 @@ MonoBehaviour:
   recoveryDelay: 0
   chargeSpeed: 10
   chargeDuration: 0.35
+  warningId: 2

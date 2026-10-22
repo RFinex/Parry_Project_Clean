@@ -340,3 +340,5 @@ MonoBehaviour:
   phase2MeleeData: {fileID: 11400000, guid: 3c3a67f3e808cda4fb17d24cfd281ecc, type: 2}
   phase2ChargeData: {fileID: 11400000, guid: abfa3993f1f62f54590004bcdd5eff4f, type: 2}
   phase2JumpAttackData: {fileID: 11400000, guid: a9c60128b5418894fb8b9973a83a8d07, type: 2}
+  phase2EvadeData: {fileID: 11400000, guid: 2ba9610140cf3a2448d675fd134ece75, type: 2}
+  phase2DaggerSkillData: {fileID: 11400000, guid: 4e68edea627826c459e31df737769bbd, type: 2}

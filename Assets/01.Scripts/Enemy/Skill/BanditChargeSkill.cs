@@ -14,32 +14,71 @@ public class BanditChargeSkill : EnemySkill
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
-        owner.StopMove();
-        owner.LookAtTarget();
+        ChargeWarning warning = null;
 
-        board.animator.Play(EnemyAnimationType.Idle);
-        await WaitStartup(ctk);
 
-        if (!board.animator.Play(data.AnimationType))
-            return;
 
-        board.rb.linearVelocity = new Vector2(owner.FrontDir * chargeData.ChargeSpeed, board.rb.linearVelocity.y);
+        //await WaitStartup(ctk);
+
+        //if (!board.animator.Play(data.AnimationType))
+        //    return;
+
+        //board.rb.linearVelocity = new Vector2(owner.FrontDir * chargeData.ChargeSpeed, board.rb.linearVelocity.y);
 
         try
         {
+            owner.StopMove();
+            owner.LookAtTarget();
+            board.animator.Play(EnemyAnimationType.Idle);
+
+
+            float chargeDistance = chargeData.ChargeSpeed * chargeData.ChargeDuration;
+
+            float warningWidth = chargeDistance + data.HitboxSize.x;
+            float warningOffset = data.HitboxXOffset + chargeDistance * 0.5f;
+
+            Vector2 warningCenter = (Vector2)owner.transform.position + Vector2.right * owner.FrontDir * warningOffset;
+
+            warning = ObjectPoolManager.Instance.Get<ChargeWarning>(chargeData.WarningId, warningCenter);
+
+            if (warning != null)
+            {
+                warning.transform.localScale = new Vector3(warningWidth, data.HitboxSize.y, 1f);
+
+                await warning.FillAsync(data.StartupDelay, owner.FrontDir, ctk);
+
+                warning.ReturnPool();
+                warning = null;
+            }
+            else
+            {
+                // 풀에 경고 표시를 안넣어도 선딜은 대기
+                await WaitStartup(ctk);
+            }
+
+            if (!board.animator.Play(data.AnimationType))
+                return;
+
+            board.rb.linearVelocity = new Vector2(owner.FrontDir * chargeData.ChargeSpeed, board.rb.linearVelocity.y);
+
             await UniTask.WhenAll(
                 CheckHitCharge(owner, board, ctk),
                 UniTask.Delay(TimeSpan.FromSeconds(chargeData.ChargeDuration),
                 cancellationToken: ctk));
+
+            owner.StopMove();
+
+            await UniTask.WaitUntil(() => board.animator.Finish(data.AnimationType), cancellationToken: ctk);
+
+            await WaitRecovery(ctk);
         }
         finally
         {
             owner.StopMove();
+
+            if (warning != null)
+                warning.ReturnPool();
         }
-
-        await UniTask.WaitUntil(() => board.animator.Finish(data.AnimationType), cancellationToken: ctk);
-
-        await WaitRecovery(ctk);
     }
 
     private async UniTask CheckHitCharge(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)

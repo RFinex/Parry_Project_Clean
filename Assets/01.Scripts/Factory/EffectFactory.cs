@@ -1,31 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectFactory : IFactory<AfterImageObject>
+public class EffectFactory : IFactory<EffectBase>
 {
-    private readonly Dictionary<int, AfterImageObject> prefabDic = new Dictionary<int, AfterImageObject>();
+    private readonly Dictionary<int, EffectBase> prefabDic = new();
 
     public IPool Pool { get; }
 
     public EffectFactory()
     {
-        Pool = new ObjectPool<AfterImageObject>(this);
+        Pool = new ObjectPool<EffectBase>(this);
     }
 
-    public void Register(int objectId, AfterImageObject prefab)
+    public void Register(int objectId, EffectBase prefab)
     {
-        if (prefab == null)
-            return;
-
-        if (prefabDic.ContainsKey(objectId))
+        if (prefab == null || prefabDic.ContainsKey(objectId))
             return;
 
         prefabDic.Add(objectId, prefab);
     }
 
-    public AfterImageObject Create(int objectId, Transform parent)
+    public EffectBase Create(int objectId, Transform parent)
     {
-        if (!prefabDic.TryGetValue(objectId, out AfterImageObject prefab))
+        if (!prefabDic.TryGetValue(objectId, out EffectBase prefab))
             return null;
 
         return Object.Instantiate(prefab, parent);
