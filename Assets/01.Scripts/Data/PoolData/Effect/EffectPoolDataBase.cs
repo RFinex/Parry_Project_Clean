@@ -10,7 +10,7 @@ public class EffectPoolDataBase : PoolDataBase
 
     public override void Register(ObjectPoolManager manager)
     {
-        EffectFactory factory = new EffectFactory();
+        EffectFactory factory = new();
 
         foreach (EffectPoolInfo info in effectList)
         {

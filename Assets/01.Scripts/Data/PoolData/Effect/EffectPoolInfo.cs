@@ -5,8 +5,8 @@ using UnityEngine;
 public class EffectPoolInfo
 {
     [SerializeField] private int id;
-    [SerializeField] private AfterImageObject prefab;
+    [SerializeField] private EffectBase prefab;
 
     public int ID => id;
-    public AfterImageObject Prefab => prefab;
+    public EffectBase Prefab => prefab;
 }

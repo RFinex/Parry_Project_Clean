@@ -1,3 +1,4 @@
+using System;
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ public class PlayerStats
     private bool isInvincible;
     public bool IsInvincible => isInvincible;
     public float InvincibleTime => invincibleTime;
+
+    public event Action<float, float> OnHealthChanged;
+    public event Action<float, float> OnStaminaChanged;
     
     public PlayerStats(PlayerBaseData data)
     {
@@ -45,6 +49,7 @@ public class PlayerStats
             nowHp = 0f;
 
         Utils.Log<PlayerStats>($"남은 체력 : {nowHp}/{maxHp}");
+        OnHealthChanged?.Invoke(nowHp, maxHp);
     }
 
     public bool UseStamina(float stamina)
@@ -56,6 +61,7 @@ public class PlayerStats
         }
 
         nowStamina -= stamina;
+        OnStaminaChanged?.Invoke(nowStamina, maxStamina);
 
         return true;
     }
@@ -68,6 +74,7 @@ public class PlayerStats
             nowHp = maxHp;
 
         Utils.Log<PlayerController>($"남은 체력 : {nowHp}/{maxHp}");
+        OnHealthChanged?.Invoke(nowHp, maxHp);
     }
 
     public void RestoreStamina(float value)
@@ -76,6 +83,8 @@ public class PlayerStats
 
         if(nowStamina >= maxStamina)
             nowStamina = maxStamina;
+
+        OnStaminaChanged?.Invoke(nowStamina, maxStamina);
     }
 
     public void StartInvincible()

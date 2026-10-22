@@ -142,6 +142,10 @@ public class RoomSystem : MonoBehaviour, IService
         // 적을 스폰 위치에 소환
         List<EnemyController> enemies = enemySpawner.Spawn(currentRoom.transform);
 
+        BossRoomEncounter bossEncounter = currentRoom.GetComponentInChildren<BossRoomEncounter>(true);
+
+        BossController boss = null;
+
         EliteRoomEncounter encounter = currentRoom.GetComponentInChildren<EliteRoomEncounter>(true);
 
         EliteEnemyController elite = null;
@@ -150,6 +154,9 @@ public class RoomSystem : MonoBehaviour, IService
         {
             if (enemy == null)
                 continue;
+
+            if (boss == null && enemy is BossController bossEnemy)
+                boss = bossEnemy;
 
             if (elite == null && enemy is EliteEnemyController eliteEnemy)
                 elite = eliteEnemy;
@@ -161,8 +168,14 @@ public class RoomSystem : MonoBehaviour, IService
             enemy.OnDeathFinished += OnEnemyDeathFinished;
         }
 
-        if (encounter != null && elite != null)
+        if (bossEncounter != null && boss != null)
+        {
+            bossEncounter.Initialized(boss, player);
+        }
+        else if (encounter != null && elite != null)
+        {
             encounter.Initialized(elite, player);
+        }
 
         // 적이 소환되지 않았으면 클리어 처리
         if (activeEnemies.Count == 0 && treasureRoom == null)
@@ -263,4 +276,20 @@ public class RoomSystem : MonoBehaviour, IService
     {
         isQuitting = true;
     }
+
+#if UNITY_EDITOR
+    public void DebugKillAllEnemies()
+    {
+        for (int i = activeEnemies.Count - 1; i >= 0; i--)
+        {
+            EnemyController enemy = activeEnemies[i];
+
+            if (enemy == null || enemy.Stats == null)
+                continue;
+
+            enemy.SetInvincible(false);
+            enemy.TakeDamage(enemy.Stats.NowHp);
+        }
+    }
+#endif
 }

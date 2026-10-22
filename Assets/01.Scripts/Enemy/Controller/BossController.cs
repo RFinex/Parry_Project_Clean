@@ -11,6 +11,7 @@ public enum BossPhase
 public abstract class BossController : EliteEnemyController
 {
     [SerializeField] private BossData bossData;
+    protected BossData BossData => bossData;
 
     public BossPhase CurrentPhase { get; private set; } = BossPhase.Phase1;
 
@@ -69,4 +70,6 @@ public abstract class BossController : EliteEnemyController
         CurrentPhase = BossPhase.Phase1;
         base.InitPool();
     }
+
+    public abstract UniTask PlayIntroAsync(PlayerController player, Transform jumpPoint, Transform jumpPoint2, CancellationToken ctk);
 }

@@ -22,5 +22,7 @@ MonoBehaviour:
   hitboxXOffset: 0
   startupDelay: 0.5
   recoveryDelay: 0
+  canGuard: 0
+  canParry: 0
   horizontalSpeed: 6
   jumpForce: 6

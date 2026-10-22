@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerBaseData", menuName = "Player/PlayerBaseData")]
@@ -31,6 +32,8 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private int maxCombo = 3;
     [SerializeField] private float comboInputTime = 0.25f;
     [SerializeField] private float attackEndTime = 0.5f;
+
+    [SerializeField] private List<float> attackHitDelays;
 
     [Header("Guard")]
     [SerializeField] private float parryWindow = 0.15f;
@@ -72,6 +75,7 @@ public class PlayerBaseData : ScriptableObject
     public int MaxCombo => maxCombo;
     public float ComboInputTime => comboInputTime;
     public float AttackEndTime => attackEndTime;
+    public List<float> AttackHitDelays => attackHitDelays;
 
     public float ParryWindow => parryWindow;
     public float ParryDamage => parryDamage;
