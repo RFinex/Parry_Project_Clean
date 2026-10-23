@@ -31,7 +31,7 @@ public class EnemyStatusBar : UIBase
     {
         UnBind();
 
-        Utils.EnterToken(ref token, enemy.DestroyToken);
+        token = token.ResetToken();
 
         target = enemy;
         stats = enemy.Stats;
@@ -47,9 +47,9 @@ public class EnemyStatusBar : UIBase
 
     public void UnBind()
     {
-        Utils.ExitToken(ref token);
+        token = token.Cancel_DisposeToken();
 
-        Utils.ExitToken(ref barToken);
+        barToken = barToken.Cancel_DisposeToken();
 
         if (stats != null)
         {
@@ -107,7 +107,7 @@ public class EnemyStatusBar : UIBase
 
     public void SetHealth(float currentHealth, float maxHealth)
     {
-        Utils.EnterToken(ref barToken);
+        barToken = barToken.ResetToken();
 
         SetHealthAsync(currentHealth, maxHealth, barToken.Token).Forget();
     }

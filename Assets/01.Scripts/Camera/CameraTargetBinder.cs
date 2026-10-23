@@ -1,9 +1,16 @@
 using UnityEngine;
 using Cinemachine;
+using DG.Tweening;
+using Cysharp.Threading.Tasks;
+using System.Threading;
+using System;
 
 [RequireComponent(typeof(CinemachineVirtualCamera))]
 public class CameraTargetBinder : MonoBehaviour
 {
+    [SerializeField] private Transform cameraTargetPivot;
+    [SerializeField] private Vector3 targetOffset = new(0f, 0.3f, 0f);
+
     private CinemachineVirtualCamera virtualCamera;
     private CinemachineConfiner2D confiner;
 
@@ -13,6 +20,9 @@ public class CameraTargetBinder : MonoBehaviour
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
         confiner = GetComponent<CinemachineConfiner2D>();
+
+        if (virtualCamera != null && cameraTargetPivot != null)
+            virtualCamera.Follow = cameraTargetPivot;
     }
 
     private void OnEnable()
@@ -50,9 +60,7 @@ public class CameraTargetBinder : MonoBehaviour
         TryRegisterRoomSystem();
 
         if (GameManager.Instance != null)
-        {
-            SetFollowTarget(GameManager.Instance.Player.transform);
-        }      
+            CatchTarget(GameManager.Instance.Player.transform);
     }
 
     public bool SetBounds(PolygonCollider2D bounds)
@@ -66,9 +74,45 @@ public class CameraTargetBinder : MonoBehaviour
         return true;
     }
 
+    public void CatchTarget(Transform target)
+    {
+        if (cameraTargetPivot == null || target == null)
+            return;
+
+        cameraTargetPivot.DOKill();
+        cameraTargetPivot.SetParent(target, false);
+        cameraTargetPivot.localPosition = targetOffset;
+    }
+
+    public async UniTask MoveToTargetAsync(Transform target, float duration, CancellationToken ctk)
+    {
+        if (cameraTargetPivot == null || target == null)
+            return;
+
+        cameraTargetPivot.DOKill();
+
+        cameraTargetPivot.SetParent(null, true);
+
+        if (duration <= 0f)
+        {
+            cameraTargetPivot.position = target.position;
+            cameraTargetPivot.SetParent(target, true);
+            cameraTargetPivot.localPosition = targetOffset;
+            return;
+        }
+
+        Vector3 targetPos = target.position + targetOffset;
+
+        await cameraTargetPivot.DOMove(targetPos, duration)
+            .SetEase(Ease.InOutSine)
+            .ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, ctk);
+
+        cameraTargetPivot.SetParent(target, true);
+        cameraTargetPivot.localPosition = targetOffset;
+    }
+
     public void SetFollowTarget(Transform target)
     {
-        if (virtualCamera != null && target != null)
-            virtualCamera.Follow = target;
+        CatchTarget(target);
     }
 }

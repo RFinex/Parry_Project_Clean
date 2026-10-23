@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using UnityEngine;
 
 public enum GameState
@@ -68,14 +70,24 @@ public class GameManager : Singleton<GameManager>
         EventBus.Publish(new GameStateChangedEvent(CurrentState));
     }
 
+    #region Camera
     public void SetCameraTarget(Transform target)
     {
         if (cameraBinder != null)
             cameraBinder.SetFollowTarget(target);
     }
 
+    public UniTask MoveCameraTargetAsync(Transform target, float duration, CancellationToken ctk)
+    {
+        if (cameraBinder == null)
+            return UniTask.CompletedTask;
+
+        return cameraBinder.MoveToTargetAsync(target, duration, ctk);
+    }
+    #endregion
+
     private void HandleGameStateRequest(GameStateRequestEvent eventData)
     {
         SetGameState(eventData.state);
-    }
+    }    
 }

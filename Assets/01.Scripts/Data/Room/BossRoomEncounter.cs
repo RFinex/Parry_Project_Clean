@@ -65,14 +65,13 @@ public class BossRoomEncounter : MonoBehaviour
 
         try
         {
-            gameManager.SetCameraTarget(boss.transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(boss.Data.IntroFocusDuration), cancellationToken: ctk);
+            await gameManager.MoveCameraTargetAsync(boss.transform, boss.Data.IntroFocusDuration, ctk);
 
             await boss.PlayIntroAsync(player, bossJumpPoint_1, bossJumpPoint_2, ctk);
 
-            gameManager.SetCameraTarget(player.transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(boss.Data.IntroReturnDuration), cancellationToken: ctk);
+            await gameManager.MoveCameraTargetAsync(player.transform, boss.Data.IntroReturnDuration, ctk);
 
+            EventBus.Publish(new BossFightStartedEvent(boss));
             boss.StartCombat(player);
         }
         catch (OperationCanceledException)

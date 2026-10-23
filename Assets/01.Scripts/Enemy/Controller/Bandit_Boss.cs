@@ -287,6 +287,8 @@ public class Bandit_Boss : BossController
 
         try
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+
             FacePlayer(player);
 
             await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
@@ -311,6 +313,7 @@ public class Bandit_Boss : BossController
         finally
         {
             StopMove();
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
             isIntroRunning = false;
         }
     }
