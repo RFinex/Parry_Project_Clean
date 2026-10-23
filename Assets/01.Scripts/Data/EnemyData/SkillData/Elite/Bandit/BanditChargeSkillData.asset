@@ -27,3 +27,4 @@ MonoBehaviour:
   chargeSpeed: 10
   chargeDuration: 0.35
   warningId: 2
+  offset: 0.5

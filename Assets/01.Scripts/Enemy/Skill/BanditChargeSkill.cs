@@ -38,6 +38,7 @@ public class BanditChargeSkill : EnemySkill
             float warningOffset = data.HitboxXOffset + chargeDistance * 0.5f;
 
             Vector2 warningCenter = (Vector2)owner.transform.position + Vector2.right * owner.FrontDir * warningOffset;
+            warningCenter.y += chargeData.Offset;
 
             warning = ObjectPoolManager.Instance.Get<ChargeWarning>(chargeData.WarningId, warningCenter);
 
