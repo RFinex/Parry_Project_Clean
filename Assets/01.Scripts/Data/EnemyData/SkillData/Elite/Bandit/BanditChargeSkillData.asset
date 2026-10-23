@@ -22,6 +22,8 @@ MonoBehaviour:
   hitboxXOffset: 0
   startupDelay: 1
   recoveryDelay: 0
+  canGuard: 1
+  canParry: 0
   chargeSpeed: 10
   chargeDuration: 0.35
   warningId: 2
