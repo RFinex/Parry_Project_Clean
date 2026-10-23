@@ -63,14 +63,17 @@ public class EliteRoomEncounter : MonoBehaviour
 
         try
         {
-            gameManager.SetCameraTarget(elite.transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFocusDuration), cancellationToken: ctk);
+            await gameManager.MoveCameraTargetAsync(elite.transform, elite.Data.IntroFocusDuration, ctk);
+            //gameManager.SetCameraTarget(elite.transform);
+            //await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFocusDuration), cancellationToken: ctk);
 
             elite.FacePlayer(player);
             await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFaceDuration), cancellationToken: ctk);
 
-            gameManager.SetCameraTarget(player.transform);
-            await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroReturnDuration), cancellationToken: ctk);
+            await gameManager.MoveCameraTargetAsync(player.transform, elite.Data.IntroReturnDuration, ctk);
+
+            //gameManager.SetCameraTarget(player.transform);
+            //await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroReturnDuration), cancellationToken: ctk);
 
             elite.StartCombat(player);
         }
