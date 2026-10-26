@@ -8,7 +8,8 @@ public enum UIName
     Popup_Map = 101,
     Popup_Map_Node_Btn = 102,
     Popup_Map_Connection = 103,
-    Enemy_Status_Bar = 104
+    Enemy_Status_Bar = 104,
+    Popup_Inventory = 105
 }
 
 public class UIManager : Singleton<UIManager>
@@ -39,6 +40,7 @@ public class UIManager : Singleton<UIManager>
         EventBus.Subscribe<StageMapCreatedEvent>(HandleStageMapCreated);
         EventBus.Subscribe<StageMapShownEvent>(HandleStageMapShown);
         EventBus.Subscribe<StageMapClosedEvent>(HandleStageMapClosed);
+        EventBus.Subscribe<InventoryToggleEvent>(HandleInventoryToggle);
     }
 
     private void OnDisable()
@@ -46,6 +48,7 @@ public class UIManager : Singleton<UIManager>
         EventBus.UnSubscribe<StageMapCreatedEvent>(HandleStageMapCreated);
         EventBus.UnSubscribe<StageMapShownEvent>(HandleStageMapShown);
         EventBus.UnSubscribe<StageMapClosedEvent>(HandleStageMapClosed);
+        EventBus.UnSubscribe<InventoryToggleEvent>(HandleInventoryToggle);
     }
 
     protected override void OnDestroy()
@@ -249,5 +252,21 @@ public class UIManager : Singleton<UIManager>
         runtimePopupDic[name] = popup;
 
         return popup;
+    }
+
+    private void HandleInventoryToggle(InventoryToggleEvent eventData)
+    {
+        TogglePopup(UIName.Popup_Inventory);
+    }
+
+    public void TogglePopup(UIName name)
+    {
+        if (runtimePopupDic.TryGetValue(name, out PopupBase popup) && popup != null && popup.gameObject.activeSelf)
+        {
+            ClosePopup(name);
+            return;
+        }
+
+        OpenPopup(name);
     }
 }

@@ -105,5 +105,5 @@ InitTestScene*.unity*
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
 
-# Google Sheet to Unity
+# Ignore Assets
 Assets/IgnoreAssets/

@@ -433,7 +433,7 @@ public class PlayerController : MonoBehaviour
     }
 #endif
 
-    #region InputAction Method
+    #region Callback Method
 
     public void InputToCurrentState(PlayerInput input)
     {
@@ -627,6 +627,14 @@ public class PlayerController : MonoBehaviour
             return;
 
         scanner.TryInteract();
+    }
+
+    public void OnInventory(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+            return;
+
+        EventBus.Publish(new InventoryToggleEvent());
     }
 
     #endregion
