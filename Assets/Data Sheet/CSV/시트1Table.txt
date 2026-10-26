@@ -1,0 +1,2 @@
+﻿Id,Category,Name,Rarity,IconId,Description
+1000001,Relic,Dummy,Common,dummy_Icon,테스트

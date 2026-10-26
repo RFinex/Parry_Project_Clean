@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class DebugTool : EditorWindow
 {
+    [SerializeField] private RelicData testRelic;
+
     [MenuItem("Tools/Debug Tool")]
     private static void Open()
     {
@@ -15,6 +17,19 @@ public class DebugTool : EditorWindow
         {
             EditorGUILayout.HelpBox("플레이 모드에서 사용 가능", MessageType.Info);
             return;
+        }
+
+        testRelic = (RelicData)EditorGUILayout.ObjectField("테스트 유물", testRelic, typeof(RelicData), false);
+
+        using (new EditorGUI.DisabledScope(testRelic == null))
+        {
+            if (GUILayout.Button("테스트 유물 추가"))
+            {
+                if (GameManager.Instance.Inventory.TryAdd(testRelic))
+                    Utils.Log<DebugTool>("테스트 유물 추가 완료");
+                else
+                    Utils.Log<DebugTool>("테스트 유물 추가 실패");
+            }
         }
 
         ServiceLocator.Inject(out RoomSystem roomSystem);

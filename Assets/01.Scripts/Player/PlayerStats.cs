@@ -114,4 +114,9 @@ public class PlayerStats
         isInvincible = false;
         invincibleTimer = 0f;
     }
+
+    public void AddStats(StatPair pair)
+    {
+
+    }
 }

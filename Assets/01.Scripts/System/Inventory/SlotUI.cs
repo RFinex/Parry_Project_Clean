@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SlotUI : MonoBehaviour, IPointerEnterHandler
+public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image icon;
     [SerializeField] private GameObject lockedSlot;
@@ -51,5 +51,13 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler
             return;
 
         inventory.ShowDescription(relic);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (inventory == null)
+            return;
+
+        inventory.ShowDescription(null);
     }
 }

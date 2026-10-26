@@ -47,4 +47,5 @@ MonoBehaviour:
   ddol: 0
   popupPrefabs:
   - {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
+  - {fileID: 3503980271824841110, guid: d9e016f5270344440bbb55c0aebeee2a, type: 3}
   uiCanvas: {fileID: 0}

@@ -631,10 +631,18 @@ public class PlayerController : MonoBehaviour
 
     public void OnInventory(InputAction.CallbackContext context)
     {
-        if (!context.started)
+        if (!canInput || !context.started || IsDeadState())
             return;
 
         EventBus.Publish(new InventoryToggleEvent());
+    }
+
+    public void OnCancel(InputAction.CallbackContext context)
+    {
+        if (!context.started || IsDeadState())
+            return;
+
+        EventBus.Publish(new PopupCancelEvent());
     }
 
     #endregion

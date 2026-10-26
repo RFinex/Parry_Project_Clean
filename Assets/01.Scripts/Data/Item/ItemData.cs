@@ -1,3 +1,6 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ItemRarity
@@ -21,6 +24,8 @@ public class ItemData : ScriptableObject
     [SerializeField] private string iconId;
     [SerializeField] private Sprite icon;
 
+    [SerializeField] private List<StatPair> statPairs;
+
     public int Id => id;
     public string ItemName => itemName;
 
@@ -29,4 +34,27 @@ public class ItemData : ScriptableObject
     public ItemRarity Rarity => rarity;
     public string IconId => iconId;
     public Sprite Icon => icon;
+
+    public List<StatPair> StatPairs => statPairs;
+}
+
+[Serializable]
+public struct StatPair
+{
+    public StatId id;
+
+    public float value;
+}
+
+public enum StatId
+{
+    Damage = 0,
+    MaxHp,
+    MaxStamina,
+    MoveSpeed,
+    ParryWindow,
+    ParryDamage,
+    GuardStaminaCost,
+    DashSpeed,
+    DashCooldown
 }

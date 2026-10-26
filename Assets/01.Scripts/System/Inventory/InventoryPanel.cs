@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
@@ -10,21 +11,21 @@ public class InventoryPanel : PopupBase
     [SerializeField] private TextMeshProUGUI relicNameText;
     [SerializeField] private TextMeshProUGUI relicDescription;
     [SerializeField] private TextMeshProUGUI relicRarity;
+    [SerializeField] private Image relicIcon;
 
-    private RuntimeInvertorySystem inventorySystem;
+    private RuntimeInventorySystem inventorySystem;
 
     private void Awake()
     {
         for (int i = 0; i < slots.Count; i++)
             slots[i].Initialized(this);
+
+        ShowDescription(null);
     }
 
     protected override void Initialized()
     {
         base.Initialized();
-
-        if (inventorySystem == null)
-            ServiceLocator.Inject(out inventorySystem);
 
         if (inventorySystem == null)
         {
@@ -64,15 +65,34 @@ public class InventoryPanel : PopupBase
 
     public void ShowDescription(RelicData data)
     {
+        if (relicIcon != null)
+        {
+            relicIcon.sprite = data != null ? data.Icon : null;
+            relicIcon.enabled = data != null && data.Icon != null;
+        }
+
         if (data == null)
         {
             relicNameText.text = "";
             relicDescription.text = "";
+            relicRarity.text = "";
             return;
         }
 
         relicNameText.text = data.ItemName;
         relicDescription.text = data.Description;
         relicRarity.text = data.Rarity.ToString();
+        relicIcon.sprite = data.Icon;
+    }
+
+    public void SetInventory(RuntimeInventorySystem inventory)
+    {
+        if (inventorySystem == inventory)
+            return;
+
+        if (inventorySystem != null)
+            inventorySystem.OnChanged -= Refresh;
+
+        inventorySystem = inventory;
     }
 }

@@ -40,7 +40,8 @@ public class UIManager : Singleton<UIManager>
         EventBus.Subscribe<StageMapCreatedEvent>(HandleStageMapCreated);
         EventBus.Subscribe<StageMapShownEvent>(HandleStageMapShown);
         EventBus.Subscribe<StageMapClosedEvent>(HandleStageMapClosed);
-        EventBus.Subscribe<InventoryToggleEvent>(HandleInventoryToggle);
+        EventBus.Subscribe<InventoryTogglePopupEvent>(HandleInventoryToggle);
+        EventBus.Subscribe<PopupCancelEvent>(HandlePopupCancel);
     }
 
     private void OnDisable()
@@ -48,7 +49,8 @@ public class UIManager : Singleton<UIManager>
         EventBus.UnSubscribe<StageMapCreatedEvent>(HandleStageMapCreated);
         EventBus.UnSubscribe<StageMapShownEvent>(HandleStageMapShown);
         EventBus.UnSubscribe<StageMapClosedEvent>(HandleStageMapClosed);
-        EventBus.UnSubscribe<InventoryToggleEvent>(HandleInventoryToggle);
+        EventBus.UnSubscribe<InventoryTogglePopupEvent>(HandleInventoryToggle);
+        EventBus.UnSubscribe<PopupCancelEvent>(HandlePopupCancel);
     }
 
     protected override void OnDestroy()
@@ -254,8 +256,18 @@ public class UIManager : Singleton<UIManager>
         return popup;
     }
 
-    private void HandleInventoryToggle(InventoryToggleEvent eventData)
+    private void HandleInventoryToggle(InventoryTogglePopupEvent eventData)
     {
+        if (eventData.inventory == null)
+            return;
+
+        InventoryPanel panel = GetOrCreatePopup<InventoryPanel>(UIName.Popup_Inventory);
+
+        if (panel == null)
+            return;
+
+        panel.SetInventory(eventData.inventory);
+
         TogglePopup(UIName.Popup_Inventory);
     }
 
@@ -268,5 +280,28 @@ public class UIManager : Singleton<UIManager>
         }
 
         OpenPopup(name);
+    }
+
+    public void HandlePopupCancel(PopupCancelEvent eventData)
+    {
+        PopupBase topPopup = null;
+        int topIndex = -1;
+
+        foreach (PopupBase popup in runtimePopupDic.Values)
+        {
+            if (popup == null || !popup.gameObject.activeInHierarchy)
+                continue;
+
+            int index = popup.transform.GetSiblingIndex();
+
+            if (index > topIndex)
+            {
+                topPopup = popup;
+                topIndex = index;
+            }
+        }
+
+        if (topPopup != null)
+            ClosePopup(topPopup.UiName);
     }
 }

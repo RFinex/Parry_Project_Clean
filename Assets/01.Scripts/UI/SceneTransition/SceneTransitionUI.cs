@@ -11,6 +11,14 @@ public class SceneTransitionUI : MonoBehaviour
 
     [SerializeField] private float fadeDuration = 0.4f;
 
+    private void Awake()
+    {
+        fade.alpha = 0f;
+        fade.gameObject.SetActive(false);
+
+        HideLoading();
+    }
+
     public void ShowLoading()
     {
         loadingRoot.SetActive(true);

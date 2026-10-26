@@ -2,33 +2,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RuntimeInvertorySystem : MonoBehaviour, IService
+public class RuntimeInventorySystem
 {
-    [SerializeField] private int maxCapacity = 20;
-    [SerializeField] private int currentCapacity = 10;
+    private int maxCapacity = 40;
+    private int currentCapacity = 20;
 
     private readonly List<RelicData> relics = new();
     public IReadOnlyList<RelicData> Relics => relics;
 
-    public bool IsDdol { get; set; } = true;
     public int Capacity => currentCapacity;
 
     public event Action OnChanged;
-
-    private void Awake()
-    {
-        if (maxCapacity < 1)
-            maxCapacity = 1;
-
-        if (currentCapacity < 1)
-            currentCapacity = 1;
-
-        if(currentCapacity > maxCapacity)
-            currentCapacity = maxCapacity;
-
-        DontDestroyOnLoad(gameObject);
-        ServiceLocator.Register<RuntimeInvertorySystem>(this);
-    }
 
     /// <summary>
     /// ºó ½½·Ô¿¡ À¯¹° Ãß°¡

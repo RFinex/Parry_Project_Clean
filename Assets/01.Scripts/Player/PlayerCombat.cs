@@ -24,6 +24,7 @@ public class PlayerCombat
 
     #endregion
 
+    // PlayerStats로 옮기기
     #region Guard Stats
 
     private const float guardTime = 0.3f;
