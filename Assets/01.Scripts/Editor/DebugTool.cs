@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DebugTool : EditorWindow
 {
-    [SerializeField] private RelicData testRelic;
+    [SerializeField] private ArtifactData testRelic;
 
     [MenuItem("Tools/Debug Tool")]
     private static void Open()
@@ -19,7 +19,7 @@ public class DebugTool : EditorWindow
             return;
         }
 
-        testRelic = (RelicData)EditorGUILayout.ObjectField("테스트 유물", testRelic, typeof(RelicData), false);
+        testRelic = (ArtifactData)EditorGUILayout.ObjectField("테스트 유물", testRelic, typeof(ArtifactData), false);
 
         using (new EditorGUI.DisabledScope(testRelic == null))
         {

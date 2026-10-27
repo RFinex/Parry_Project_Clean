@@ -73,15 +73,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float frontDir = 1f;
     private Vector2 moveInput;
     private Vector2 cacheMoveInput;
-    private float moveSpeed;
-
-    [Header("Jump")]
-    private float jumpForce;
-
-    [Header("Dash")]
-    private float dashTime;
-    private float dashSpeed;
-    private float dashCool;
 
     [Header("Ground Check")]
     private Vector2 checkSize;
@@ -102,12 +93,8 @@ public class PlayerController : MonoBehaviour
     [Header("Invincible Visual")]
     private float invincibleAlpha;
     private float blinkInterval;
-
     private float blinkTimer;
     private bool isInvincibleVisual;
-
-    //private GameObject executeTarget;
-    //public GameObject ExecuteTarget => executeTarget;
 
     #endregion
 
@@ -165,14 +152,10 @@ public class PlayerController : MonoBehaviour
         scanner = GetComponentInChildren<InteractScanner>();
 
         InitBasePlayerInfo();
-
         InitData();
-
         InitBlackBoard();
 
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
+        token = token.ResetToken();
 
         InitStateMachine();        
 
@@ -181,17 +164,10 @@ public class PlayerController : MonoBehaviour
 
     private void InitBasePlayerInfo()
     {
-        moveSpeed = data.MoveSpeed;
-        jumpForce = data.JumpForce;
-
         checkSize = data.CheckSize;
         checkOffset = data.CheckOffset;
         checkDistance = data.CheckDistance;
         groundLayer = data.GroundLayer;
-
-        dashTime = data.DashTime;
-        dashSpeed = data.DashSpeed;
-        dashCool = data.DashCool;
 
         movement = new PlayerMovement()
         {
@@ -199,20 +175,12 @@ public class PlayerController : MonoBehaviour
             frontDir = frontDir,
             isGround = isGround,
             verticalVelocity = rb.linearVelocity.y,
-            moveSpeed = moveSpeed,
-            jumpForce = jumpForce,
             executeMoveSpeed = data.ExecuteMoveSpeed
         };
-        skill = new PlayerSkill()
-        {
-            dashTime = dashTime,
-            dashSpeed = dashSpeed,
-            dashCool = dashCool
-        };
+        skill = new PlayerSkill();
 
         invincibleAlpha = data.InvincibleAlpha;
         blinkInterval = data.BlinkInterval;
-
         isInvincibleVisual = true;
     }
 
@@ -235,8 +203,8 @@ public class PlayerController : MonoBehaviour
 
     private void InitData()
     {
-        combat = new PlayerCombat(data);
         stats = new PlayerStats(data);
+        combat = new PlayerCombat(data, stats);
     }
 
     private void InitStateMachine()
@@ -291,15 +259,14 @@ public class PlayerController : MonoBehaviour
     #region Player Movement/Jump Stop Method
     public void Move()
     {
+        float moveSpeed = stats.GetStats(StatId.MoveSpeed);
         float targetSpeed = moveInput.x * moveSpeed;
 
         rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
 
         // 플레이어 보는 방향 판별
         if (moveInput.x != 0f)
-        {
-            frontDir = Mathf.Sign(moveInput.x);
-        }
+            frontDir = moveInput.x >= 0f ? 1f : -1f;
     }
 
     public void StopMove()
@@ -359,7 +326,10 @@ public class PlayerController : MonoBehaviour
         if (guardResult == GuardResult.Parry && info.canParry)
         {
             if (info.damageAttackerBalanceOnParry && info.attacker != null)
-                info.attacker.TakeBalanceDamage(data.ParryDamage);
+            {
+                float parryDamage = stats.GetStats(StatId.ParryDamage);
+                info.attacker.TakeBalanceDamage(parryDamage);
+            }
 
             Utils.Log<PlayerController>("패리 성공");
             return true;
@@ -393,21 +363,12 @@ public class PlayerController : MonoBehaviour
         movement.frontDir = frontDir;
         movement.isGround = isGround;
         movement.verticalVelocity = rb.linearVelocity.y;
-        movement.moveSpeed = moveSpeed;
-        movement.jumpForce = jumpForce;
 
         // Animator
         blackBoard.animator.SetGrounded(isGround);
         blackBoard.animator.SetAirSpeed(rb.linearVelocity.y);
 
-        if (Mathf.Abs(moveInput.x) > Mathf.Epsilon)
-        {
-            blackBoard.animator.SetAnimState(1);
-        }
-        else
-        {
-            blackBoard.animator.SetAnimState(0);
-        }
+        blackBoard.animator.SetAnimState(moveInput.x != 0f ? 1 : 0);
 
         if (frontDir > 0f)
             sr.flipX = false;
@@ -417,8 +378,9 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, movement.jumpForce);
+        float jumpForce = stats.GetStats(StatId.JumpForce);
 
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         blackBoard.movement.verticalVelocity = rb.linearVelocity.y;
     }
 

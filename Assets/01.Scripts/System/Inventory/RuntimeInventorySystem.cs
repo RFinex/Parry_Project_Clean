@@ -7,25 +7,25 @@ public class RuntimeInventorySystem
     private int maxCapacity = 40;
     private int currentCapacity = 20;
 
-    private readonly List<RelicData> relics = new();
-    public IReadOnlyList<RelicData> Relics => relics;
+    private readonly List<ArtifactData> artifacts = new();
+    public IReadOnlyList<ArtifactData> Artifacts => artifacts;
 
     public int Capacity => currentCapacity;
 
-    public event Action OnChanged;
+    public event Action OnSlotChanged;
 
     /// <summary>
     /// ∫Û ΩΩ∑‘ø° ¿Øπ∞ √ﬂ∞°
     /// </summary>
     /// <param name="data"> ¿Øπ∞ µ•¿Ã≈Õ </param>
     /// <returns></returns>
-    public bool TryAdd(RelicData data)
+    public bool TryAdd(ArtifactData data)
     {
-        if (data == null || relics.Count >= currentCapacity)
+        if (data == null || artifacts.Count >= currentCapacity)
             return false;
 
-        relics.Add(data);
-        OnChanged?.Invoke();
+        artifacts.Add(data);
+        OnSlotChanged?.Invoke();
         return true;
     }
 
@@ -34,14 +34,14 @@ public class RuntimeInventorySystem
     /// </summary>
     /// <param name="index"> ΩΩ∑‘ ¿Œµ¶Ω∫ </param>
     /// <returns></returns>
-    public RelicData Remove(int index)
+    public ArtifactData Remove(int index)
     {
-        if (index < 0 || index >= relics.Count)
+        if (index < 0 || index >= artifacts.Count)
             return null;
 
-        RelicData removeData = relics[index];
-        relics.RemoveAt(index);
-        OnChanged?.Invoke();
+        ArtifactData removeData = artifacts[index];
+        artifacts.RemoveAt(index);
+        OnSlotChanged?.Invoke();
 
         return removeData;
     }
@@ -52,14 +52,14 @@ public class RuntimeInventorySystem
     /// <param name="index"> ΩΩ∑‘ ¿Œµ¶Ω∫ </param>
     /// <param name="replaceData"> ±≥√º«“ ¿Øπ∞ µ•¿Ã≈Õ </param>
     /// <returns></returns>
-    public RelicData Replace(int index, RelicData replaceData)
+    public ArtifactData Replace(int index, ArtifactData replaceData)
     {
-        if (replaceData == null || index < 0 || index >= relics.Count)
+        if (replaceData == null || index < 0 || index >= artifacts.Count)
             return null;
 
-        RelicData previousData = relics[index];
-        relics[index] = replaceData;
-        OnChanged?.Invoke();
+        ArtifactData previousData = artifacts[index];
+        artifacts[index] = replaceData;
+        OnSlotChanged?.Invoke();
 
         return previousData;
     }
@@ -79,7 +79,7 @@ public class RuntimeInventorySystem
             return;
 
         currentCapacity = newCapacity;
-        OnChanged?.Invoke();
+        OnSlotChanged?.Invoke();
     }
 
     /// <summary>
@@ -87,10 +87,10 @@ public class RuntimeInventorySystem
     /// </summary>
     public void Clear()
     {
-        if (relics.Count == 0)
+        if (artifacts.Count == 0)
             return;
 
-        relics.Clear();
-        OnChanged?.Invoke();
+        artifacts.Clear();
+        OnSlotChanged?.Invoke();
     }
 }

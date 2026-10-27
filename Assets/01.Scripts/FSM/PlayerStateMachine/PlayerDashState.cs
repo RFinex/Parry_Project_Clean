@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerDashState : PlayerBaseState
 {
-    //private PlayerBlackBoard board;
-
     private float dashCheckTimer;
     private float dashCoolTimer;
 
@@ -14,15 +12,15 @@ public class PlayerDashState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        //if (blackBoard is PlayerBlackBoard board)
-        //{
-        //    this.board = board;
-        //}
-
         playerBoard.animator.PlayDash();
 
-        DashAsync(token.Token).Forget();
-        playerBoard.skill.DashCoolTime(owner.DestroyToken).Forget();
+        float dashTime = playerBoard.stats.GetStats(StatId.DashTime);
+        float dashSpeed = playerBoard.stats.GetStats(StatId.DashSpeed);
+        float dashCooldown = playerBoard.stats.GetStats(StatId.DashCooldown);
+
+        playerBoard.skill.DashCoolTime(dashCooldown, owner.DestroyToken).Forget();
+
+        DashAsync(dashTime, dashSpeed, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
@@ -30,17 +28,17 @@ public class PlayerDashState : PlayerBaseState
         ExitToken();
     }
 
-    private async UniTaskVoid DashAsync(CancellationToken ctk)
+    private async UniTaskVoid DashAsync(float dashTime, float dashSpeed, CancellationToken ctk)
     {
         try
         {
             dashCheckTimer = 0f;
 
-            while (dashCheckTimer <= playerBoard.skill.dashTime)
+            while (dashCheckTimer <= dashTime)
             {
-                dashCheckTimer += Time.deltaTime;
+                playerBoard.rb.linearVelocity = new Vector2(playerBoard.movement.frontDir * dashSpeed, 0f);
 
-                playerBoard.rb.linearVelocity = new Vector2(playerBoard.movement.frontDir * playerBoard.skill.dashSpeed, 0f);
+                dashCheckTimer += Time.fixedDeltaTime;
 
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
             }
@@ -48,7 +46,7 @@ public class PlayerDashState : PlayerBaseState
         }
         catch (OperationCanceledException)
         {
-
+            return;
         }
         finally
         {

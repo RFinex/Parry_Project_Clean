@@ -1128,7 +1128,7 @@ GameObject:
   - component: {fileID: 4212885762094287352}
   - component: {fileID: 3503980271824841110}
   m_Layer: 5
-  m_Name: Relic_Inventory
+  m_Name: Artifact_Inventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1248,10 +1248,10 @@ MonoBehaviour:
   - {fileID: 3227246004819822088}
   - {fileID: 5885666872839729778}
   - {fileID: 2498806837414802867}
-  relicNameText: {fileID: 2779617979558408645}
-  relicDescription: {fileID: 3661978766580262333}
-  relicRarity: {fileID: 2634793776943274014}
-  relicIcon: {fileID: 8316389384343457166}
+  artifactNameText: {fileID: 2779617979558408645}
+  artifactDescription: {fileID: 3661978766580262333}
+  artifactRarity: {fileID: 2634793776943274014}
+  artifactIcon: {fileID: 8316389384343457166}
 --- !u!1001 &8065756236574313
 PrefabInstance:
   m_ObjectHideFlags: 0

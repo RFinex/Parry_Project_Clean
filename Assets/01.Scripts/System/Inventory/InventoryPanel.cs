@@ -8,10 +8,10 @@ public class InventoryPanel : PopupBase
     [SerializeField] private List<SlotUI> slots;
 
     [Header("Description")]
-    [SerializeField] private TextMeshProUGUI relicNameText;
-    [SerializeField] private TextMeshProUGUI relicDescription;
-    [SerializeField] private TextMeshProUGUI relicRarity;
-    [SerializeField] private Image relicIcon;
+    [SerializeField] private TextMeshProUGUI artifactNameText;
+    [SerializeField] private TextMeshProUGUI artifactDescription;
+    [SerializeField] private TextMeshProUGUI artifactRarity;
+    [SerializeField] private Image artifactIcon;
 
     private RuntimeInventorySystem inventorySystem;
 
@@ -33,8 +33,8 @@ public class InventoryPanel : PopupBase
             return;
         }
 
-        inventorySystem.OnChanged -= Refresh;
-        inventorySystem.OnChanged += Refresh;
+        inventorySystem.OnSlotChanged -= Refresh;
+        inventorySystem.OnSlotChanged += Refresh;
 
         Refresh();
     }
@@ -42,7 +42,7 @@ public class InventoryPanel : PopupBase
     private void OnDisable()
     {
         if (inventorySystem != null)
-            inventorySystem.OnChanged -= Refresh;
+            inventorySystem.OnSlotChanged -= Refresh;
     }
 
     public void Refresh()
@@ -54,35 +54,35 @@ public class InventoryPanel : PopupBase
         {
             if (i >= inventorySystem.Capacity)
                 slots[i].SetLocked();
-            else if (i >= inventorySystem.Relics.Count)
+            else if (i >= inventorySystem.Artifacts.Count)
                 slots[i].SetEmpty();
             else
-                slots[i].SetRelic(inventorySystem.Relics[i]);
+                slots[i].SetArtifact(inventorySystem.Artifacts[i]);
         }
 
         ShowDescription(null);
     }
 
-    public void ShowDescription(RelicData data)
+    public void ShowDescription(ArtifactData data)
     {
-        if (relicIcon != null)
+        if (artifactIcon != null)
         {
-            relicIcon.sprite = data != null ? data.Icon : null;
-            relicIcon.enabled = data != null && data.Icon != null;
+            artifactIcon.sprite = data != null ? data.Icon : null;
+            artifactIcon.enabled = data != null && data.Icon != null;
         }
 
         if (data == null)
         {
-            relicNameText.text = "";
-            relicDescription.text = "";
-            relicRarity.text = "";
+            artifactNameText.text = "";
+            artifactDescription.text = "";
+            artifactRarity.text = "";
             return;
         }
 
-        relicNameText.text = data.ItemName;
-        relicDescription.text = data.Description;
-        relicRarity.text = data.Rarity.ToString();
-        relicIcon.sprite = data.Icon;
+        artifactNameText.text = data.ItemName;
+        artifactDescription.text = data.Description;
+        artifactRarity.text = data.Rarity.ToString();
+        artifactIcon.sprite = data.Icon;
     }
 
     public void SetInventory(RuntimeInventorySystem inventory)
@@ -91,7 +91,7 @@ public class InventoryPanel : PopupBase
             return;
 
         if (inventorySystem != null)
-            inventorySystem.OnChanged -= Refresh;
+            inventorySystem.OnSlotChanged -= Refresh;
 
         inventorySystem = inventory;
     }

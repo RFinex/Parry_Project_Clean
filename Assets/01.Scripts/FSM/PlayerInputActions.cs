@@ -9,7 +9,9 @@ public class PlayerJumpAction : IPlayerInputAction
 {
     public void PlayerInput(PlayerBlackBoard board)
     {
-        board.rb.linearVelocity = new Vector2(board.rb.linearVelocity.x, board.movement.jumpForce);
+        float jumpForce = board.stats.GetStats(StatId.JumpForce);
+
+        board.rb.linearVelocity = new Vector2(board.rb.linearVelocity.x, jumpForce);
         board.movement.verticalVelocity = board.rb.linearVelocity.y;
     }
 }

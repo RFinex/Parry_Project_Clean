@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerCombat
 {
-    private PlayerBaseData data;
+    private readonly PlayerBaseData data;
+    private readonly PlayerStats stats;
 
     private bool isGuard;
     private bool isParry;
@@ -13,12 +14,10 @@ public class PlayerCombat
     private int attackIndex;
     private float attackTimer;
     private bool isComboRequest;
+    private bool isHit;
 
-    private const int maxCombo = 3;
-    private const float comboInputTime = 0.25f;
-    private const float attackEndTime = 0.5f;
+    public float ParryTime => stats.GetStats(StatId.ParryTime);
 
-    public float ParryWindow => data.ParryWindow;
     public int AttackIndex => attackIndex;
     public bool isAttacking;
 
@@ -31,24 +30,25 @@ public class PlayerCombat
 
     public bool CanGuard => guardTimer <= 0f;
 
-    public float GuardStaminaCost => data.GuardStaminaCost;
+    public float GuardStaminaCost => stats.GetStats(StatId.GuardStaminaCost);
 
     #endregion
 
-    private bool isHit;
 
-    public PlayerCombat(PlayerBaseData data)
+    public PlayerCombat(PlayerBaseData data, PlayerStats stats)
     {
         this.data = data;
+        this.stats = stats;
     }
 
     public void Attack(Vector2 pos, float frontDir)
     {
-        Utils.Log<PlayerCombat>($"공격 시작 : {attackIndex}");
-
         Vector2 attackPos = GetAttackPos(pos, frontDir);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, data.AttackRange, data.EnemyLayer);
+        float attackRange = stats.GetStats(StatId.AttackRange);
+        float attackDamage = stats.GetStats(StatId.AttackDamage);
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, data.EnemyLayer);
 
         foreach (Collider2D hit in hits)
         {
@@ -56,10 +56,8 @@ public class PlayerCombat
 
             if (enemy == null)
                 continue;
-            
-            Utils.Log<PlayerCombat>($"공격 적중 : {hit.name}");
 
-            enemy.TakeDamage(data.AttackDamage);
+            enemy.TakeDamage(attackDamage);
         }        
     }
 
@@ -80,10 +78,7 @@ public class PlayerCombat
         {
             IExecuteTarget enemy = hit.GetComponentInParent<IExecuteTarget>();
 
-            if (enemy == null)
-                continue;
-
-            if (!enemy.CanExecute)
+            if (enemy == null || !enemy.CanExecute)
                 continue;
 
             Vector2 dir = (Vector2)hit.transform.position - pos;
@@ -107,23 +102,17 @@ public class PlayerCombat
 
         IExecuteTarget enemy = target.GetComponentInParent<IExecuteTarget>();
 
-        if (enemy == null)
-            return;
-
-        if (!enemy.CanExecute)
+        if (enemy == null | !enemy.CanExecute)
             return;
 
         Utils.Log<PlayerCombat>("특수 공격!");
-
         enemy.Execute();
     }
 
     public void RequestCombo()
     {
-        if (!isAttacking)
-            return;
-
-        isComboRequest = true;
+        if (isAttacking)
+            isComboRequest = true;
     }
 
     public int UpdateAttack(float deltaTime, Vector2 pos, float frontDir)
@@ -133,7 +122,7 @@ public class PlayerCombat
 
         attackTimer += deltaTime;
 
-        if (isComboRequest && attackTimer >= comboInputTime && attackIndex < maxCombo)
+        if (isComboRequest && attackTimer >= data.ComboInputTime && attackIndex < data.MaxCombo)
         {
             isComboRequest = false;
             attackIndex++;
@@ -142,15 +131,6 @@ public class PlayerCombat
 
             return attackIndex;
         }
-
-        //if (!isComboRequest)
-        //    return 0;
-
-        //if (attackTimer < comboInputTime)
-        //    return 0;
-
-        //if (attackIndex >= maxCombo)
-        //    return 0;
 
         if (!isHit && attackTimer >= GetCurrentAttackHitDelay())
         {
@@ -172,10 +152,7 @@ public class PlayerCombat
 
     public bool IsAttackFinished()
     {
-        if (!isAttacking)
-            return true;
-
-        return attackTimer >= attackEndTime;
+        return !isAttacking || attackTimer >= data.AttackEndTime;
     }
 
     public int AttackStart(Vector2 pos, float frontDir)
@@ -225,9 +202,6 @@ public class PlayerCombat
 
     public void ParryEnd()
     {
-        if (!isParry)
-            return;
-
         isParry = false;
 
         Utils.Log<PlayerCombat>("패링 종료");
@@ -246,13 +220,13 @@ public class PlayerCombat
 
     public void GuardTimeUpdate(float deltaTime)
     {
-        if (guardTimer > 0f)
-        {
-            guardTimer -= deltaTime;
+        if (guardTimer <= 0f)
+            return;
 
-            if (guardTimer <= 0f)
-                guardTimer = 0f;
-        }
+        guardTimer -= deltaTime;
+
+        if (guardTimer <= 0f)
+            guardTimer = 0f;
     }
 
     public GuardResult CheckGuard()
@@ -260,10 +234,7 @@ public class PlayerCombat
         if (!isGuard)
             return GuardResult.None;
 
-        if (isParry)
-            return GuardResult.Parry;
-
-        return GuardResult.Guard;
+        return isParry? GuardResult.Parry : GuardResult.Guard;
     }
 
     #endregion

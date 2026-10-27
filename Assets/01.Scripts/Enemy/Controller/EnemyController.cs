@@ -299,9 +299,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         if (target == null)
             return false;
 
-        float distance = Mathf.Abs(target.position.x - transform.position.x);
+        float distance = (target.position - transform.position).sqrMagnitude ;
+        float attackRange = data.AttackRange * data.AttackRange;
 
-        return distance <= data.AttackRange;
+        return distance <= attackRange;
     }
 
     /// <summary> 타겟이 탐지 범위에 있는지 체크 </summary>

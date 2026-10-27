@@ -45,8 +45,12 @@ public abstract class EnemySkill
         if (Target == null)
             return false;
 
-        float distance = Mathf.Abs(Target.transform.position.x - owner.transform.position.x);
-        return distance >= data.MinRange && distance <= data.MaxRange;
+        float distance = (Target.transform.position - owner.transform.position).sqrMagnitude;
+
+        float minRange = data.MinRange * data.MinRange;
+        float maxRange = data.MaxRange * data.MaxRange;
+
+        return distance >= minRange && distance <= maxRange;
     }
     
     /// <summary>

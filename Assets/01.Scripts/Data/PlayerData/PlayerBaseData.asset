@@ -22,7 +22,7 @@ MonoBehaviour:
     m_Bits: 64
   dashTime: 0.1
   dashSpeed: 20
-  dashCool: 0.5
+  dashCooldown: 0.5
   maxHp: 100
   maxStamina: 100
   attackDamage: 50
@@ -35,7 +35,7 @@ MonoBehaviour:
   - 0.14285715
   - 0.071428575
   - 0.14285715
-  parryWindow: 0.5
+  parryTime: 0.5
   parryDamage: 10
   guardStaminaCost: 20
   invincibleTime: 2

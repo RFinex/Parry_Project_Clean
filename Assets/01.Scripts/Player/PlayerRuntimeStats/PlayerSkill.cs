@@ -5,17 +5,13 @@ using UnityEngine;
 
 public class PlayerSkill
 {
-    public float dashTime;
-    public float dashSpeed;
-    public float dashCool;
-
     public float dashCoolTimer;
 
-    public async UniTaskVoid DashCoolTime(CancellationToken ctk)
+    public async UniTaskVoid DashCoolTime(float dashCooldown, CancellationToken ctk)
     {
         try
         {
-            dashCoolTimer = dashCool;
+            dashCoolTimer = dashCooldown;
 
             while (dashCoolTimer >= 0)
             {
@@ -24,8 +20,7 @@ public class PlayerSkill
                 await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
             }
 
-            if (dashCoolTimer <= 0)
-                dashCoolTimer = 0f;
+            dashCoolTimer = 0f;
 
             Utils.Log<PlayerController>("쿨타임 종료");
         }

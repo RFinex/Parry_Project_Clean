@@ -7,8 +7,8 @@ public class PlayerMovement
     public bool isGround;
     public float verticalVelocity;
 
-    public float moveSpeed;
-    public float jumpForce;
+    //public float moveSpeed;
+    //public float jumpForce;
 
     public float executeMoveSpeed;
 }

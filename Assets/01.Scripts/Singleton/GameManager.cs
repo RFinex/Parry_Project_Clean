@@ -35,14 +35,21 @@ public class GameManager : Singleton<GameManager>
         if (Inventory == null)
             return;
 
+        Inventory.OnSlotChanged += HandleInventoryChanged;
+
         EventBus.Subscribe<GameStateRequestEvent>(HandleGameStateRequest);
         EventBus.Subscribe<InventoryToggleEvent>(HandleInventoryToggle);
         EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDied);
         EventBus.Subscribe<StageClearedEvent>(HandleStageCleared);
+
+        HandleInventoryChanged();
     }
 
     private void OnDisable()
     {
+        if(Inventory != null)
+            Inventory.OnSlotChanged -= HandleInventoryChanged;
+
         EventBus.UnSubscribe<GameStateRequestEvent>(HandleGameStateRequest);
         EventBus.UnSubscribe<InventoryToggleEvent>(HandleInventoryToggle);
         EventBus.UnSubscribe<PlayerDiedEvent>(HandlePlayerDied);
@@ -55,6 +62,9 @@ public class GameManager : Singleton<GameManager>
             return;
 
         Player = player;
+
+        HandleInventoryChanged();
+
         OnPlayerChanged?.Invoke(Player);
     }
 
@@ -65,6 +75,14 @@ public class GameManager : Singleton<GameManager>
 
         Player = null;
         OnPlayerChanged?.Invoke(null);
+    }
+
+    private void HandleInventoryChanged()
+    {
+        if (Player == null || Inventory == null)
+            return;
+
+        Player.Stats.ApplyArtifacts(Inventory.Artifacts);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)

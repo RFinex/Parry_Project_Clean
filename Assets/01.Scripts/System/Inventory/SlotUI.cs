@@ -8,7 +8,7 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private GameObject lockedSlot;
 
     private InventoryPanel inventory;
-    private RelicData relic;
+    private ArtifactData artifact;
 
     public void Initialized(InventoryPanel inventory)
     {
@@ -17,7 +17,7 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void SetLocked()
     {
-        relic = null;
+        artifact = null;
 
         icon.sprite = null;
         icon.enabled = false;
@@ -27,7 +27,7 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void SetEmpty()
     {
-        relic = null;
+        artifact = null;
 
         icon.sprite = null;
         icon.enabled = false;
@@ -35,9 +35,9 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         lockedSlot.SetActive(false);
     }
 
-    public void SetRelic(RelicData data)
+    public void SetArtifact(ArtifactData data)
     {
-        relic = data;
+        artifact = data;
 
         icon.sprite = data.Icon;
         icon.enabled = data.Icon != null;
@@ -50,7 +50,7 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (inventory == null)
             return;
 
-        inventory.ShowDescription(relic);
+        inventory.ShowDescription(artifact);
     }
 
     public void OnPointerExit(PointerEventData eventData)

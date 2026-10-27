@@ -1,39 +1,128 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerStats
 {
+    private readonly Dictionary<StatId, float> baseStats = new();
+    private readonly Dictionary<StatId, float> currentStats = new();
+
     private float nowHp;
-    private float maxHp;
-
     private float nowStamina;
-    private float maxStamina;
 
-    private float invincibleTime;
     private float invincibleTimer;
+    private bool isInvincible;
 
     public float NowHp => nowHp;
-    public float MaxHp => maxHp;
+    public float MaxHp => GetStats(StatId.MaxHp);
     public float NowStamina => nowStamina;
-    public float MaxStamina => maxStamina;
+    public float MaxStamina => GetStats(StatId.MaxStamina);
 
     public bool IsDead => nowHp <= 0f;
-    private bool isInvincible;
     public bool IsInvincible => isInvincible;
-    public float InvincibleTime => invincibleTime;
+    public float InvincibleTime => GetStats(StatId.InvincibleTime);
 
     public event Action<float, float> OnHealthChanged;
     public event Action<float, float> OnStaminaChanged;
     
     public PlayerStats(PlayerBaseData data)
     {
-        maxHp = data.MaxHp;
-        nowHp = maxHp;
+        SetBaseStats(StatId.AttackDamage, data.AttackDamage);
+        SetBaseStats(StatId.MaxHp, data.MaxHp);
+        SetBaseStats(StatId.MaxStamina, data.MaxStamina);
+        SetBaseStats(StatId.MoveSpeed, data.MoveSpeed);
+        SetBaseStats(StatId.JumpForce, data.JumpForce);
+        SetBaseStats(StatId.DashTime, data.DashTime);
+        SetBaseStats(StatId.DashSpeed, data.DashSpeed);
+        SetBaseStats(StatId.DashCooldown, data.DashCooldown);
+        SetBaseStats(StatId.AttackRange, data.AttackRange);
+        SetBaseStats(StatId.ParryTime, data.ParryTime);
+        SetBaseStats(StatId.ParryDamage, data.ParryDamage);
+        SetBaseStats(StatId.GuardStaminaCost, data.GuardStaminaCost);
+        SetBaseStats(StatId.InvincibleTime, data.InvincibleTime);
 
-        maxStamina = data.MaxStamina;
-        nowStamina = maxStamina;
+        SetCurrentStats();
 
-        invincibleTime = data.InvincibleTime;
-        invincibleTimer = invincibleTime;
+        nowHp = MaxHp;
+        nowStamina = MaxStamina;
+    }
+
+    public float GetStats(StatId id)
+    {
+        if (!currentStats.TryGetValue(id, out float value))
+            return 0f;
+
+        float min = (id == StatId.MaxHp) ? 1f : 0f;
+
+        return value < min ? min : value;
+    }
+
+    private void SetBaseStats(StatId id, float value)
+    {
+        baseStats[id] = value;
+    }
+
+    private void SetCurrentStats()
+    {
+        currentStats.Clear();
+
+        foreach (var pair in baseStats)
+            currentStats.Add(pair.Key, pair.Value);
+    }
+
+    public void AddStats(StatPair pair)
+    {
+        float previousMaxHp = MaxHp;
+        float previousMaxStamina = MaxStamina;
+
+        ApplyChangeStats(pair);
+        RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
+    }
+
+    public void ApplyArtifacts(IReadOnlyList<ArtifactData> artifacts)
+    {
+        float previousMaxHp = MaxHp;
+        float previousMaxStamina = MaxStamina;
+
+        SetCurrentStats();
+
+        if (artifacts != null)
+        {
+            foreach (ArtifactData artifact in artifacts)
+            {
+                if (artifact == null || artifact.StatPairs == null)
+                    continue;
+
+                foreach (StatPair pair in artifact.StatPairs)
+                    ApplyChangeStats(pair);
+            }
+        }
+
+        RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
+    }
+
+    private void ApplyChangeStats(StatPair pair)
+    {
+        if (!currentStats.TryGetValue(pair.id, out float value))
+            return;
+
+        currentStats[pair.id] = value + pair.value;
+    }
+
+    private void RefreshHp_Stamina(float previousMaxHp, float previousMaxStamina)
+    {
+        float previousHp = nowHp;
+        float previousStamina = nowStamina;
+
+        nowHp = Mathf.Clamp(nowHp, 0f, MaxHp);
+        nowStamina = Mathf.Clamp(nowStamina, 0f, MaxStamina);
+
+        if (previousMaxHp != MaxHp || previousHp != nowHp)
+            OnHealthChanged?.Invoke(nowHp, MaxHp);
+
+        if (previousMaxStamina != MaxStamina || previousStamina != nowStamina)
+            OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
+
     }
 
     public void TakeDamage(float damage)
@@ -46,12 +135,14 @@ public class PlayerStats
         if (nowHp <= 0)
             nowHp = 0f;
 
-        Utils.Log<PlayerStats>($"남은 체력 : {nowHp}/{maxHp}");
-        OnHealthChanged?.Invoke(nowHp, maxHp);
+        Utils.Log<PlayerStats>($"남은 체력 : {nowHp}/{MaxHp}");
+        OnHealthChanged?.Invoke(nowHp, MaxHp);
     }
 
     public bool UseStamina(float stamina)
     {
+        stamina = stamina < 0f ? 0f : stamina;
+
         if (nowStamina < stamina)
         {
             Utils.Log<PlayerStats>("스테미너 부족");
@@ -59,36 +150,39 @@ public class PlayerStats
         }
 
         nowStamina -= stamina;
-        OnStaminaChanged?.Invoke(nowStamina, maxStamina);
+        OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
 
         return true;
     }
 
     public void RestoreHp(float value)
     {
+        if (IsDead)
+            return;
+
         nowHp += value;
 
-        if (nowHp >= maxHp)
-            nowHp = maxHp;
+        if (nowHp >= MaxHp)
+            nowHp = MaxHp;
 
-        Utils.Log<PlayerController>($"남은 체력 : {nowHp}/{maxHp}");
-        OnHealthChanged?.Invoke(nowHp, maxHp);
+        Utils.Log<PlayerController>($"현재 체력 : {nowHp}/{MaxHp}");
+        OnHealthChanged?.Invoke(nowHp, MaxHp);
     }
 
     public void RestoreStamina(float value)
     {
         nowStamina += value;
 
-        if(nowStamina >= maxStamina)
-            nowStamina = maxStamina;
+        if(nowStamina >= MaxStamina)
+            nowStamina = MaxStamina;
 
-        OnStaminaChanged?.Invoke(nowStamina, maxStamina);
+        OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
     }
 
     public void StartInvincible()
     {
-        isInvincible = true;
-        invincibleTimer = invincibleTime;
+        invincibleTimer = InvincibleTime;
+        isInvincible = InvincibleTime > 0f;
     }
 
     /// <summary>
@@ -103,20 +197,12 @@ public class PlayerStats
         invincibleTimer -= deltaTime;
 
         if (invincibleTimer <= 0f)
-        {
-            invincibleTimer = 0f;
             EndInvincible();
-        }
     }
 
     public void EndInvincible()
     {
         isInvincible = false;
         invincibleTimer = 0f;
-    }
-
-    public void AddStats(StatPair pair)
-    {
-
     }
 }

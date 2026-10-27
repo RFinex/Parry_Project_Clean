@@ -37,7 +37,7 @@ public class PlayerGuardState : PlayerBaseState
     {
         try
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(playerBoard.combat.ParryWindow), cancellationToken: ctk);
+            await UniTask.Delay(TimeSpan.FromSeconds(playerBoard.combat.ParryTime), cancellationToken: ctk);
 
             playerBoard.combat.ParryEnd();
         }

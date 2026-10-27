@@ -19,7 +19,7 @@ public class PlayerBaseData : ScriptableObject
     [Header("Dash")]
     [SerializeField] private float dashTime = 0.1f;
     [SerializeField] private float dashSpeed = 20f;
-    [SerializeField] private float dashCool = 0.5f;
+    [SerializeField] private float dashCooldown = 0.5f;
 
     [Header("Stats")]
     [SerializeField] private float maxHp = 100f;
@@ -36,7 +36,7 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private List<float> attackHitDelays;
 
     [Header("Guard")]
-    [SerializeField] private float parryWindow = 0.15f;
+    [SerializeField] private float parryTime = 0.15f;
     [SerializeField] private float parryDamage = 10f;
     [SerializeField] private float guardStaminaCost = 20f;
 
@@ -64,7 +64,7 @@ public class PlayerBaseData : ScriptableObject
 
     public float DashTime => dashTime;
     public float DashSpeed => dashSpeed;
-    public float DashCool => dashCool;
+    public float DashCooldown => dashCooldown;
 
     public float MaxHp => maxHp;
     public float MaxStamina => maxStamina;
@@ -77,7 +77,7 @@ public class PlayerBaseData : ScriptableObject
     public float AttackEndTime => attackEndTime;
     public List<float> AttackHitDelays => attackHitDelays;
 
-    public float ParryWindow => parryWindow;
+    public float ParryTime => parryTime;
     public float ParryDamage => parryDamage;
     public float GuardStaminaCost => guardStaminaCost;
 

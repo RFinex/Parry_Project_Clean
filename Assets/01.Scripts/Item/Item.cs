@@ -10,9 +10,9 @@ public abstract class Item
     }
 }
 
-public abstract class Relic : Item
+public abstract class Artifact : Item
 {
-    protected Relic(RelicData data) : base(data)
+    protected Artifact(ArtifactData data) : base(data)
     {
 
     }

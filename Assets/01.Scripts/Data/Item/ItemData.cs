@@ -24,7 +24,7 @@ public class ItemData : ScriptableObject
     [SerializeField] private string iconId;
     [SerializeField] private Sprite icon;
 
-    [SerializeField] private List<StatPair> statPairs;
+    [SerializeField] private List<StatPair> statPairs = new();
 
     public int Id => id;
     public string ItemName => itemName;
@@ -35,7 +35,7 @@ public class ItemData : ScriptableObject
     public string IconId => iconId;
     public Sprite Icon => icon;
 
-    public List<StatPair> StatPairs => statPairs;
+    public IReadOnlyList<StatPair> StatPairs => statPairs;
 }
 
 [Serializable]
@@ -48,13 +48,17 @@ public struct StatPair
 
 public enum StatId
 {
-    Damage = 0,
+    AttackDamage,
     MaxHp,
     MaxStamina,
     MoveSpeed,
-    ParryWindow,
+    ParryTime,
     ParryDamage,
     GuardStaminaCost,
     DashSpeed,
-    DashCooldown
+    DashCooldown,
+    JumpForce,
+    DashTime,
+    AttackRange,
+    InvincibleTime
 }
