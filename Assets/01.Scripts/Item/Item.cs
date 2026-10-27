@@ -4,23 +4,25 @@ public abstract class Item
 {
     public ItemData Data { get; }
 
-    protected Item(ItemData data)
+    public Item(ItemData data)
     {
         Data = data;
     }
 }
 
-public abstract class Artifact : Item
+public class Artifact : Item
 {
-    protected Artifact(ArtifactData data) : base(data)
-    {
+    public ArtifactData ArtifactData { get; }
 
+    public Artifact(ArtifactData data) : base(data)
+    {
+        ArtifactData = data;
     }
 }
 
-public abstract class Consumable : Item
+public class Consumable : Item
 {
-    protected Consumable(ConsumableData data) : base(data)
+    public Consumable(ConsumableData data) : base(data)
     {
 
     }

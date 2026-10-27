@@ -13,12 +13,19 @@ public class InventoryPanel : PopupBase
     [SerializeField] private TextMeshProUGUI artifactRarity;
     [SerializeField] private Image artifactIcon;
 
+    [Header("Item Drop")]
+    [Tooltip("공용 ItemPickup 프리팹 등록 풀 ID")]
+    [SerializeField] private int pickupPoolId = 1000000;
+
+    [Tooltip("드랍 위치 오프셋")]
+    [SerializeField] private Vector3 dropOffset = new(0f, 0.3f, 0f);
+
     private RuntimeInventorySystem inventorySystem;
 
     private void Awake()
     {
         for (int i = 0; i < slots.Count; i++)
-            slots[i].Initialized(this);
+            slots[i].Initialized(this, i);
 
         ShowDescription(null);
     }
@@ -57,7 +64,15 @@ public class InventoryPanel : PopupBase
             else if (i >= inventorySystem.Artifacts.Count)
                 slots[i].SetEmpty();
             else
-                slots[i].SetArtifact(inventorySystem.Artifacts[i]);
+            {
+                Artifact artifact = inventorySystem.Artifacts[i];
+
+                if (artifact == null || artifact.ArtifactData == null)
+                    slots[i].SetEmpty();
+                else
+                    slots[i].SetArtifact(artifact.ArtifactData);
+
+            }
         }
 
         ShowDescription(null);
@@ -79,9 +94,9 @@ public class InventoryPanel : PopupBase
             return;
         }
 
-        artifactNameText.text = data.ItemName;
+        artifactNameText.text = ItemRarityColor.Apply(data.Rarity, data.ItemName);
         artifactDescription.text = data.Description;
-        artifactRarity.text = data.Rarity.ToString();
+        artifactRarity.text = ItemRarityColor.Apply(data.Rarity, data.Rarity.ToString());
         artifactIcon.sprite = data.Icon;
     }
 
@@ -94,5 +109,45 @@ public class InventoryPanel : PopupBase
             inventorySystem.OnSlotChanged -= Refresh;
 
         inventorySystem = inventory;
+    }
+
+    /// <summary>
+    /// 아이템 버리기
+    /// </summary>
+    /// <param name="index"> 버릴 아이템 슬롯 인덱스 </param>
+    public void DropArtifact(int index)
+    {
+        if (inventorySystem == null || index < 0 || index >= inventorySystem.Artifacts.Count)
+            return;
+
+        Artifact artifact = inventorySystem.Artifacts[index];
+
+        if (artifact == null || artifact.ArtifactData == null)
+            return;
+
+        GameManager gameManager = GameManager.Instance;
+        ObjectPoolManager poolManager = ObjectPoolManager.Instance;
+
+        if (gameManager == null || gameManager.Player == null || poolManager == null)
+            return;
+
+        Vector3 dropPos = gameManager.Player.transform.position + dropOffset;
+
+        ItemPickupPool pickup = poolManager.Get<ItemPickupPool>(pickupPoolId, dropPos, null);
+
+        if (pickup == null)
+            return;
+
+        pickup.SetItem(artifact);
+
+        Artifact removedArtifact = inventorySystem.Remove(index);
+
+        if (removedArtifact == null)
+        {
+            pickup.ReturnPool();
+            return;
+        }
+
+        Utils.Log<InventoryPanel>($"아이템 버리기 : {removedArtifact.Data.ItemName}");
     }
 }

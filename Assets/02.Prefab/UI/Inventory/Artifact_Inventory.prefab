@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1252,6 +1252,8 @@ MonoBehaviour:
   artifactDescription: {fileID: 3661978766580262333}
   artifactRarity: {fileID: 2634793776943274014}
   artifactIcon: {fileID: 8316389384343457166}
+  pickupPoolId: 1000000
+  dropOffset: {x: 0, y: 0.5, z: 0}
 --- !u!1001 &8065756236574313
 PrefabInstance:
   m_ObjectHideFlags: 0

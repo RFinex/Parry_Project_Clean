@@ -1,0 +1,3 @@
+﻿ItemId,Category,Name,Rarity,IconId,Description
+1000001,Artifact,Dummy,Common,dummy_Icon,공격력 +5
+1000002,Artifact,Dummy2,Common,dummy_Icon,"이동 속도 +2, 대시 속도 +1"
