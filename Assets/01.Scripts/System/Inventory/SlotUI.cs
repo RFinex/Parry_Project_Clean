@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] private Image icon;
     [SerializeField] private GameObject lockedSlot;
@@ -10,9 +10,12 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private InventoryPanel inventory;
     private ArtifactData artifact;
 
-    public void Initialized(InventoryPanel inventory)
+    private int slotIndex;
+
+    public void Initialized(InventoryPanel inventory, int slotIndex)
     {
         this.inventory = inventory;
+        this.slotIndex = slotIndex;
     }
 
     public void SetLocked()
@@ -59,5 +62,16 @@ public class SlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             return;
 
         inventory.ShowDescription(null);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Right)
+            return;
+
+        if (inventory == null || artifact == null)
+            return;
+
+        inventory.DropArtifact(slotIndex);
     }
 }

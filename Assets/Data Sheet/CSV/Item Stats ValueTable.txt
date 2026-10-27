@@ -1,0 +1,4 @@
+﻿ItemId,StatId,Value
+1000001,AttackDamage,5
+1000002,MoveSpeed,2
+1000002,DashSpeed,1

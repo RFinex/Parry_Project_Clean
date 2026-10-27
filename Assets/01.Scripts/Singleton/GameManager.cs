@@ -24,10 +24,16 @@ public class GameManager : Singleton<GameManager>
 
     public event Action<PlayerController> OnPlayerChanged;
 
+    [SerializeField] private ArtifactDataReader artifactReader;
+
+    public ItemFactory ItemFactory { get; private set; }
 
     protected override void AwakeSingleton()
     {
         Inventory = new RuntimeInventorySystem();
+
+        ItemFactory = new ItemFactory();
+        RegisterItems();
     }
 
     private void OnEnable()
@@ -54,6 +60,20 @@ public class GameManager : Singleton<GameManager>
         EventBus.UnSubscribe<InventoryToggleEvent>(HandleInventoryToggle);
         EventBus.UnSubscribe<PlayerDiedEvent>(HandlePlayerDied);
         EventBus.UnSubscribe<StageClearedEvent>(HandleStageCleared);
+    }
+
+    public void RegisterItems()
+    {
+        if (artifactReader == null)
+            return;
+
+        foreach (ArtifactData artifact in artifactReader.Artifacts)
+        {
+            if (artifact == null)
+                continue;
+
+            ItemFactory.Register(artifact.Id, () => new Artifact(artifact));
+        }
     }
 
     public void RegisterPlayer(PlayerController player)
@@ -152,5 +172,18 @@ public class GameManager : Singleton<GameManager>
     private void HandleStageCleared(StageClearedEvent eventData)
     {
         Inventory.Clear();
+    }
+
+    public bool TryGiveArtifact(int itemId)
+    {
+        if (ItemFactory == null || Inventory == null)
+            return false;
+
+        Item item = ItemFactory.Create(itemId);
+
+        if (item is not Artifact artifact)
+            return false;
+
+        return Inventory.TryAdd(artifact);
     }
 }

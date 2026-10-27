@@ -43,7 +43,15 @@ public struct StatPair
 {
     public StatId id;
 
+    public StatModifierType modifierType;
+
     public float value;
+}
+
+public enum StatModifierType
+{
+    Flat = 0,
+    Percent = 1
 }
 
 public enum StatId

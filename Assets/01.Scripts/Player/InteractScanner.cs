@@ -70,9 +70,6 @@ public class InteractScanner : MonoBehaviour
         {
             while (!ctk.IsCancellationRequested)
             {
-                if (interactDic.Count < 2)
-                    return;
-
                 await UniTask.Delay(TimeSpan.FromSeconds(scanTime), cancellationToken: ctk);
 
                 RefreshNearestTarget();
@@ -117,10 +114,14 @@ public class InteractScanner : MonoBehaviour
 
     public void TryInteract()
     {
+        RefreshNearestTarget();
+
         if (nearestTarget == null || !nearestTarget.CanInteract)
             return;
 
         nearestTarget.Interact(player);
+
+        RefreshNearestTarget();
     }
 
     private void RefreshNearestTarget()
@@ -142,11 +143,14 @@ public class InteractScanner : MonoBehaviour
             IInteractable target = pair.Value;
             Component targetComponent = target as Component;
 
-            if (targetObject == null || targetComponent == null)
+            if (targetObject == null || targetComponent == null || !targetObject.activeInHierarchy)
             {
                 interactCache.Add(targetObject);
                 continue;
             }
+
+            if (!target.CanInteract)
+                continue;
 
             float distance = ((Vector2)targetObject.transform.position - scannerPos).sqrMagnitude;
             if (distance >= nearestDistance)
@@ -163,7 +167,9 @@ public class InteractScanner : MonoBehaviour
         if (previousObject == nearestObject)
             return;
 
-        if (previousObject != null)
+        Component previousComponent = previousTarget as Component;
+
+        if (previousComponent != null)
             previousTarget.SetTrigger(false);
 
         if (nearestTarget != null)

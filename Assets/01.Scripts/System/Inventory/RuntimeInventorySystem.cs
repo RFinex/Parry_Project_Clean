@@ -7,26 +7,44 @@ public class RuntimeInventorySystem
     private int maxCapacity = 40;
     private int currentCapacity = 20;
 
-    private readonly List<ArtifactData> artifacts = new();
-    public IReadOnlyList<ArtifactData> Artifacts => artifacts;
+    private readonly List<Artifact> artifacts = new();
+    public IReadOnlyList<Artifact> Artifacts => artifacts;
 
     public int Capacity => currentCapacity;
 
     public event Action OnSlotChanged;
 
     /// <summary>
+    /// 사용 가능한 슬롯을 빈칸으로 초기화
+    /// </summary>
+    public RuntimeInventorySystem()
+    {
+        for (int i = 0; i < currentCapacity; i++)
+            artifacts.Add(null);
+    }
+
+    /// <summary>
     /// 빈 슬롯에 유물 추가
     /// </summary>
-    /// <param name="data"> 유물 데이터 </param>
+    /// <param name="artifact"> 유물 데이터 </param>
     /// <returns></returns>
-    public bool TryAdd(ArtifactData data)
+    public bool TryAdd(Artifact artifact)
     {
-        if (data == null || artifacts.Count >= currentCapacity)
+        if (artifact == null || artifact.ArtifactData == null)
             return false;
 
-        artifacts.Add(data);
-        OnSlotChanged?.Invoke();
-        return true;
+        for (int i = 0; i < currentCapacity; i++)
+        {
+            if (artifacts[i] != null)
+                continue;
+
+            artifacts[i] = artifact;
+            OnSlotChanged?.Invoke();
+
+            return true;
+        }        
+
+        return false;
     }
 
     /// <summary>
@@ -34,34 +52,42 @@ public class RuntimeInventorySystem
     /// </summary>
     /// <param name="index"> 슬롯 인덱스 </param>
     /// <returns></returns>
-    public ArtifactData Remove(int index)
+    public Artifact Remove(int index)
     {
         if (index < 0 || index >= artifacts.Count)
             return null;
 
-        ArtifactData removeData = artifacts[index];
-        artifacts.RemoveAt(index);
+        Artifact removedArtifact = artifacts[index];
+
+        if (removedArtifact == null)
+            return null;
+
+        artifacts[index] = null;
         OnSlotChanged?.Invoke();
 
-        return removeData;
+        return removedArtifact;
     }
 
     /// <summary>
     /// 지정한 슬롯의 유물을 새 유물로 교체 및 반환
     /// </summary>
     /// <param name="index"> 슬롯 인덱스 </param>
-    /// <param name="replaceData"> 교체할 유물 데이터 </param>
+    /// <param name="replaceArtifact"> 교체할 유물 데이터 </param>
     /// <returns></returns>
-    public ArtifactData Replace(int index, ArtifactData replaceData)
+    public Artifact Replace(int index, Artifact replaceArtifact)
     {
-        if (replaceData == null || index < 0 || index >= artifacts.Count)
+        if (replaceArtifact == null || replaceArtifact.ArtifactData == null || index < 0 || index >= artifacts.Count)
             return null;
 
-        ArtifactData previousData = artifacts[index];
-        artifacts[index] = replaceData;
+        Artifact previousArtifact = artifacts[index];
+
+        if (previousArtifact == null)
+            return null;
+
+        artifacts[index] = replaceArtifact;
         OnSlotChanged?.Invoke();
 
-        return previousData;
+        return previousArtifact;
     }
 
     /// <summary>
@@ -78,6 +104,25 @@ public class RuntimeInventorySystem
         if (currentCapacity == newCapacity)
             return;
 
+        if (newCapacity < currentCapacity)
+        {
+            for (int i = newCapacity; i < currentCapacity; i++)
+            {
+                if (artifacts[i] == null)
+                    continue;
+
+                Utils.LogWarning<RuntimeInventorySystem>("아이템이 있는 슬롯은 잠글 수 없음");
+                return;
+            }
+
+            artifacts.RemoveRange(newCapacity, currentCapacity - newCapacity);
+        }
+        else
+        {
+            for (int i = currentCapacity; i < newCapacity; i++)
+                artifacts.Add(null);
+        }
+
         currentCapacity = newCapacity;
         OnSlotChanged?.Invoke();
     }
@@ -87,10 +132,18 @@ public class RuntimeInventorySystem
     /// </summary>
     public void Clear()
     {
-        if (artifacts.Count == 0)
-            return;
+        bool isChanged = false;
 
-        artifacts.Clear();
-        OnSlotChanged?.Invoke();
+        for (int i = 0; i < artifacts.Count; i++)
+        {
+            if (Artifacts[i] == null)
+                continue;
+
+            artifacts[i] = null;
+            isChanged = true;
+        }
+
+        if(isChanged)
+            OnSlotChanged?.Invoke();
     }
 }

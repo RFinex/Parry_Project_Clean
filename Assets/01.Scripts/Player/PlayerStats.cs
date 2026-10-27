@@ -6,6 +6,7 @@ public class PlayerStats
 {
     private readonly Dictionary<StatId, float> baseStats = new();
     private readonly Dictionary<StatId, float> currentStats = new();
+    private readonly Dictionary<StatId, float> percentStats = new();
 
     private float nowHp;
     private float nowStamina;
@@ -52,9 +53,14 @@ public class PlayerStats
         if (!currentStats.TryGetValue(id, out float value))
             return 0f;
 
+        // 배율 없으면 1배율
+        float multiplier = percentStats.TryGetValue(id, out float percent) ? percent : 1f;
+
+        float result = value * multiplier;
+
         float min = (id == StatId.MaxHp) ? 1f : 0f;
 
-        return value < min ? min : value;
+        return Mathf.Max(min, result);
     }
 
     private void SetBaseStats(StatId id, float value)
@@ -65,6 +71,7 @@ public class PlayerStats
     private void SetCurrentStats()
     {
         currentStats.Clear();
+        percentStats.Clear();
 
         foreach (var pair in baseStats)
             currentStats.Add(pair.Key, pair.Value);
@@ -79,7 +86,7 @@ public class PlayerStats
         RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
     }
 
-    public void ApplyArtifacts(IReadOnlyList<ArtifactData> artifacts)
+    public void ApplyArtifacts(IReadOnlyList<Artifact> artifacts)
     {
         float previousMaxHp = MaxHp;
         float previousMaxStamina = MaxStamina;
@@ -88,16 +95,22 @@ public class PlayerStats
 
         if (artifacts != null)
         {
-            foreach (ArtifactData artifact in artifacts)
+            foreach (Artifact artifact in artifacts)
             {
-                if (artifact == null || artifact.StatPairs == null)
+                if (artifact == null)
                     continue;
 
-                foreach (StatPair pair in artifact.StatPairs)
+                ArtifactData data = artifact.ArtifactData;
+
+                if (data == null || data.StatPairs == null)
+                    continue;
+
+                foreach (StatPair pair in data.StatPairs)
                     ApplyChangeStats(pair);
             }
         }
 
+        // 합산 후 HP, 스태미나 보정
         RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
     }
 
@@ -106,7 +119,18 @@ public class PlayerStats
         if (!currentStats.TryGetValue(pair.id, out float value))
             return;
 
-        currentStats[pair.id] = value + pair.value;
+        if (pair.modifierType == StatModifierType.Flat)
+        {
+            currentStats[pair.id] = value + pair.value;
+        }
+        else if (pair.modifierType == StatModifierType.Percent)
+        {
+            float multiplier = percentStats.TryGetValue(pair.id, out float percent) ? percent : 1f;
+            float itemMultiplier = Mathf.Max(0f, 1f + pair.value / 100f);
+
+            // 기존 배율 x 아이템 배율(곱연산)
+            percentStats[pair.id] = multiplier * itemMultiplier;
+        }
     }
 
     private void RefreshHp_Stamina(float previousMaxHp, float previousMaxStamina)
