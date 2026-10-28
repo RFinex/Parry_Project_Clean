@@ -77,6 +77,7 @@ public class ArtifactDataReaderTool : Editor
             FinishReading();
         }
     }
+
     private void FinishReading()
     {
         isReading = false;
@@ -118,7 +119,9 @@ public class ArtifactDataReaderTool : Editor
         if (sheet == null)
             throw new Exception("Item Info 시트 응답이 없습니다.");
 
-        Dictionary<string, Sprite> icons = BuildIconMap(reader);
+        Dictionary<string, List<Sprite>> spritesByName = BuildSpriteLookup();
+        Dictionary<string, Sprite> resolvedIcons = new(StringComparer.Ordinal);
+        List<ArtifactIconEntry> iconReferences = new();
         Dictionary<int, ArtifactRow> result = new();
 
         SheetReadSettings settings = reader.ItemInfo;
@@ -153,11 +156,16 @@ public class ArtifactDataReaderTool : Editor
 
             string iconId = Required(cells, "IconId", context).Trim();
 
-            if (!icons.TryGetValue(iconId, out Sprite icon))
+            if (!resolvedIcons.TryGetValue(iconId, out Sprite icon))
             {
-                throw new Exception($"{context}: Icon References에 '{iconId}'를 등록하세요.");
+                icon = FindSpriteByName(iconId, spritesByName, context);
+                resolvedIcons.Add(iconId, icon);
+                iconReferences.Add(new ArtifactIconEntry
+                {
+                    iconId = iconId,
+                    sprite = icon
+                });
             }
-
             ArtifactRow item = new()
             {
                 itemId = itemId,
@@ -176,6 +184,7 @@ public class ArtifactDataReaderTool : Editor
         if (result.Count == 0)
             throw new Exception("읽은 Artifact가 없습니다. 행 범위를 확인하세요.");
 
+        UpdateIconReferences(reader, iconReferences);
         return result;
     }
 
@@ -215,26 +224,70 @@ public class ArtifactDataReaderTool : Editor
             });
         }
     }
-    private static Dictionary<string, Sprite> BuildIconMap(ArtifactDataReader reader)
+    // [수정] Resolve each sheet IconId by an exact Sprite asset name match.
+    private static Dictionary<string, List<Sprite>> BuildSpriteLookup()
     {
-        Dictionary<string, Sprite> result = new();
+        Dictionary<string, List<Sprite>> result = new(StringComparer.Ordinal);
+        string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { "Assets" });
 
-        foreach (ArtifactIconEntry entry in reader.Icons)
+        foreach (string guid in guids)
         {
-            if (entry == null || string.IsNullOrWhiteSpace(entry.iconId) || entry.sprite == null)
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+
+            foreach (UnityEngine.Object asset in assets)
             {
-                throw new Exception("Icon References의 IconId와 Sprite를 모두 지정하세요.");
+                if (asset is not Sprite sprite)
+                    continue;
+
+                if (!result.TryGetValue(sprite.name, out List<Sprite> matches))
+                {
+                    matches = new List<Sprite>();
+                    result.Add(sprite.name, matches);
+                }
+
+                if (!matches.Contains(sprite))
+                    matches.Add(sprite);
             }
-
-            string key = entry.iconId.Trim();
-
-            if (result.ContainsKey(key))
-                throw new Exception($"중복된 IconId: {key}");
-
-            result.Add(key, entry.sprite);
         }
 
         return result;
+    }
+
+    private static Sprite FindSpriteByName(string iconId, Dictionary<string, List<Sprite>> spritesByName, string context)
+    {
+        if (!spritesByName.TryGetValue(iconId, out List<Sprite> matches) || matches.Count == 0)
+            throw new Exception($"{context}: no Sprite asset has the exact name '{iconId}'.");
+
+        if (matches.Count > 1)
+        {
+            List<string> assetPaths = new();
+
+            foreach (Sprite sprite in matches)
+                assetPaths.Add(AssetDatabase.GetAssetPath(sprite));
+
+            throw new Exception($"{context}: multiple Sprites are named '{iconId}': {string.Join(", ", assetPaths)}");
+        }
+
+        return matches[0];
+    }
+
+    private static void UpdateIconReferences(ArtifactDataReader reader, List<ArtifactIconEntry> icons)
+    {
+        SerializedObject serializedReader = new(reader);
+        SerializedProperty iconEntries = serializedReader.FindProperty("icons");
+        iconEntries.arraySize = icons.Count;
+
+        for (int i = 0; i < icons.Count; i++)
+        {
+            SerializedProperty entry = iconEntries.GetArrayElementAtIndex(i);
+            entry.FindPropertyRelative("iconId").stringValue = icons[i].iconId;
+            entry.FindPropertyRelative("sprite").objectReferenceValue = icons[i].sprite;
+        }
+
+        serializedReader.ApplyModifiedProperties();
+        EditorUtility.SetDirty(reader);
+        AssetDatabase.SaveAssets();
     }
 
     private static Dictionary<string, string> ReadCells(List<GSTU_Cell> cells)

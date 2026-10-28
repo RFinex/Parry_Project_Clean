@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: Artifact_1000006
   m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
   id: 1000006
-  itemName: Test
-  description: Test
+  itemName: "\uBC18\uACA9\uC758 \uBB38\uC7A5"
+  description: "\uD328\uB9AC \uC131\uACF5 \uD6C4 3\uCD08 \uC774\uB0B4 \uB2E4\uC74C
+    \uC77C\uBC18 \uACF5\uACA9 \uD53C\uD574 +80%"
   rarity: 1
-  iconId: dummy_Icon2
-  icon: {fileID: 21300000, guid: cfecd44b9304c4e3792773cbc67438fb, type: 3}
-  statPairs:
-  - id: 0
-    modifierType: 0
-    value: 1
+  iconId: seal_017
+  icon: {fileID: 21300000, guid: 439563b4e7b75437892c242256da3b84, type: 3}
+  statPairs: []

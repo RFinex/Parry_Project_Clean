@@ -41,6 +41,7 @@ public class PlayerStats
         SetBaseStats(StatId.ParryDamage, data.ParryDamage);
         SetBaseStats(StatId.GuardStaminaCost, data.GuardStaminaCost);
         SetBaseStats(StatId.InvincibleTime, data.InvincibleTime);
+        SetBaseStats(StatId.DamageTakenMultiplier, data.DamageTakenMultiplier);
 
         SetCurrentStats();
 
@@ -166,6 +167,8 @@ public class PlayerStats
     {
         if (IsDead)
             return;
+
+        damage *= GetStats(StatId.DamageTakenMultiplier);
 
         nowHp -= damage;
 

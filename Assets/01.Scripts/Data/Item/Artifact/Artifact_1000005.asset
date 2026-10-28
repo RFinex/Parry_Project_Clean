@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: Artifact_1000005
   m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
   id: 1000005
-  itemName: Dummy5
-  description: "\uB808\uC804\uB354\uB9AC \uD14C\uC2A4\uD2B8"
+  itemName: "\uB0A1\uC740 \uB098\uBB34 \uBC29\uD328"
+  description: "\uD328\uB9AC \uD310\uC815 \uC2DC\uAC04 +0.03s\n\uC77C\uBC18 \uACF5\uACA9
+    \uD53C\uD574 -8%"
   rarity: 0
-  iconId: dummy_Icon5
-  icon: {fileID: 21300000, guid: 0fef95fcf6ed24ee0bc272328df04508, type: 3}
+  iconId: shield_001
+  icon: {fileID: 21300000, guid: bc233c8b071004b488ed7d809e554313, type: 3}
   statPairs:
-  - id: 0
+  - id: 4
     modifierType: 0
-    value: 1
+    value: 0.03
+  - id: 0
+    modifierType: 1
+    value: -8

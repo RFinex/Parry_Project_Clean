@@ -68,5 +68,6 @@ public enum StatId
     JumpForce,
     DashTime,
     AttackRange,
-    InvincibleTime
+    InvincibleTime,
+    DamageTakenMultiplier
 }

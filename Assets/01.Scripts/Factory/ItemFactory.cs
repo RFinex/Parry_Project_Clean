@@ -15,7 +15,7 @@ public class ItemFactory
         Register(1000003, () => new Artifact());
         Register(1000004, () => new Artifact());
         Register(1000005, () => new Artifact());
-        Register(1000006, () => new CounterAttackInsignia());
+        Register(1000006, () => new EmblemOfCounter());
     }
 
     private void Register(int itemId, Func<Item> creator)

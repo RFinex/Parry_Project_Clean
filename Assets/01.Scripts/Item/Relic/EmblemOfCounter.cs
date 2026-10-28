@@ -3,11 +3,11 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-public class CounterAttackInsignia : Artifact
+public class EmblemOfCounter : Artifact
 {
     private CancellationTokenSource token;
 
-    public CounterAttackInsignia()
+    public EmblemOfCounter()
     {
 
     }

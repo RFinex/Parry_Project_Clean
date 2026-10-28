@@ -53,6 +53,9 @@ public class PlayerBaseData : ScriptableObject
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
 
+    [Header("Take Damage")]
+    [SerializeField] private float damageTakenMultiplier = 1f;
+
     public float MoveSpeed => moveSpeed;
     
     public float JumpForce => jumpForce;
@@ -90,4 +93,6 @@ public class PlayerBaseData : ScriptableObject
     public float ExecuteBackOffset => executeBackOffset;
 
     public LayerMask EnemyLayer => enemyLayer;
+
+    public float DamageTakenMultiplier => damageTakenMultiplier;
 }
