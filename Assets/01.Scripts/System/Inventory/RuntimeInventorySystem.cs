@@ -14,6 +14,8 @@ public class RuntimeInventorySystem
 
     public event Action OnSlotChanged;
 
+    private PlayerBlackBoard playerBoard;
+
     /// <summary>
     /// 사용 가능한 슬롯을 빈칸으로 초기화
     /// </summary>
@@ -23,14 +25,41 @@ public class RuntimeInventorySystem
             artifacts.Add(null);
     }
 
+    public void SetPlayerBoard(PlayerBlackBoard board)
+    {
+        if (playerBoard == board)
+            return;
+
+        Debug.Log("\ud14c\uc2a4\ud2b8 \uc2dc\uc791");
+
+        // 보드 초기화 전 아티펙트를 해제
+        if (playerBoard != null)
+        {
+            foreach (Artifact artifact in artifacts)
+                artifact?.OnUnequip(playerBoard);
+
+            Debug.Log("테스트 1");
+        }
+
+        playerBoard = board;
+
+        if (playerBoard != null)
+        {
+            foreach (Artifact artifact in artifacts)
+                artifact?.OnEquip(playerBoard);
+
+            Debug.Log("테스트 2");
+        }
+    }
+
     /// <summary>
-    /// 빈 슬롯에 유물 추가
+    /// 빈 슬롯에 아티팩트 추가 및 효과 적용
     /// </summary>
-    /// <param name="artifact"> 유물 데이터 </param>
+    /// <param name="artifact"> 아티팩트 데이터 </param>
     /// <returns></returns>
     public bool TryAdd(Artifact artifact)
     {
-        if (artifact == null || artifact.ArtifactData == null)
+        if (artifact == null || artifact.ArtifactItemData == null)
             return false;
 
         for (int i = 0; i < currentCapacity; i++)
@@ -39,6 +68,8 @@ public class RuntimeInventorySystem
                 continue;
 
             artifacts[i] = artifact;
+            artifact.OnEquip(playerBoard);
+
             OnSlotChanged?.Invoke();
 
             return true;
@@ -48,7 +79,7 @@ public class RuntimeInventorySystem
     }
 
     /// <summary>
-    /// 지정한 슬롯 유물 제거 및 반환
+    /// 지정한 슬롯 아티팩트 제거 및 반환
     /// </summary>
     /// <param name="index"> 슬롯 인덱스 </param>
     /// <returns></returns>
@@ -62,7 +93,9 @@ public class RuntimeInventorySystem
         if (removedArtifact == null)
             return null;
 
+        removedArtifact.OnUnequip(playerBoard);
         artifacts[index] = null;
+
         OnSlotChanged?.Invoke();
 
         return removedArtifact;
@@ -76,7 +109,7 @@ public class RuntimeInventorySystem
     /// <returns></returns>
     public Artifact Replace(int index, Artifact replaceArtifact)
     {
-        if (replaceArtifact == null || replaceArtifact.ArtifactData == null || index < 0 || index >= artifacts.Count)
+        if (replaceArtifact == null || replaceArtifact.ArtifactItemData == null || index < 0 || index >= artifacts.Count)
             return null;
 
         Artifact previousArtifact = artifacts[index];
@@ -84,7 +117,10 @@ public class RuntimeInventorySystem
         if (previousArtifact == null)
             return null;
 
+        previousArtifact.OnUnequip(playerBoard);
         artifacts[index] = replaceArtifact;
+        replaceArtifact.OnEquip(playerBoard);
+
         OnSlotChanged?.Invoke();
 
         return previousArtifact;
@@ -136,9 +172,12 @@ public class RuntimeInventorySystem
 
         for (int i = 0; i < artifacts.Count; i++)
         {
-            if (Artifacts[i] == null)
+            Artifact artifact = Artifacts[i];
+
+            if (artifact == null)
                 continue;
 
+            artifact.OnUnequip(playerBoard);
             artifacts[i] = null;
             isChanged = true;
         }

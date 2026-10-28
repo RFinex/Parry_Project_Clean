@@ -7,7 +7,7 @@ public class ItemPickup : InteractableBase
 
     private Item item;
 
-    public override bool CanInteract => item is Artifact artifact && artifact.ArtifactData != null;
+    public override bool CanInteract => item is Artifact artifact && artifact.ArtifactItemData != null;
 
     /// <summary>
     /// 아이템 스프라이트를 데이터의 스프라이트로 교체

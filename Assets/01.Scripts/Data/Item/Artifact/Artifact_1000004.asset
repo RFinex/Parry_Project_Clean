@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Artifact_1000004
   m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
   id: 1000004
-  itemName: Dummy4
-  description: "\uC5D0\uD53D \uD14C\uC2A4\uD2B8"
-  rarity: 3
-  iconId: dummy_Icon4
-  icon: {fileID: 21300000, guid: b38f74d9489bc49a1b3bab10d18850bd, type: 3}
+  itemName: "\uC587\uC740 \uC7A5\uAC11"
+  description: "\uC774\uB3D9 \uC18D\uB3C4 +10%\n\uBC1B\uB294 \uD53C\uD574 +8%"
+  rarity: 0
+  iconId: ring_003
+  icon: {fileID: 21300000, guid: 5f363af04dd4445b88e3dfd4b67fa507, type: 3}
   statPairs:
-  - id: 0
-    modifierType: 0
-    value: 1
+  - id: 3
+    modifierType: 1
+    value: 10
+  - id: 13
+    modifierType: 1
+    value: 8

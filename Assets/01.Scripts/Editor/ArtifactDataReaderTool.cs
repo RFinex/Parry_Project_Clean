@@ -48,55 +48,28 @@ public class ArtifactDataReaderTool : Editor
         try
         {
             ValidateSettings(reader);
-
             isReading = true;
 
-            // 첫 번째 표를 받은 후 두 번째 표를 읽는다.
-            SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemInfo.sheetName), infoSheet =>
+            SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemInfo.sheetName), sheet =>
+            {
+                try
                 {
-                    try
-                    {
-                        if (reader == null)
-                        {
-                            FinishReading();
-                            return;
-                        }
+                    if (reader == null)
+                        return;
 
-                        Dictionary<int, ArtifactRow> rows = ReadItemInfo(reader, infoSheet);
-
-                        SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemStats.sheetName), statsSheet =>
-                            {
-                                try
-                                {
-                                    if (reader == null)
-                                        return;
-
-                                    if (!ReadItemStats(reader, statsSheet, rows))
-                                        return;
-
-                                    // 두 표의 파싱이 성공한 뒤 에셋 반영
-                                    SaveArtifacts(reader, rows);
-
-                                    Debug.Log($"Artifact 임포트 완료: {rows.Count}개", reader);
-                                }
-                                catch (Exception exception)
-                                {
-                                    Debug.LogException(exception);
-                                }
-                                finally
-                                {
-                                    FinishReading();
-                                }
-                            },
-                            false);
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogException(exception);
-                        FinishReading();
-                    }
-                },
-                false);
+                    Dictionary<int, ArtifactRow> rows = ReadItemInfo(reader, sheet);
+                    SaveArtifacts(reader, rows);
+                    Debug.Log($"Artifact import complete: {rows.Count} items", reader);
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
+                finally
+                {
+                    FinishReading();
+                }
+            }, false);
         }
         catch (Exception exception)
         {
@@ -119,7 +92,6 @@ public class ArtifactDataReaderTool : Editor
             throw new Exception("Google Sheet 문서 ID를 입력하세요.");
 
         ValidateRange(reader.ItemInfo);
-        ValidateRange(reader.ItemStats);
 
         string folder = reader.SaveFolder;
 
@@ -147,7 +119,9 @@ public class ArtifactDataReaderTool : Editor
         if (sheet == null)
             throw new Exception("Item Info 시트 응답이 없습니다.");
 
-        Dictionary<string, Sprite> icons = BuildIconMap(reader);
+        Dictionary<string, List<Sprite>> spritesByName = BuildSpriteLookup();
+        Dictionary<string, Sprite> resolvedIcons = new(StringComparer.Ordinal);
+        List<ArtifactIconEntry> iconReferences = new();
         Dictionary<int, ArtifactRow> result = new();
 
         SheetReadSettings settings = reader.ItemInfo;
@@ -182,11 +156,16 @@ public class ArtifactDataReaderTool : Editor
 
             string iconId = Required(cells, "IconId", context).Trim();
 
-            if (!icons.TryGetValue(iconId, out Sprite icon))
+            if (!resolvedIcons.TryGetValue(iconId, out Sprite icon))
             {
-                throw new Exception($"{context}: Icon References에 '{iconId}'를 등록하세요.");
+                icon = FindSpriteByName(iconId, spritesByName, context);
+                resolvedIcons.Add(iconId, icon);
+                iconReferences.Add(new ArtifactIconEntry
+                {
+                    iconId = iconId,
+                    sprite = icon
+                });
             }
-
             ArtifactRow item = new()
             {
                 itemId = itemId,
@@ -197,112 +176,118 @@ public class ArtifactDataReaderTool : Editor
                 icon = icon
             };
 
+            cells.TryGetValue("Effects", out string effectsText);
+            ReadEffects(effectsText, item, context);
             result.Add(itemId, item);
         }
 
         if (result.Count == 0)
             throw new Exception("읽은 Artifact가 없습니다. 행 범위를 확인하세요.");
 
+        UpdateIconReferences(reader, iconReferences);
         return result;
     }
 
-    private static bool ReadItemStats(ArtifactDataReader reader, GstuSpreadSheet sheet, Dictionary<int, ArtifactRow> items)
+    private static void ReadEffects(string effectsText, ArtifactRow item, string context)
     {
-        if (sheet == null)
+        if (string.IsNullOrWhiteSpace(effectsText))
+            return;
+
+        string[] effectLines = effectsText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 0; i < effectLines.Length; i++)
         {
-            Debug.LogWarning("Item Stats Value 시트 응답이 없습니다.");
-            return false;
-        }
+            string effectContext = $"{context} Effects line {i + 1}";
+            string[] parts = effectLines[i].Split(',');
 
-        SheetReadSettings settings = reader.ItemStats;
+            if (parts.Length != 3)
+                throw new Exception($"{effectContext}: expected 'StatId,ModifierType,Value'.");
 
-        for (int row = settings.startRow; row <= settings.endRow; row++)
-        {
-            Dictionary<string, string> cells = ReadCells(sheet.rows[row]);
-
-            if (IsEmptyRow(cells))
-                continue;
-
-            string context = $"{settings.sheetName} {row}행";
-
-            if (!cells.TryGetValue("ItemId", out string itemIdText) || !int.TryParse(itemIdText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int itemId) || itemId <= 0)
-            {
-                Debug.LogWarning($"{context}: ItemId를 확인하세요.");
-                return false;
-            }
-
-            if (!items.TryGetValue(itemId, out ArtifactRow item))
-            {
-                Debug.LogWarning($"{context}: Item Info에 ItemId {itemId}가 없습니다.");
-                return false;
-            }
-
-            if (!cells.TryGetValue("StatId", out string statText))
-            {
-                Debug.LogWarning($"{context}: StatId 열이 없습니다.");
-                return false;
-            }
-
-            statText = statText.Trim();
+            string statText = parts[0].Trim();
+            string modifierText = parts[1].Trim();
+            string valueText = parts[2].Trim();
 
             if (!Enum.TryParse(statText, out StatId statId) || statId.ToString() != statText)
-            {
-                Debug.LogWarning($"{context}: 잘못된 StatId '{statText}'");
-                return false;
-            }
-
-            // [추가] Flat / Percent 읽기
-            if (!cells.TryGetValue("ModifierType", out string modifierText))
-            {
-                Debug.LogWarning($"{context}: ModifierType 열이 없습니다.");
-                return false;
-            }
-
-            modifierText = modifierText.Trim();
+                throw new Exception($"{effectContext}: invalid StatId '{statText}'.");
 
             if (!Enum.TryParse(modifierText, out StatModifierType modifierType) || modifierType.ToString() != modifierText)
-            {
-                Debug.LogWarning($"{context}: ModifierType은 Flat 또는 Percent로 입력하세요.");
-                return false;
-            }
+                throw new Exception($"{effectContext}: ModifierType must be Flat or Percent.");
 
-            if (!cells.TryGetValue("Value", out string valueText) || !float.TryParse(valueText.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float value) || float.IsNaN(value) || float.IsInfinity(value))
-            {
-                Debug.LogWarning($"{context}: Value는 % 기호 없이 숫자로 입력하세요.");
-                return false;
-            }
+            if (!float.TryParse(valueText, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) || float.IsNaN(value) || float.IsInfinity(value))
+                throw new Exception($"{effectContext}: Value must be a valid number without a percent sign.");
 
             item.stats.Add(new StatPair
             {
                 id = statId,
-                modifierType = modifierType, // [추가]
+                modifierType = modifierType,
                 value = value
             });
         }
-
-        return true;
     }
-
-    private static Dictionary<string, Sprite> BuildIconMap(ArtifactDataReader reader)
+    // [수정] Resolve each sheet IconId by an exact Sprite asset name match.
+    private static Dictionary<string, List<Sprite>> BuildSpriteLookup()
     {
-        Dictionary<string, Sprite> result = new();
+        Dictionary<string, List<Sprite>> result = new(StringComparer.Ordinal);
+        string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { "Assets" });
 
-        foreach (ArtifactIconEntry entry in reader.Icons)
+        foreach (string guid in guids)
         {
-            if (entry == null || string.IsNullOrWhiteSpace(entry.iconId) || entry.sprite == null)
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+
+            foreach (UnityEngine.Object asset in assets)
             {
-                throw new Exception("Icon References의 IconId와 Sprite를 모두 지정하세요.");
+                if (asset is not Sprite sprite)
+                    continue;
+
+                if (!result.TryGetValue(sprite.name, out List<Sprite> matches))
+                {
+                    matches = new List<Sprite>();
+                    result.Add(sprite.name, matches);
+                }
+
+                if (!matches.Contains(sprite))
+                    matches.Add(sprite);
             }
-
-            string key = entry.iconId.Trim();
-
-            if (result.ContainsKey(key))
-                throw new Exception($"중복된 IconId: {key}");
-
-            result.Add(key, entry.sprite);
         }
 
         return result;
+    }
+
+    private static Sprite FindSpriteByName(string iconId, Dictionary<string, List<Sprite>> spritesByName, string context)
+    {
+        if (!spritesByName.TryGetValue(iconId, out List<Sprite> matches) || matches.Count == 0)
+            throw new Exception($"{context}: no Sprite asset has the exact name '{iconId}'.");
+
+        if (matches.Count > 1)
+        {
+            List<string> assetPaths = new();
+
+            foreach (Sprite sprite in matches)
+                assetPaths.Add(AssetDatabase.GetAssetPath(sprite));
+
+            throw new Exception($"{context}: multiple Sprites are named '{iconId}': {string.Join(", ", assetPaths)}");
+        }
+
+        return matches[0];
+    }
+
+    private static void UpdateIconReferences(ArtifactDataReader reader, List<ArtifactIconEntry> icons)
+    {
+        SerializedObject serializedReader = new(reader);
+        SerializedProperty iconEntries = serializedReader.FindProperty("icons");
+        iconEntries.arraySize = icons.Count;
+
+        for (int i = 0; i < icons.Count; i++)
+        {
+            SerializedProperty entry = iconEntries.GetArrayElementAtIndex(i);
+            entry.FindPropertyRelative("iconId").stringValue = icons[i].iconId;
+            entry.FindPropertyRelative("sprite").objectReferenceValue = icons[i].sprite;
+        }
+
+        serializedReader.ApplyModifiedProperties();
+        EditorUtility.SetDirty(reader);
+        AssetDatabase.SaveAssets();
     }
 
     private static Dictionary<string, string> ReadCells(List<GSTU_Cell> cells)

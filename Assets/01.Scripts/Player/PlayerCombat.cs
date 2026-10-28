@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 public class PlayerCombat
 {
-    private readonly PlayerBaseData data;
-    private readonly PlayerStats stats;
+    private PlayerBlackBoard playerBoard;
+    private PlayerBaseData data;
+    private PlayerStats stats;
 
     private bool isGuard;
     private bool isParry;
@@ -34,11 +36,20 @@ public class PlayerCombat
 
     #endregion
 
+    public event Action<PlayerBlackBoard> OnParrySucceed;
+    public event Action<PlayerBlackBoard> OnParryEnded;
+    public event Action<PlayerBlackBoard> OnAttackEnded;
 
-    public PlayerCombat(PlayerBaseData data, PlayerStats stats)
+    public PlayerCombat()
     {
-        this.data = data;
-        this.stats = stats;
+        
+    }
+
+    public void Initialized(PlayerBlackBoard board)
+    {
+        playerBoard = board;
+        data = board.data;
+        stats = board.stats;
     }
 
     public void Attack(Vector2 pos, float frontDir)
@@ -58,7 +69,9 @@ public class PlayerCombat
                 continue;
 
             enemy.TakeDamage(attackDamage);
-        }        
+        }
+
+        OnAttackEnded?.Invoke(playerBoard);
     }
 
     /// <summary>
@@ -78,7 +91,7 @@ public class PlayerCombat
         {
             IExecuteTarget enemy = hit.GetComponentInParent<IExecuteTarget>();
 
-            if (enemy == null || !enemy.CanExecute)
+            if (enemy == null | !enemy.CanExecute)
                 continue;
 
             Vector2 dir = (Vector2)hit.transform.position - pos;
@@ -235,6 +248,36 @@ public class PlayerCombat
             return GuardResult.None;
 
         return isParry? GuardResult.Parry : GuardResult.Guard;
+    }
+
+    public bool TryGuard(EnemyAttackInfo info)
+    {
+        GuardResult guardResult = CheckGuard();
+
+        if (guardResult == GuardResult.None)
+            return false;
+
+        if (guardResult == GuardResult.Parry && info.canParry)
+        {
+            if (info.damageAttackerBalanceOnParry && info.attacker != null)
+            {
+                float parryDamage = stats.GetStats(StatId.ParryDamage);
+                info.attacker.TakeBalanceDamage(parryDamage);
+                OnParryEnded?.Invoke(playerBoard);
+            }
+
+            OnParrySucceed?.Invoke(playerBoard);
+            Utils.Log<PlayerController>("패리 성공");
+            return true;
+        }
+
+        if (info.canGuard)
+        {
+            Utils.Log<PlayerController>("가드 성공");
+            return true;
+        }
+
+        return false;
     }
 
     #endregion

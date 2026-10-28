@@ -67,10 +67,10 @@ public class InventoryPanel : PopupBase
             {
                 Artifact artifact = inventorySystem.Artifacts[i];
 
-                if (artifact == null || artifact.ArtifactData == null)
+                if (artifact == null || artifact.ArtifactItemData == null)
                     slots[i].SetEmpty();
                 else
-                    slots[i].SetArtifact(artifact.ArtifactData);
+                    slots[i].SetArtifact(artifact.ArtifactItemData);
 
             }
         }
@@ -122,7 +122,7 @@ public class InventoryPanel : PopupBase
 
         Artifact artifact = inventorySystem.Artifacts[index];
 
-        if (artifact == null || artifact.ArtifactData == null)
+        if (artifact == null || artifact.ArtifactItemData == null)
             return;
 
         GameManager gameManager = GameManager.Instance;
