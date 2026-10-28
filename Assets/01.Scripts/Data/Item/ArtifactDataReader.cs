@@ -34,7 +34,7 @@ public class ArtifactDataReader : DataReaderBase
     {
         data = artifacts.Find((a) => a.Id == id);
 
-        return (data != null) ? true : false;
+        return data != null;
     }
 }
 

@@ -74,6 +74,7 @@ public class GameManager : Singleton<GameManager>
 
         Player = player;
         Inventory.SetPlayerBoard(Player.PlayerBoard);
+        SetCameraTarget(Player.transform);
         OnPlayerChanged?.Invoke(Player);
     }
 
