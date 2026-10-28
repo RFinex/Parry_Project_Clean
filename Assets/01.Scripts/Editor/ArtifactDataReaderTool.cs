@@ -48,55 +48,28 @@ public class ArtifactDataReaderTool : Editor
         try
         {
             ValidateSettings(reader);
-
             isReading = true;
 
-            // 첫 번째 표를 받은 후 두 번째 표를 읽는다.
-            SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemInfo.sheetName), infoSheet =>
+            SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemInfo.sheetName), sheet =>
+            {
+                try
                 {
-                    try
-                    {
-                        if (reader == null)
-                        {
-                            FinishReading();
-                            return;
-                        }
+                    if (reader == null)
+                        return;
 
-                        Dictionary<int, ArtifactRow> rows = ReadItemInfo(reader, infoSheet);
-
-                        SpreadsheetManager.Read(new GSTU_Search(reader.SheetId.Trim(), reader.ItemStats.sheetName), statsSheet =>
-                            {
-                                try
-                                {
-                                    if (reader == null)
-                                        return;
-
-                                    if (!ReadItemStats(reader, statsSheet, rows))
-                                        return;
-
-                                    // 두 표의 파싱이 성공한 뒤 에셋 반영
-                                    SaveArtifacts(reader, rows);
-
-                                    Debug.Log($"Artifact 임포트 완료: {rows.Count}개", reader);
-                                }
-                                catch (Exception exception)
-                                {
-                                    Debug.LogException(exception);
-                                }
-                                finally
-                                {
-                                    FinishReading();
-                                }
-                            },
-                            false);
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogException(exception);
-                        FinishReading();
-                    }
-                },
-                false);
+                    Dictionary<int, ArtifactRow> rows = ReadItemInfo(reader, sheet);
+                    SaveArtifacts(reader, rows);
+                    Debug.Log($"Artifact import complete: {rows.Count} items", reader);
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
+                finally
+                {
+                    FinishReading();
+                }
+            }, false);
         }
         catch (Exception exception)
         {
@@ -104,7 +77,6 @@ public class ArtifactDataReaderTool : Editor
             FinishReading();
         }
     }
-
     private void FinishReading()
     {
         isReading = false;
@@ -119,7 +91,6 @@ public class ArtifactDataReaderTool : Editor
             throw new Exception("Google Sheet 문서 ID를 입력하세요.");
 
         ValidateRange(reader.ItemInfo);
-        ValidateRange(reader.ItemStats);
 
         string folder = reader.SaveFolder;
 
@@ -197,6 +168,8 @@ public class ArtifactDataReaderTool : Editor
                 icon = icon
             };
 
+            cells.TryGetValue("Effects", out string effectsText);
+            ReadEffects(effectsText, item, context);
             result.Add(itemId, item);
         }
 
@@ -206,83 +179,42 @@ public class ArtifactDataReaderTool : Editor
         return result;
     }
 
-    private static bool ReadItemStats(ArtifactDataReader reader, GstuSpreadSheet sheet, Dictionary<int, ArtifactRow> items)
+    private static void ReadEffects(string effectsText, ArtifactRow item, string context)
     {
-        if (sheet == null)
+        if (string.IsNullOrWhiteSpace(effectsText))
+            return;
+
+        string[] effectLines = effectsText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 0; i < effectLines.Length; i++)
         {
-            Debug.LogWarning("Item Stats Value 시트 응답이 없습니다.");
-            return false;
-        }
+            string effectContext = $"{context} Effects line {i + 1}";
+            string[] parts = effectLines[i].Split(',');
 
-        SheetReadSettings settings = reader.ItemStats;
+            if (parts.Length != 3)
+                throw new Exception($"{effectContext}: expected 'StatId,ModifierType,Value'.");
 
-        for (int row = settings.startRow; row <= settings.endRow; row++)
-        {
-            Dictionary<string, string> cells = ReadCells(sheet.rows[row]);
-
-            if (IsEmptyRow(cells))
-                continue;
-
-            string context = $"{settings.sheetName} {row}행";
-
-            if (!cells.TryGetValue("ItemId", out string itemIdText) || !int.TryParse(itemIdText.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int itemId) || itemId <= 0)
-            {
-                Debug.LogWarning($"{context}: ItemId를 확인하세요.");
-                return false;
-            }
-
-            if (!items.TryGetValue(itemId, out ArtifactRow item))
-            {
-                Debug.LogWarning($"{context}: Item Info에 ItemId {itemId}가 없습니다.");
-                return false;
-            }
-
-            if (!cells.TryGetValue("StatId", out string statText))
-            {
-                Debug.LogWarning($"{context}: StatId 열이 없습니다.");
-                return false;
-            }
-
-            statText = statText.Trim();
+            string statText = parts[0].Trim();
+            string modifierText = parts[1].Trim();
+            string valueText = parts[2].Trim();
 
             if (!Enum.TryParse(statText, out StatId statId) || statId.ToString() != statText)
-            {
-                Debug.LogWarning($"{context}: 잘못된 StatId '{statText}'");
-                return false;
-            }
-
-            // [추가] Flat / Percent 읽기
-            if (!cells.TryGetValue("ModifierType", out string modifierText))
-            {
-                Debug.LogWarning($"{context}: ModifierType 열이 없습니다.");
-                return false;
-            }
-
-            modifierText = modifierText.Trim();
+                throw new Exception($"{effectContext}: invalid StatId '{statText}'.");
 
             if (!Enum.TryParse(modifierText, out StatModifierType modifierType) || modifierType.ToString() != modifierText)
-            {
-                Debug.LogWarning($"{context}: ModifierType은 Flat 또는 Percent로 입력하세요.");
-                return false;
-            }
+                throw new Exception($"{effectContext}: ModifierType must be Flat or Percent.");
 
-            if (!cells.TryGetValue("Value", out string valueText) || !float.TryParse(valueText.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float value) || float.IsNaN(value) || float.IsInfinity(value))
-            {
-                Debug.LogWarning($"{context}: Value는 % 기호 없이 숫자로 입력하세요.");
-                return false;
-            }
+            if (!float.TryParse(valueText, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) || float.IsNaN(value) || float.IsInfinity(value))
+                throw new Exception($"{effectContext}: Value must be a valid number without a percent sign.");
 
             item.stats.Add(new StatPair
             {
                 id = statId,
-                modifierType = modifierType, // [추가]
+                modifierType = modifierType,
                 value = value
             });
         }
-
-        return true;
     }
-
     private static Dictionary<string, Sprite> BuildIconMap(ArtifactDataReader reader)
     {
         Dictionary<string, Sprite> result = new();

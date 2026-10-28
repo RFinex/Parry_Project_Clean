@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1000003
   itemName: Dummy3
   description: "\uC720\uB2C8\uD06C \uD14C\uC2A4\uD2B8"
-  rarity: 2
+  rarity: 0
   iconId: dummy_Icon3
   icon: {fileID: 21300000, guid: 97ddf42872d2f40ba8dedef68a78eca8, type: 3}
   statPairs:

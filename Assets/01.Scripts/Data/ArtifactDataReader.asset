@@ -16,11 +16,11 @@ MonoBehaviour:
   itemInfo:
     sheetName: Item Info
     startRow: 2
-    endRow: 6
+    endRow: 7
   itemStats:
     sheetName: Item Stats Value
     startRow: 2
-    endRow: 7
+    endRow: 8
   saveFolder: Assets/01.Scripts/Data/Item/Artifact
   icons:
   - iconId: dummy_Icon
@@ -39,3 +39,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f1326fd34d81e24d9fee55cce6524bd, type: 2}
   - {fileID: 11400000, guid: e8cf43c8fe6c3b74cbf3bf8141b3f389, type: 2}
   - {fileID: 11400000, guid: e71025223ae888b4b94d818bd89057a0, type: 2}
+  - {fileID: 11400000, guid: 87f2ea9760975ae4d9c83f5c1ee766b3, type: 2}

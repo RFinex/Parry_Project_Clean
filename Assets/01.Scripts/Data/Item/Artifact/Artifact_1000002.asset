@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
   id: 1000002
   itemName: Dummy2
-  description: "\uC774\uB3D9 \uC18D\uB3C4 +10%, \uB300\uC2DC \uCFE8\uD0C0\uC784 -10%"
-  rarity: 1
+  description: "\uC774\uB3D9 \uC18D\uB3C4 +10%\n\uB300\uC2DC \uCFE8\uD0C0\uC784 -10%"
+  rarity: 0
   iconId: dummy_Icon2
   icon: {fileID: 21300000, guid: cfecd44b9304c4e3792773cbc67438fb, type: 3}
   statPairs:

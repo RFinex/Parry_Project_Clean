@@ -11,8 +11,8 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float jumpForce = 10f;
 
     [Header("Ground Check")]
-    [SerializeField] private Vector2 checkSize = new Vector2(0.8f, 0.1f);
-    [SerializeField] private Vector3 checkOffset = new Vector2(0f, -0.4f);
+    [SerializeField] private Vector2 checkSize = new(0.8f, 0.1f);
+    [SerializeField] private Vector3 checkOffset = new(0f, -0.4f);
     [SerializeField] private float checkDistance = 0.1f;
     [SerializeField] private LayerMask groundLayer;
 
@@ -28,7 +28,7 @@ public class PlayerBaseData : ScriptableObject
     [Header("Attack")]
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float attackRange = 0.8f;
-    [SerializeField] private Vector2 attackOffset = new Vector2(0.6f, 0f);
+    [SerializeField] private Vector2 attackOffset = new(0.6f, 0f);
     [SerializeField] private int maxCombo = 3;
     [SerializeField] private float comboInputTime = 0.25f;
     [SerializeField] private float attackEndTime = 0.5f;

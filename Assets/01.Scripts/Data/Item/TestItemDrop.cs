@@ -26,7 +26,7 @@ public class TestItemDrop : MonoBehaviour
             return;
         }
 
-        Item item = gameManager.ItemFactory.Create(itemId);
+        Item item = gameManager.CreateItem(itemId);
 
         if (item == null)
             return;

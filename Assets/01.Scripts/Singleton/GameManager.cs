@@ -14,7 +14,7 @@ public enum GameState
 }
 
 public class GameManager : Singleton<GameManager>
-{
+{    
     public PlayerController Player { get; private set; }
     public GameState CurrentState { get; private set; } = GameState.Play;
 
@@ -30,10 +30,7 @@ public class GameManager : Singleton<GameManager>
 
     protected override void AwakeSingleton()
     {
-        Inventory = new RuntimeInventorySystem();
-
-        ItemFactory = new ItemFactory();
-        RegisterItems();
+        Initialized();
     }
 
     private void OnEnable()
@@ -41,39 +38,26 @@ public class GameManager : Singleton<GameManager>
         if (Inventory == null)
             return;
 
-        Inventory.OnSlotChanged += HandleInventoryChanged;
-
         EventBus.Subscribe<GameStateRequestEvent>(HandleGameStateRequest);
         EventBus.Subscribe<InventoryToggleEvent>(HandleInventoryToggle);
         EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDied);
         EventBus.Subscribe<StageClearedEvent>(HandleStageCleared);
-
-        HandleInventoryChanged();
     }
 
     private void OnDisable()
     {
-        if(Inventory != null)
-            Inventory.OnSlotChanged -= HandleInventoryChanged;
-
         EventBus.UnSubscribe<GameStateRequestEvent>(HandleGameStateRequest);
         EventBus.UnSubscribe<InventoryToggleEvent>(HandleInventoryToggle);
         EventBus.UnSubscribe<PlayerDiedEvent>(HandlePlayerDied);
         EventBus.UnSubscribe<StageClearedEvent>(HandleStageCleared);
     }
 
-    public void RegisterItems()
+    private void Initialized()
     {
-        if (artifactReader == null)
-            return;
+        Inventory = new RuntimeInventorySystem();
 
-        foreach (ArtifactData artifact in artifactReader.Artifacts)
-        {
-            if (artifact == null)
-                continue;
-
-            ItemFactory.Register(artifact.Id, () => new Artifact(artifact));
-        }
+        ItemFactory = new ItemFactory();
+        ItemFactory.Initialized();
     }
 
     public void RegisterPlayer(PlayerController player)
@@ -81,10 +65,15 @@ public class GameManager : Singleton<GameManager>
         if (player == null)
             return;
 
+
+        if (Inventory == null)
+        {
+            Debug.Log("Inventory가 초기화되지 않음");
+            return;
+        }
+
         Player = player;
-
-        HandleInventoryChanged();
-
+        Inventory.SetPlayerBoard(Player.PlayerBoard);
         OnPlayerChanged?.Invoke(Player);
     }
 
@@ -93,16 +82,10 @@ public class GameManager : Singleton<GameManager>
         if (Player != player)
             return;
 
+        Inventory.SetPlayerBoard(null);
+
         Player = null;
         OnPlayerChanged?.Invoke(null);
-    }
-
-    private void HandleInventoryChanged()
-    {
-        if (Player == null || Inventory == null)
-            return;
-
-        Player.Stats.ApplyArtifacts(Inventory.Artifacts);
     }
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
@@ -174,12 +157,29 @@ public class GameManager : Singleton<GameManager>
         Inventory.Clear();
     }
 
-    public bool TryGiveArtifact(int itemId)
+    public Item CreateItem(int itemId)
     {
-        if (ItemFactory == null || Inventory == null)
-            return false;
+        if (ItemFactory == null || artifactReader == null)
+            return null;
 
         Item item = ItemFactory.Create(itemId);
+
+        if (item == null)
+            return null;
+
+        if (!artifactReader.TryGetData(itemId, out ArtifactData data))
+            return null;
+
+        item.Initialized(data);
+        return item;
+    }
+
+    public bool TryGiveArtifact(int itemId)
+    {
+        if (Inventory == null)
+            return false;
+
+        Item item = CreateItem(itemId);
 
         if (item is not Artifact artifact)
             return false;

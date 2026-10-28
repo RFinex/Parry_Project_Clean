@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1000005
   itemName: Dummy5
   description: "\uB808\uC804\uB354\uB9AC \uD14C\uC2A4\uD2B8"
-  rarity: 4
+  rarity: 0
   iconId: dummy_Icon5
   icon: {fileID: 21300000, guid: 0fef95fcf6ed24ee0bc272328df04508, type: 3}
   statPairs:

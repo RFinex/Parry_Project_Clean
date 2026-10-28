@@ -11,7 +11,7 @@ public class PlayerBlackBoard : BlackBoard
     public PlayerMovement movement = new PlayerMovement();
     public PlayerSkill skill = new PlayerSkill();
 
-
+    public PlayerBaseData data;
     public PlayerStats stats;
     public PlayerCombat combat;
 

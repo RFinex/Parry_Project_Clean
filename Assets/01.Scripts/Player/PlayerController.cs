@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement movement;
     private PlayerSkill skill;
 
+    public PlayerBlackBoard PlayerBoard => blackBoard;
+
     #endregion
 
     #region Initialized Value
@@ -103,8 +105,6 @@ public class PlayerController : MonoBehaviour
 
     private bool canInput = true;
 
-    private GameManager gameManager;
-
     private void Awake()
     {
         Initialized();
@@ -112,14 +112,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        gameManager = GameManager.Instance;
-
-        if (gameManager != null)
-        {
-            gameManager.RegisterPlayer(this);
-            SetInputGameState(gameManager.CurrentState);
-        }
-
         EventBus.Subscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
 
         if (token == null)
@@ -136,10 +128,14 @@ public class PlayerController : MonoBehaviour
 
         EventBus.UnSubscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
 
-        if (gameManager != null)
-            gameManager.UnregisterPlayer(this);
+        if(GameManager.Instance != null)
+            GameManager.Instance.UnregisterPlayer(this);
+    }
 
-        gameManager = null;
+    private void Start()
+    {
+        GameManager.Instance.RegisterPlayer(this);
+        SetInputGameState(GameManager.Instance.CurrentState);
     }
 
     private void Initialized()
@@ -154,6 +150,8 @@ public class PlayerController : MonoBehaviour
         InitBasePlayerInfo();
         InitData();
         InitBlackBoard();
+
+        combat.Initialized(blackBoard);
 
         token = token.ResetToken();
 
@@ -186,25 +184,25 @@ public class PlayerController : MonoBehaviour
 
     private void InitBlackBoard()
     {
-        PlayerAnimator playerAnimator = new PlayerAnimator(animator);
+        PlayerAnimator playerAnimator = new(animator);
 
-        blackBoard = new PlayerBlackBoard()
-        {
-            rb = rb,
-            movement = movement,
-            stats = stats,
-            playerTransform = transform,
-            skill = skill,
-            animator = playerAnimator,
-            afterImage = afterImage,
-            combat = combat
-        };
+        blackBoard.rb = rb;
+        blackBoard.movement = movement;
+        blackBoard.stats = stats;
+        blackBoard.playerTransform = transform;
+        blackBoard.skill = skill;
+        blackBoard.animator = playerAnimator;
+        blackBoard.afterImage = afterImage;
+        blackBoard.combat = combat;
+        blackBoard.data = data;
     }
 
     private void InitData()
     {
+        blackBoard = new PlayerBlackBoard();
+
         stats = new PlayerStats(data);
-        combat = new PlayerCombat(data, stats);
+        combat = new PlayerCombat();
     }
 
     private void InitStateMachine()
@@ -300,7 +298,7 @@ public class PlayerController : MonoBehaviour
         if (stats.IsInvincible)
             return;
 
-        if (TryGuard(info))
+        if (combat.TryGuard(info))
             return;
 
         stats.TakeDamage(info.attackDamage);
@@ -316,33 +314,7 @@ public class PlayerController : MonoBehaviour
         stateMachine.ChangeState(typeof(PlayerHurtState));
     }
 
-    private bool TryGuard(EnemyAttackInfo info)
-    {
-        GuardResult guardResult = combat.CheckGuard();
-
-        if (guardResult == GuardResult.None)
-            return false;
-
-        if (guardResult == GuardResult.Parry && info.canParry)
-        {
-            if (info.damageAttackerBalanceOnParry && info.attacker != null)
-            {
-                float parryDamage = stats.GetStats(StatId.ParryDamage);
-                info.attacker.TakeBalanceDamage(parryDamage);
-            }
-
-            Utils.Log<PlayerController>("패리 성공");
-            return true;
-        }
-
-        if (info.canGuard)
-        {
-            Utils.Log<PlayerController>("가드 성공");
-            return true;
-        }
-
-        return false;
-    }
+    
 
     private void GroundCheck()
     {

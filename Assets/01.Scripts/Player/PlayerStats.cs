@@ -58,6 +58,8 @@ public class PlayerStats
 
         float result = value * multiplier;
 
+        result = (float)Math.Round(result, 2);
+
         float min = (id == StatId.MaxHp) ? 1f : 0f;
 
         return Mathf.Max(min, result);
@@ -70,11 +72,8 @@ public class PlayerStats
 
     private void SetCurrentStats()
     {
-        currentStats.Clear();
-        percentStats.Clear();
-
         foreach (var pair in baseStats)
-            currentStats.Add(pair.Key, pair.Value);
+            currentStats[pair.Key] = pair.Value;
     }
 
     public void AddStats(StatPair pair)
@@ -86,33 +85,14 @@ public class PlayerStats
         RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
     }
 
-    public void ApplyArtifacts(IReadOnlyList<Artifact> artifacts)
+    public void RemoveStats(StatPair pair)
     {
         float previousMaxHp = MaxHp;
         float previousMaxStamina = MaxStamina;
 
-        SetCurrentStats();
-
-        if (artifacts != null)
-        {
-            foreach (Artifact artifact in artifacts)
-            {
-                if (artifact == null)
-                    continue;
-
-                ArtifactData data = artifact.ArtifactData;
-
-                if (data == null || data.StatPairs == null)
-                    continue;
-
-                foreach (StatPair pair in data.StatPairs)
-                    ApplyChangeStats(pair);
-            }
-        }
-
-        // 합산 후 HP, 스태미나 보정
+        RemoveChangeStats(pair);
         RefreshHp_Stamina(previousMaxHp, previousMaxStamina);
-    }
+    }       
 
     private void ApplyChangeStats(StatPair pair)
     {
@@ -122,14 +102,48 @@ public class PlayerStats
         if (pair.modifierType == StatModifierType.Flat)
         {
             currentStats[pair.id] = value + pair.value;
+            return;
         }
-        else if (pair.modifierType == StatModifierType.Percent)
+
+        if (pair.modifierType == StatModifierType.Percent)
         {
+            float itemMultiplier = 1f + pair.value / 100f;
+
+            if (itemMultiplier <= 0f)
+            {
+                Utils.LogWarning<PlayerStats>($"{pair.id} 퍼센트 효과는 -100%보다 커야 함");
+                return;
+            }
+
             float multiplier = percentStats.TryGetValue(pair.id, out float percent) ? percent : 1f;
-            float itemMultiplier = Mathf.Max(0f, 1f + pair.value / 100f);
 
             // 기존 배율 x 아이템 배율(곱연산)
             percentStats[pair.id] = multiplier * itemMultiplier;
+        }
+    }
+
+    private void RemoveChangeStats(StatPair pair)
+    {
+        if (!currentStats.TryGetValue(pair.id, out float value))
+            return;
+
+        if (pair.modifierType == StatModifierType.Flat)
+        {
+            currentStats[pair.id] = value - pair.value;
+            return;
+        }
+
+        if (pair.modifierType == StatModifierType.Percent)
+        {
+            float itemMultiplier = 1f + pair.value / 100f;
+
+            if (itemMultiplier <= 0f)
+                return;
+
+            if (!percentStats.TryGetValue(pair.id, out float percent))
+                return;
+
+            percentStats[pair.id] = percent / itemMultiplier;
         }
     }
 
@@ -146,7 +160,6 @@ public class PlayerStats
 
         if (previousMaxStamina != MaxStamina || previousStamina != nowStamina)
             OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
-
     }
 
     public void TakeDamage(float damage)
