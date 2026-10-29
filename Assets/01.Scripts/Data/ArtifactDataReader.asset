@@ -16,7 +16,7 @@ MonoBehaviour:
   itemInfo:
     sheetName: Item Info
     startRow: 2
-    endRow: 12
+    endRow: 27
   saveFolder: Assets/01.Scripts/Data/Item/Artifact
   icons:
   - iconId: ore_004
@@ -41,6 +41,36 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 52eb1fd17a3414ba38f9433fbb9d4302, type: 3}
   - iconId: material_002
     sprite: {fileID: 21300000, guid: 20d63fcd7c2cf49c0b980dbd8d0bc761, type: 3}
+  - iconId: hammer_004
+    sprite: {fileID: 21300000, guid: 66fab7f97eb65455d8e854de8c62d40f, type: 3}
+  - iconId: necklace_020
+    sprite: {fileID: 21300000, guid: 8e6e66bf9ab0b48089422eace9e996fd, type: 3}
+  - iconId: etcitem_012
+    sprite: {fileID: 21300000, guid: 2d0d03f0305164a8bac096de500d1988, type: 3}
+  - iconId: sword_003
+    sprite: {fileID: 21300000, guid: b6722f13eaeec4136a0d94e751f0b1db, type: 3}
+  - iconId: shield_006
+    sprite: {fileID: 21300000, guid: d93a81718aeaa471e832afa525ec1128, type: 3}
+  - iconId: ring_007
+    sprite: {fileID: 21300000, guid: 07fcc67d8812c453282319a2b09db5c8, type: 3}
+  - iconId: necklace_014
+    sprite: {fileID: 21300000, guid: 50d1020ed3ebf44b8a1b6cc27975bce6, type: 3}
+  - iconId: material_004
+    sprite: {fileID: 21300000, guid: 7bab58d2029214c9496f2251993cc43c, type: 3}
+  - iconId: seal_005
+    sprite: {fileID: 21300000, guid: 782f792a423e14c64b16361cc103e020, type: 3}
+  - iconId: shield_015
+    sprite: {fileID: 21300000, guid: c4d5df035ac9d4124bad498bcd72f2be, type: 3}
+  - iconId: necklace_017
+    sprite: {fileID: 21300000, guid: 9313fe94fef1d444e8b870266c8e2375, type: 3}
+  - iconId: shield_019
+    sprite: {fileID: 21300000, guid: 3552d99ffbe0a44fa9bdecfe068d83db, type: 3}
+  - iconId: ore_014
+    sprite: {fileID: 21300000, guid: 56b6d65df2d2b44d88384d165fb13c78, type: 3}
+  - iconId: etcitem_001
+    sprite: {fileID: 21300000, guid: 2528138c187144a79a8be9a911c5b4c2, type: 3}
+  - iconId: material_061
+    sprite: {fileID: 21300000, guid: acf6882e88c474c328bcf45d5b7b98c3, type: 3}
   artifacts:
   - {fileID: 11400000, guid: 93de3e23f58a1224eb58de556121ffa2, type: 2}
   - {fileID: 11400000, guid: 76731a0e58f53684fa3acbd7955e9ded, type: 2}
@@ -53,3 +83,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 63dd477a1f0c89349bf2cf4e774aec24, type: 2}
   - {fileID: 11400000, guid: 06d4607eaae12ec418bfd73457b2bde1, type: 2}
   - {fileID: 11400000, guid: 8719e10b55aff474aaf7ce6cbf1e7354, type: 2}
+  - {fileID: 11400000, guid: 9c6fa416b4d575041b7c77261eddc605, type: 2}
+  - {fileID: 11400000, guid: 6102ffef0edaf8f4c8a9b1e9b74836c9, type: 2}
+  - {fileID: 11400000, guid: 39e3d26c48c5bfb419a2d25ee0f90b11, type: 2}
+  - {fileID: 11400000, guid: 4802994e281dd0840924283062219802, type: 2}
+  - {fileID: 11400000, guid: 406ee2d6332109d498722a57a19cde32, type: 2}
+  - {fileID: 11400000, guid: d4fc8bad936407941bd428acbc6f0d3c, type: 2}
+  - {fileID: 11400000, guid: 78ca4124528a6f14fbeac60d65cc96aa, type: 2}
+  - {fileID: 11400000, guid: 0b425f5751e0394408d9cedebd8e3d06, type: 2}
+  - {fileID: 11400000, guid: 066bde04aa67fd448a5c33261870ee66, type: 2}
+  - {fileID: 11400000, guid: 27e692dfe0140d841816a264d1fa4deb, type: 2}
+  - {fileID: 11400000, guid: ccda997ff02b83a449e661c71cdc0ec7, type: 2}
+  - {fileID: 11400000, guid: 99a70e24fa4f7ee449cc77fafaba4111, type: 2}
+  - {fileID: 11400000, guid: 491a4bd5d7a311840868039f9b527297, type: 2}
+  - {fileID: 11400000, guid: 5bd13d11e4748b04e83235459e9278ca, type: 2}
+  - {fileID: 11400000, guid: ca1590462b0a5f64bbbb45aa95a38942, type: 2}

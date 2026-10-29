@@ -1,28 +1,52 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using UnityEngine;
 
+// 토큰 링크 해둘 것
 public class EmblemOfCounter : Artifact
 {
     private CancellationTokenSource token;
+    private bool isApply;
+    private float applyTimer = 3f;
+    private StatPair applyPair = new()
+    {
+        id = StatId.AttackDamage,
+        modifierType = StatModifierType.Percent,
+        value = 80f
+    };
 
     public EmblemOfCounter()
     {
-
+        // 패리 성공 후 3초 이내 다음 일반 공격 피해 +80%
     }
 
     public override void OnEquip(PlayerBlackBoard board)
     {
+        if (IsEquipped)
+            return;
+
         base.OnEquip(board);
 
+        if (!IsEquipped)
+            return;
+
         board.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnAttackEnded -= FirstDamageDown;
         board.combat.OnParrySucceed += FirstDamageUp;
+        blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 
     public override void OnUnequip(PlayerBlackBoard board)
     {
+        if (!IsEquipped)
+            return;
+
         token = token.Cancel_DisposeToken();
+
+        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnAttackEnded -= FirstDamageDown;
+
+        FirstDamageDown();
 
         base.OnUnequip(board);
     }
@@ -31,17 +55,7 @@ public class EmblemOfCounter : Artifact
     {
         try
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: ctk);
-
-            blackBoard.stats.RemoveStats(new StatPair
-            {
-                id = StatId.AttackDamage,
-                modifierType = StatModifierType.Percent,
-                value = 80f
-            });
-
-            blackBoard.combat.OnParrySucceed -= FirstDamageUp;
-            blackBoard.combat.OnParrySucceed += FirstDamageUp;
+            await UniTask.Delay(TimeSpan.FromSeconds(applyTimer), cancellationToken: ctk);
         }
         catch (OperationCanceledException)
         {
@@ -49,39 +63,35 @@ public class EmblemOfCounter : Artifact
         }
         finally
         {
-            blackBoard.combat.OnAttackEnded -= FirstDamageDown;
+            if (token != null && token.Token == ctk)
+                FirstDamageDown();
         }
     }
 
     private void FirstDamageUp()
     {
-        token = token.ResetToken();
+        if (isApply)
+            return;
+
+        isApply = true;
+        blackBoard.stats.AddStats(applyPair);
+
+        token = token.LinkToken(blackBoard.owenrToken.Token);
         DamageUpDurationAsync(token.Token).Forget();
-
-        blackBoard.stats.AddStats(new StatPair
-        {
-            id = StatId.AttackDamage,
-            modifierType = StatModifierType.Percent,
-            value = 80f
-        });
-
-        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
-        blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 
     private void FirstDamageDown()
     {
-        token = token.Cancel_DisposeToken();
+        if (!isApply)
+            return;
 
-        blackBoard.stats.RemoveStats(new StatPair
-        {
-            id = StatId.AttackDamage,
-            modifierType = StatModifierType.Percent,
-            value = 80f
-        });
+        isApply = false;
 
-        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
-        blackBoard.combat.OnParrySucceed += FirstDamageUp;
-        blackBoard.combat.OnAttackEnded -= FirstDamageDown;
+        CancellationTokenSource previousToken = token;
+        token = null;
+
+        blackBoard.stats.RemoveStats(applyPair);
+
+        previousToken.Cancel_DisposeToken();
     }
 }

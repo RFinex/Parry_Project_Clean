@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading;
 
 public class BlackBoard
 {
@@ -22,6 +23,7 @@ public class PlayerBlackBoard : BlackBoard
     public PlayerAnimator animator;
     public PlayerAfterImage afterImage;
 
+    public CancellationTokenSource owenrToken;
 }
 
 public class EnemyBlackBoard : BlackBoard

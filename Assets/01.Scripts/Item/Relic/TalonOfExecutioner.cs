@@ -1,15 +1,21 @@
 using UnityEngine;
 
-public class ExecutionersTalon : Artifact
+public class TalonOfExecutioner : Artifact
 {
-    public ExecutionersTalon()
+    public TalonOfExecutioner()
     {
-
+        // 처형 성공 시 최대 HP의 3% 회복
     }
 
     public override void OnEquip(PlayerBlackBoard board)
     {
+        if (IsEquipped)
+            return;
+
         base.OnEquip(board);
+
+        if (!IsEquipped)
+            return;
 
         board.combat.OnExecuteSucceed -= Heal;
         board.combat.OnExecuteSucceed += Heal;
@@ -17,6 +23,9 @@ public class ExecutionersTalon : Artifact
 
     public override void OnUnequip(PlayerBlackBoard board)
     {
+        if (!IsEquipped)
+            return;
+
         board.combat.OnExecuteSucceed -= Heal;
     
         base.OnUnequip(board);

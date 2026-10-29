@@ -4,33 +4,49 @@ public class UnknownBoneShard : Artifact
 {
     private bool isHealthHalf;
 
+    private StatPair applyPair = new()
+    {
+        id = StatId.AttackDamage,
+        modifierType = StatModifierType.Percent,
+        value = 15
+    };
+
     public UnknownBoneShard()
     {
-
+        // HP 50% 이하일 때 일반 공격 피해 +15%
     }
 
     public override void OnEquip(PlayerBlackBoard board)
     {
+        if (IsEquipped)
+            return;
+
         base.OnEquip(board);
 
-        CheckHpStat(blackBoard.stats.NowHp, blackBoard.stats.MaxHp);
+        if (!IsEquipped)
+            return;
 
-        blackBoard.stats.OnHealthChanged -= CheckHpStat;
-        blackBoard.stats.OnHealthChanged += CheckHpStat;
+        CheckHealth(board.stats.NowHp, board.stats.MaxHp);
+
+        board.stats.OnHealthChanged -= CheckHealth;
+        board.stats.OnHealthChanged += CheckHealth;
     }
 
     public override void OnUnequip(PlayerBlackBoard board)
     {
-        CheckHpStat(board.stats.NowHp, board.stats.MaxHp);
+        if (!IsEquipped)
+            return;
+
+        CheckHealth(board.stats.NowHp, board.stats.MaxHp);
+
+        blackBoard.stats.OnHealthChanged -= CheckHealth;
 
         base.OnUnequip(board);
-
-        blackBoard.stats.OnHealthChanged -= CheckHpStat;
     }
 
-    private void CheckHpStat(float nowHp, float maxHp)
+    private void CheckHealth(float nowHp, float maxHp)
     {
-        bool isApply = nowHp / maxHp <= 0.5f;
+        bool isApply = (nowHp / maxHp) <= 0.5f;
 
         if (isHealthHalf == isApply)
             return;
@@ -45,23 +61,11 @@ public class UnknownBoneShard : Artifact
 
     private void DamageUp()
     {
-        blackBoard.stats.AddStats(new StatPair
-        {
-            id = StatId.AttackDamage,
-            modifierType = StatModifierType.Percent,
-            value = 15
-            
-        });
+        blackBoard.stats.AddStats(applyPair);
     }
 
     private void DamageDown()
     {
-        blackBoard.stats.RemoveStats(new StatPair
-        {
-            id = StatId.AttackDamage,
-            modifierType = StatModifierType.Percent,
-            value = 15
-
-        });
+        blackBoard.stats.RemoveStats(applyPair);
     }
 }

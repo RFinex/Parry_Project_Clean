@@ -103,6 +103,8 @@ public class PlayerController : MonoBehaviour
     private CancellationTokenSource token;
     public CancellationToken DestroyToken => token.Token;
 
+    private CancellationTokenSource playerToken;
+
     private bool canInput = true;
 
     private void Awake()
@@ -114,10 +116,11 @@ public class PlayerController : MonoBehaviour
     {
         EventBus.Subscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
 
-        if (token == null)
-        {
+        if (token == null)  
             token = token.ResetToken();
-        }
+        
+        playerToken = playerToken.ResetToken();
+        blackBoard.owenrToken = playerToken;
 
         UpdateAsync(token.Token).Forget();
     }
@@ -125,6 +128,7 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         token = token.Cancel_DisposeToken();
+        playerToken = playerToken.Cancel_DisposeToken();
 
         EventBus.UnSubscribe<GameStateChangedEvent>(HandleGmaeStateChanged);
 

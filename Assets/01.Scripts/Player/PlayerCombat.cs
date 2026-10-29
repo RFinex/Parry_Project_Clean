@@ -32,6 +32,9 @@ public class PlayerCombat
 
     public bool CanGuard => guardTimer <= 0f;
 
+    private int parryBlockCount;
+    public bool CanParry => parryBlockCount == 0;
+
     public float GuardStaminaCost => stats.GetStats(StatId.GuardStaminaCost);
 
     #endregion
@@ -40,6 +43,9 @@ public class PlayerCombat
     public event Action OnParryEnded;
     public event Action OnAttackEnded;
     public event Action OnExecuteSucceed;
+    public event Action<Vector2, IExecuteTarget> OnExecuteArea;
+    public event Action<int> OnAttackComboIndex;
+    public event Action OnAttackHit;
 
     public PlayerCombat()
     {
@@ -57,10 +63,16 @@ public class PlayerCombat
     {
         Vector2 attackPos = GetAttackPos(pos, frontDir);
 
+        OnAttackComboIndex?.Invoke(attackIndex);
+
         float attackRange = stats.GetStats(StatId.AttackRange);
         float attackDamage = stats.GetStats(StatId.AttackDamage);
 
+        attackDamage = stats.CalculateAllHealthDamage(attackDamage);
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, data.EnemyLayer);
+
+        bool hasHit = false;
 
         foreach (Collider2D hit in hits)
         {
@@ -69,7 +81,17 @@ public class PlayerCombat
             if (enemy == null)
                 continue;
 
+            if (enemy.Stats.IsDead || enemy.IsInvincible)
+                continue;
+
             enemy.TakeDamage(attackDamage);
+            hasHit = true;
+        }
+
+        if (hasHit)
+        {
+            OnAttackHit?.Invoke();
+            Utils.Log<PlayerController>($"가한 대미지 : {attackDamage}");
         }
 
         OnAttackEnded?.Invoke();
@@ -116,11 +138,17 @@ public class PlayerCombat
 
         IExecuteTarget enemy = target.GetComponentInParent<IExecuteTarget>();
 
-        if (enemy == null | !enemy.CanExecute)
+        if (enemy == null || !enemy.CanExecute)
             return;
 
+        if (enemy is Component enemyComponent)
+        {
+            Vector2 executePos = enemyComponent.transform.position;
+            OnExecuteArea?.Invoke(executePos, enemy);
+        }
+
         Utils.Log<PlayerCombat>("특수 공격!");
-        enemy.Execute();
+        enemy.Execute(stats.GetStats(StatId.DamageDealtMultiplier));
 
         OnExecuteSucceed?.Invoke();
     }
@@ -250,7 +278,7 @@ public class PlayerCombat
         if (!isGuard)
             return GuardResult.None;
 
-        return isParry? GuardResult.Parry : GuardResult.Guard;
+        return isParry && CanParry? GuardResult.Parry : GuardResult.Guard;
     }
 
     public bool TryGuard(EnemyAttackInfo info)
@@ -281,6 +309,17 @@ public class PlayerCombat
         }
 
         return false;
+    }
+
+    public void AddParryBlock()
+    {
+        parryBlockCount++;
+    }
+
+    public void RemoveParryBlock()
+    {
+        if (parryBlockCount > 0)
+            parryBlockCount--;
     }
 
     #endregion

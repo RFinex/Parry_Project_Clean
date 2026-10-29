@@ -42,6 +42,8 @@ public class PlayerDashState : PlayerBaseState
 
                 await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
             }
+
+            playerBoard.skill.DashEndedInvoke();
             Utils.Log<PlayerController>("대시 종료");
         }
         catch (OperationCanceledException)

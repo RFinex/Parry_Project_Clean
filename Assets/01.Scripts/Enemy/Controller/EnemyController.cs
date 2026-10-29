@@ -9,7 +9,7 @@ public interface IExecuteTarget
 
     Vector2 GetExecutePos(Vector2 attackerPos);
 
-    void Execute();
+    void Execute(float multiplier);
 }
 
 public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
@@ -460,7 +460,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
 
     /// <sumamry> 처형 함수 </sumamry>
-    public virtual void Execute()
+    public virtual void Execute(float multiplier)
     {
         if (!CanExecute)
             return;

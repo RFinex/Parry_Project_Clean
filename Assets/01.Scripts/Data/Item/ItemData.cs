@@ -69,5 +69,6 @@ public enum StatId
     DashTime,
     AttackRange,
     InvincibleTime,
-    DamageTakenMultiplier
+    DamageTakenMultiplier,
+    DamageDealtMultiplier
 }
