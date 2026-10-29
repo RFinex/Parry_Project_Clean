@@ -20,9 +20,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  dashTime: 0.1
-  dashSpeed: 20
-  dashCooldown: 0.5
+  dashTime: 0.3
+  dashSpeed: 8
+  dashCooldown: 2
   maxHp: 100
   maxStamina: 100
   attackDamage: 50
@@ -47,3 +47,5 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  damageTakenMultiplier: 1
+  damageDealtMultiplier: 1

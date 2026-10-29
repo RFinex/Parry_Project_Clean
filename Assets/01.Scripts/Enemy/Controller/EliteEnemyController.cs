@@ -156,12 +156,14 @@ public abstract class EliteEnemyController : EnemyController
         return UniTask.FromResult(INode.State.Running);
     }
 
-    public override void Execute()
+    public override void Execute(float multiplier)
     {
         if (!CanExecute)
             return;
 
-        TakeDamage(Stats.MaxHp * data.ExecuteDamageRatio);
+        float damage = Stats.MaxHp * data.ExecuteDamageRatio;
+
+        TakeDamage(damage * multiplier);
 
         if (Stats.IsDead)
             return;

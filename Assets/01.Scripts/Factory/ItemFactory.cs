@@ -16,6 +16,26 @@ public class ItemFactory
         Register(1000004, () => new Artifact());
         Register(1000005, () => new Artifact());
         Register(1000006, () => new EmblemOfCounter());
+        Register(1000007, () => new Artifact());
+        Register(1000008, () => new Artifact());
+        Register(1000009, () => new Artifact());
+        Register(1000010, () => new UnknownBoneShard());
+        Register(1000011, () => new TalonOfExecutioner());
+        Register(1000012, () => new Artifact());
+        Register(1000013, () => new NecklaceOfCombo());
+        Register(1000014, () => new Artifact());
+        Register(1000015, () => new SilentDagger());
+        Register(1000016, () => new Artifact());
+        Register(1000017, () => new RingOfChaser());
+        Register(1000018, () => new NecklaceOfAfterWind());
+        Register(1000019, () => new EmberHeart());
+        Register(1000020, () => new EmblemOfHunter());
+        Register(1000021, () => new BerserkersShield());
+        Register(1000022, () => new Artifact());
+        Register(1000023, () => new Artifact());
+        Register(1000024, () => new GemOfSprint());
+        Register(1000025, () => new EverburningEmber());
+        Register(1000026, () => new ChainOfExecutioner());
     }
 
     private void Register(int itemId, Func<Item> creator)

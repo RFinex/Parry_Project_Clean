@@ -25,6 +25,8 @@ public class PlayerStats
 
     public event Action<float, float> OnHealthChanged;
     public event Action<float, float> OnStaminaChanged;
+    public event Action<PlayerBlackBoard> OnHealthHalf;
+    public event Action OnDamaged;
     
     public PlayerStats(PlayerBaseData data)
     {
@@ -42,6 +44,7 @@ public class PlayerStats
         SetBaseStats(StatId.GuardStaminaCost, data.GuardStaminaCost);
         SetBaseStats(StatId.InvincibleTime, data.InvincibleTime);
         SetBaseStats(StatId.DamageTakenMultiplier, data.DamageTakenMultiplier);
+        SetBaseStats(StatId.DamageDealtMultiplier, data.DamageDealtMultiplier);
 
         SetCurrentStats();
 
@@ -177,6 +180,7 @@ public class PlayerStats
 
         Utils.Log<PlayerStats>($"남은 체력 : {nowHp}/{MaxHp}");
         OnHealthChanged?.Invoke(nowHp, MaxHp);
+        OnDamaged?.Invoke();
     }
 
     public bool UseStamina(float stamina)
@@ -244,5 +248,11 @@ public class PlayerStats
     {
         isInvincible = false;
         invincibleTimer = 0f;
+    }
+
+    // 모든 체력 피해 증가(특수 공격 포함)
+    public float CalculateAllHealthDamage(float damage)
+    {
+        return damage * GetStats(StatId.DamageDealtMultiplier);
     }
 }

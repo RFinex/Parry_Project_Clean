@@ -7,6 +7,8 @@ public class PlayerSkill
 {
     public float dashCoolTimer;
 
+    public event Action OnDashEnded;
+
     public async UniTaskVoid DashCoolTime(float dashCooldown, CancellationToken ctk)
     {
         try
@@ -28,5 +30,21 @@ public class PlayerSkill
         {
 
         }
+    }
+
+    public void DashEndedInvoke()
+    {
+        OnDashEnded?.Invoke();
+    }
+
+    public void ReduceDashCooldown(float seconds)
+    {
+        if (seconds <= 0f)
+            return;
+
+        dashCoolTimer -= seconds;
+
+        if (dashCoolTimer <= 0f)
+            dashCoolTimer = 0f;
     }
 }

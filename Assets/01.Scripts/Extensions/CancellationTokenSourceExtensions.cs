@@ -22,4 +22,9 @@ public static class CancellationTokenSourceExtensions
         token?.Dispose();
         return CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
     }
+
+    public static System.Threading.CancellationTokenSource LinkTokenOnly(this System.Threading.CancellationTokenSource token, CancellationToken ownerToken)
+    {
+        return CancellationTokenSource.CreateLinkedTokenSource(ownerToken);
+    }
 }

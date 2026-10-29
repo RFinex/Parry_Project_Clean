@@ -53,8 +53,9 @@ public class PlayerBaseData : ScriptableObject
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
 
-    [Header("Take Damage")]
+    [Header("Damage Multiplier")]
     [SerializeField] private float damageTakenMultiplier = 1f;
+    [SerializeField] private float damageDealtMultiplier = 1f;
 
     public float MoveSpeed => moveSpeed;
     
@@ -95,4 +96,5 @@ public class PlayerBaseData : ScriptableObject
     public LayerMask EnemyLayer => enemyLayer;
 
     public float DamageTakenMultiplier => damageTakenMultiplier;
+    public float DamageDealtMultiplier => damageDealtMultiplier;
 }

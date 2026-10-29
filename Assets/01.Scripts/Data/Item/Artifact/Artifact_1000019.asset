@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d95b5eefdd372644ae5790129cb6280, type: 3}
+  m_Name: Artifact_1000019
+  m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
+  id: 1000019
+  itemName: "\uC7BF\uBD88 \uC2EC\uC7A5"
+  description: "HP 35% \uC774\uD558\uC77C \uB54C \uC77C\uBC18 \uACF5\uACA9 \uD53C\uD574
+    +30%, \uC774\uB3D9 \uC18D\uB3C4 +15%"
+  rarity: 1
+  iconId: material_004
+  icon: {fileID: 21300000, guid: 7bab58d2029214c9496f2251993cc43c, type: 3}
+  statPairs: []
