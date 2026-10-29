@@ -21,7 +21,7 @@ MonoBehaviour:
   detectRange: 5
   attackRange: 1
   traceRange: 7
-  attackDamage: 0
+  attackDamage: 25
   attackCool: 1
   attackDelay: 0.14285715
   canGuard: 1

@@ -25,6 +25,7 @@ public class PlayerStats
 
     public event Action<float, float> OnHealthChanged;
     public event Action<float, float> OnStaminaChanged;
+    public event Action<PlayerBlackBoard> OnHealthHalf;
     
     public PlayerStats(PlayerBaseData data)
     {

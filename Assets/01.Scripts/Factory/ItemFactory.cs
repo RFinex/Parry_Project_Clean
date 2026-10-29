@@ -16,6 +16,11 @@ public class ItemFactory
         Register(1000004, () => new Artifact());
         Register(1000005, () => new Artifact());
         Register(1000006, () => new EmblemOfCounter());
+        Register(1000007, () => new Artifact());
+        Register(1000008, () => new Artifact());
+        Register(1000009, () => new Artifact());
+        Register(1000010, () => new UnknownBoneShard());
+        Register(1000011, () => new ExecutionersTalon());
     }
 
     private void Register(int itemId, Func<Item> creator)

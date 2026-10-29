@@ -22,24 +22,26 @@ public class EmblemOfCounter : Artifact
 
     public override void OnUnequip(PlayerBlackBoard board)
     {
+        token = token.Cancel_DisposeToken();
+
         base.OnUnequip(board);
     }
 
-    private async UniTaskVoid DamageUpDurationAsync(PlayerBlackBoard board, CancellationToken ctk)
+    private async UniTaskVoid DamageUpDurationAsync(CancellationToken ctk)
     {
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: ctk);
 
-            board.stats.RemoveStats(new StatPair
+            blackBoard.stats.RemoveStats(new StatPair
             {
                 id = StatId.AttackDamage,
                 modifierType = StatModifierType.Percent,
                 value = 80f
             });
 
-            board.combat.OnParrySucceed -= FirstDamageUp;
-            board.combat.OnParrySucceed += FirstDamageUp;
+            blackBoard.combat.OnParrySucceed -= FirstDamageUp;
+            blackBoard.combat.OnParrySucceed += FirstDamageUp;
         }
         catch (OperationCanceledException)
         {
@@ -47,39 +49,39 @@ public class EmblemOfCounter : Artifact
         }
         finally
         {
-            board.combat.OnAttackEnded -= FirstDamageDown;
+            blackBoard.combat.OnAttackEnded -= FirstDamageDown;
         }
     }
 
-    private void FirstDamageUp(PlayerBlackBoard board)
+    private void FirstDamageUp()
     {
         token = token.ResetToken();
-        DamageUpDurationAsync(board, token.Token).Forget();
+        DamageUpDurationAsync(token.Token).Forget();
 
-        board.stats.AddStats(new StatPair
+        blackBoard.stats.AddStats(new StatPair
         {
             id = StatId.AttackDamage,
             modifierType = StatModifierType.Percent,
             value = 80f
         });
 
-        board.combat.OnParrySucceed -= FirstDamageUp;
-        board.combat.OnAttackEnded += FirstDamageDown;
+        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 
-    private void FirstDamageDown(PlayerBlackBoard board)
+    private void FirstDamageDown()
     {
         token = token.Cancel_DisposeToken();
 
-        board.stats.RemoveStats(new StatPair
+        blackBoard.stats.RemoveStats(new StatPair
         {
             id = StatId.AttackDamage,
             modifierType = StatModifierType.Percent,
             value = 80f
         });
 
-        board.combat.OnParrySucceed -= FirstDamageUp;
-        board.combat.OnParrySucceed += FirstDamageUp;
-        board.combat.OnAttackEnded -= FirstDamageDown;
+        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnParrySucceed += FirstDamageUp;
+        blackBoard.combat.OnAttackEnded -= FirstDamageDown;
     }
 }

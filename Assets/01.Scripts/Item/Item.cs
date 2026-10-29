@@ -14,6 +14,8 @@ public class Artifact : Item
     public ArtifactData ArtifactItemData { get; private set; }
     public bool IsEquipped { get; private set; }
 
+    protected PlayerBlackBoard blackBoard;
+
     public override void Initialized(ItemData data)
     {
         if (data is not ArtifactData artifactData)
@@ -28,10 +30,11 @@ public class Artifact : Item
         if (IsEquipped || board.stats == null || ArtifactItemData.StatPairs == null)
             return;
 
+        blackBoard = board;
         IsEquipped = true;
 
         foreach (StatPair pair in ArtifactItemData.StatPairs)
-            board.stats.AddStats(pair);
+            blackBoard.stats.AddStats(pair);
     }
 
     public virtual void OnUnequip(PlayerBlackBoard board)
@@ -39,16 +42,26 @@ public class Artifact : Item
         if (!IsEquipped)
             return;
 
+        PlayerBlackBoard targetBoard = board ?? blackBoard;
+
         IsEquipped = false;
 
-        if (board == null)
+        if (targetBoard == null || targetBoard.stats == null)
+        {
+            blackBoard = null;
             return;
+        }
 
-        if (board.stats == null || ArtifactItemData.StatPairs == null)
+        if (ArtifactItemData.StatPairs == null)
+        {
+            blackBoard = null;
             return;
+        }
 
         foreach (StatPair pair in ArtifactItemData.StatPairs)
-            board.stats.RemoveStats(pair);
+            targetBoard.stats.RemoveStats(pair);
+
+        blackBoard = null;
     }
 }
 

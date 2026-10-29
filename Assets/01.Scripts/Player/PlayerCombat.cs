@@ -36,9 +36,10 @@ public class PlayerCombat
 
     #endregion
 
-    public event Action<PlayerBlackBoard> OnParrySucceed;
-    public event Action<PlayerBlackBoard> OnParryEnded;
-    public event Action<PlayerBlackBoard> OnAttackEnded;
+    public event Action OnParrySucceed;
+    public event Action OnParryEnded;
+    public event Action OnAttackEnded;
+    public event Action OnExecuteSucceed;
 
     public PlayerCombat()
     {
@@ -71,7 +72,7 @@ public class PlayerCombat
             enemy.TakeDamage(attackDamage);
         }
 
-        OnAttackEnded?.Invoke(playerBoard);
+        OnAttackEnded?.Invoke();
     }
 
     /// <summary>
@@ -120,6 +121,8 @@ public class PlayerCombat
 
         Utils.Log<PlayerCombat>("특수 공격!");
         enemy.Execute();
+
+        OnExecuteSucceed?.Invoke();
     }
 
     public void RequestCombo()
@@ -263,10 +266,10 @@ public class PlayerCombat
             {
                 float parryDamage = stats.GetStats(StatId.ParryDamage);
                 info.attacker.TakeBalanceDamage(parryDamage);
-                OnParryEnded?.Invoke(playerBoard);
+                OnParryEnded?.Invoke();
             }
 
-            OnParrySucceed?.Invoke(playerBoard);
+            OnParrySucceed?.Invoke();
             Utils.Log<PlayerController>("패리 성공");
             return true;
         }
