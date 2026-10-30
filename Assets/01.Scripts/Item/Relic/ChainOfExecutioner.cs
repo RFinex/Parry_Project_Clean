@@ -8,7 +8,8 @@ public class ChainOfExecutioner : Artifact
 
     public ChainOfExecutioner()
     {
-        // 일반 공격 피해 -20% / 처형 성공 시 주변 적에게 기본 균형 피해의 100 % 만큼 균형 피해
+        // 일반 공격 피해 -20%
+        // 처형 성공 시 주변 적에게 기본 균형 피해의 100% 만큼 균형 피해
     }
 
     public override void OnEquip(PlayerBlackBoard board)
@@ -21,8 +22,8 @@ public class ChainOfExecutioner : Artifact
         if (!IsEquipped)
             return;
 
-        board.combat.OnExecuteArea -= ApplyBlalnceDamage;
-        board.combat.OnExecuteArea += ApplyBlalnceDamage;
+        board.combat.OnExecuteArea -= ApplyBalanceDamage;
+        board.combat.OnExecuteArea += ApplyBalanceDamage;
     }
 
     public override void OnUnequip(PlayerBlackBoard board)
@@ -30,13 +31,13 @@ public class ChainOfExecutioner : Artifact
         if (!IsEquipped)
             return;
 
-        board.combat.OnExecuteArea -= ApplyBlalnceDamage;
+        board.combat.OnExecuteArea -= ApplyBalanceDamage;
         hitEnemies.Clear();
 
         base.OnUnequip(board);
     }
 
-    public void ApplyBlalnceDamage(Vector2 position, IExecuteTarget target)
+    public void ApplyBalanceDamage(Vector2 position, IExecuteTarget target)
     {
         hitEnemies.Clear();
 

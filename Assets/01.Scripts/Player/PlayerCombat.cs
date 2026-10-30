@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCombat
@@ -29,8 +31,8 @@ public class PlayerCombat
     #region Guard Stats
 
     private const float guardTime = 0.3f;
-
-    public bool CanGuard => guardTimer <= 0f;
+    private int guardBlockCount;
+    public bool CanGuard => guardBlockCount == 0 && guardTimer <= 0f;
 
     private int parryBlockCount;
     public bool CanParry => parryBlockCount == 0;
@@ -46,6 +48,15 @@ public class PlayerCombat
     public event Action<Vector2, IExecuteTarget> OnExecuteArea;
     public event Action<int> OnAttackComboIndex;
     public event Action OnAttackHit;
+    public event Action<IReadOnlyList<EnemyController>, float> OnAttackHitTargets;
+
+    private readonly List<EnemyController> hitEnemyList = new();
+
+    private List<Collider2D> hitEnemies = new();
+    private ContactFilter2D enemyFilter;
+    private bool isFilterInit = false;
+
+    private bool isDamageConversion = false;
 
     public PlayerCombat()
     {
@@ -57,6 +68,11 @@ public class PlayerCombat
         playerBoard = board;
         data = board.data;
         stats = board.stats;
+
+        enemyFilter = new ContactFilter2D();
+        enemyFilter.SetLayerMask(data.EnemyLayer);
+        enemyFilter.useLayerMask = true;
+        isFilterInit = true;
     }
 
     public void Attack(Vector2 pos, float frontDir)
@@ -70,13 +86,26 @@ public class PlayerCombat
 
         attackDamage = stats.CalculateAllHealthDamage(attackDamage);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, data.EnemyLayer);
+        // 최적화
 
-        bool hasHit = false;
+        hitEnemies.Clear();
 
-        foreach (Collider2D hit in hits)
+        if (!isFilterInit)
         {
-            EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+            enemyFilter.SetLayerMask(data.EnemyLayer);
+            enemyFilter.useLayerMask = true;
+        }
+
+        int hitCount = Physics2D.OverlapCircle(attackPos, attackRange, enemyFilter, hitEnemies);
+
+        hitEnemyList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = hitEnemies[i];
+
+            if (!hit.TryGetComponent<EnemyController>(out var enemy))
+                enemy = hit.GetComponentInParent<EnemyController>();
 
             if (enemy == null)
                 continue;
@@ -84,13 +113,42 @@ public class PlayerCombat
             if (enemy.Stats.IsDead || enemy.IsInvincible)
                 continue;
 
-            enemy.TakeDamage(attackDamage);
-            hasHit = true;
+            if (hitEnemyList.Contains(enemy))
+                continue;
+
+            if (isDamageConversion)
+                enemy.TakeBalanceDamage(attackDamage * 0.5f);
+            else
+                enemy.TakeDamage(attackDamage);
+
+            hitEnemyList.Add(enemy);
         }
 
-        if (hasHit)
+        // 최적화 전
+
+        //hitEnemyList.Clear();
+
+        //Collider2D[] hits = Physics2D.OverlapCircleAll(attackPos, attackRange, data.EnemyLayer);
+
+        //foreach (Collider2D hit in hits)
+        //{
+        //    EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+
+        //    if (enemy == null)
+        //        continue;
+
+        //    if (enemy.Stats.IsDead || enemy.IsInvincible)
+        //        continue;
+
+        //    enemy.TakeDamage(attackDamage);
+
+        //    hitEnemyList.Add(enemy);
+        //}
+
+        if (hitEnemyList.Count > 0)
         {
             OnAttackHit?.Invoke();
+            OnAttackHitTargets?.Invoke(hitEnemyList, attackDamage);
             Utils.Log<PlayerController>($"가한 대미지 : {attackDamage}");
         }
 
@@ -311,9 +369,20 @@ public class PlayerCombat
         return false;
     }
 
+    public void AddGuardBlock()
+    {
+        guardBlockCount++;
+    }
+
     public void AddParryBlock()
     {
         parryBlockCount++;
+    }
+
+    public void RemoveGuardBlock()
+    {
+        if (guardBlockCount > 0)
+            guardBlockCount--;
     }
 
     public void RemoveParryBlock()
@@ -323,4 +392,9 @@ public class PlayerCombat
     }
 
     #endregion
+
+    public void SetNormalAttackBalanceConversion(bool isConversion)
+    {
+        isDamageConversion = isConversion;
+    }
 }

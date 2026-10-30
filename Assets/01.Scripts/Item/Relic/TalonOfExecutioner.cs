@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class TalonOfExecutioner : Artifact
 {
+    private float healRate = 0.03f;
+
     public TalonOfExecutioner()
     {
         // 처형 성공 시 최대 HP의 3% 회복
@@ -33,7 +35,7 @@ public class TalonOfExecutioner : Artifact
 
     private void Heal()
     {
-        float value = blackBoard.stats.MaxHp * 0.03f;
+        float value = blackBoard.stats.MaxHp * healRate;
         blackBoard.stats.RestoreHp(value);
     }
 }

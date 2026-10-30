@@ -47,4 +47,9 @@ public class PlayerSkill
         if (dashCoolTimer <= 0f)
             dashCoolTimer = 0f;
     }
+
+    public void ResetDashCooldown()
+    {
+        dashCoolTimer = 0f;
+    }
 }

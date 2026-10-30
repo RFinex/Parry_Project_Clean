@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Artifact_1000007
   m_EditorClassIdentifier: Assembly-CSharp::ArtifactData
   id: 1000007
-  itemName: "\uADE0\uC5F4\uC758 \uBB38\uC7A5"
+  itemName: "\uADE0\uC5F4\uC758 \uC778\uC7A5"
   description: "\uADE0\uD615 \uD53C\uD574 +20%\n\uC77C\uBC18 \uACF5\uACA9 \uD53C\uD574
     -10%"
   rarity: 0

@@ -45,25 +45,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TreasureRoomSystem
   recoveryObj: {fileID: 0}
-  treasureObj: {fileID: 0}
-  chestTypes:
-  - closedSprite: {fileID: 526432443, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
-    openAnimName: Base Layer.Open_Normal
-    weight: 10
-    minItemGrade: 0
-  - closedSprite: {fileID: 526432443, guid: 04df3fe748a326341b44f9b82e8f3073, type: 3}
-    openAnimName: Base Layer.Open_Rare
-    weight: 8
-    minItemGrade: 0
-  - closedSprite: {fileID: 526432443, guid: c44fc00902932a04a964d427b28ed439, type: 3}
-    openAnimName: Base Layer.Open_Unique
-    weight: 6
-    minItemGrade: 0
-  - closedSprite: {fileID: 526432443, guid: c90ee9c1bd3ea814699e8645bf19d05f, type: 3}
-    openAnimName: Base Layer.Open_Epic
-    weight: 4
-    minItemGrade: 0
-  - closedSprite: {fileID: 526432443, guid: ee81f38cbdc83bf49ac187601b2cefee, type: 3}
-    openAnimName: Base Layer.Open_Legendary
-    weight: 2
-    minItemGrade: 0
+  chestSpawnPoint: {fileID: 0}
+  chestPrefabs:
+  - prefab: {fileID: 2010567670228318887, guid: a94685fdf798d154da6e76f2944053c6, type: 3}
+    weight: 700
+  - prefab: {fileID: 4754082013614359329, guid: cc8b8fdf6f380b3438c035c39e54aff2, type: 3}
+    weight: 220
+  - prefab: {fileID: 3336977994132597389, guid: 8a0ee509c7ac7084fa45eef3ff542cbf, type: 3}
+    weight: 70
+  - prefab: {fileID: 8512968072537207325, guid: 405c13818942f194298471965e8c03c3, type: 3}
+    weight: 9
+  - prefab: {fileID: 172045112474056656, guid: 3e71de69e47536f479a16a8119a5e441, type: 3}
+    weight: 1
+  pickupPoolId: 1000000

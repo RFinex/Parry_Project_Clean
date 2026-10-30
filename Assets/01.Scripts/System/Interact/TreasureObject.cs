@@ -2,13 +2,35 @@ using UnityEngine;
 
 public class TreasureObject : InteractableBase
 {
-    [SerializeField] private SpriteRenderer chestSprite;
+    [Header("Reward")]
+    [SerializeField] private TreasureChestData chestData;
+
+    [Header("Animation")]
     [SerializeField] private Animator chestAnimator;
+    [SerializeField] private string openAnimName = "Open";
+
+    [Header("Item Drop Position")]
+    [SerializeField] private Transform dropTransform;
+    public Vector3 DropPos => dropTransform != null ? dropTransform.position : transform.position;
 
     private int openAnimHash;
 
     private bool isAvailable = true;
-    public override bool CanInteract => isAvailable;
+
+    public TreasureChestData ChestData => chestData;
+
+
+    public override bool CanInteract => isAvailable && chestData != null;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        openAnimHash = string.IsNullOrEmpty(openAnimName) ? 0 : Animator.StringToHash(openAnimName);
+
+        if (chestAnimator != null)
+            chestAnimator.enabled = false;
+    }
 
     public override void Interact(PlayerController interactor)
     {
@@ -22,16 +44,6 @@ public class TreasureObject : InteractableBase
     {
         this.isAvailable = isAvailable;
         RefreshIcon();
-    }
-
-    public void SetupChest(Sprite closedSprite, string animName)
-    {
-        chestAnimator.enabled = false;
-        chestSprite.sprite = closedSprite;
-        openAnimHash = Animator.StringToHash(animName);
-
-        Debug.Log($"렌더러 적용 결과: {chestSprite.sprite.texture.name} / {chestSprite.sprite.name}");
-
     }
 
     public void Open()

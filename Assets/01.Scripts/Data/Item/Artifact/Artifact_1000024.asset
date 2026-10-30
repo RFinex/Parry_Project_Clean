@@ -20,4 +20,10 @@ MonoBehaviour:
   rarity: 2
   iconId: ore_014
   icon: {fileID: 21300000, guid: 56b6d65df2d2b44d88384d165fb13c78, type: 3}
-  statPairs: []
+  statPairs:
+  - id: 3
+    modifierType: 1
+    value: 20
+  - id: 1
+    modifierType: 1
+    value: -20
