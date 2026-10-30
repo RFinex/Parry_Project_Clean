@@ -16,8 +16,11 @@ MonoBehaviour:
   itemName: "\uC9D1\uD589\uC790\uC758 \uC0AC\uC2AC"
   description: "\uC77C\uBC18 \uACF5\uACA9 \uD53C\uD574 -20%\n\uCC98\uD615 \uC131\uACF5
     \uC2DC \uC8FC\uBCC0 \uC801\uC5D0\uAC8C \uAE30\uBCF8 \uADE0\uD615 \uD53C\uD574\uC758
-    100%\uB9CC\uD07C \uADE0\uD615 \uD53C\uD574"
+    75%\uB9CC\uD07C \uADE0\uD615 \uD53C\uD574"
   rarity: 2
   iconId: material_061
   icon: {fileID: 21300000, guid: acf6882e88c474c328bcf45d5b7b98c3, type: 3}
-  statPairs: []
+  statPairs:
+  - id: 0
+    modifierType: 1
+    value: -20

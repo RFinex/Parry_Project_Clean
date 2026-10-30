@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using UnityEngine;
 
-// 토큰 링크 해둘 것
-public class EmblemOfCounter : Artifact
+public class SealOfJudgement : Artifact
 {
     private CancellationTokenSource token;
     private bool isApply;
@@ -12,12 +12,12 @@ public class EmblemOfCounter : Artifact
     {
         id = StatId.AttackDamage,
         modifierType = StatModifierType.Percent,
-        value = 80f
+        value = 140f
     };
 
-    public EmblemOfCounter()
+    public SealOfJudgement()
     {
-        // 패리 성공 후 3초 이내 다음 일반 공격 피해 +80%
+        // 일반 공격 기본 피해 -25% / 패리 성공 시 3초 이내 다음 일반 공격 피해 +100%
     }
 
     public override void OnEquip(PlayerBlackBoard board)

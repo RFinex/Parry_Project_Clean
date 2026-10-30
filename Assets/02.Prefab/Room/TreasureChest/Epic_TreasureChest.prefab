@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 337184108000667025}
+  - component: {fileID: 8512968072537207325}
   m_Layer: 0
-  m_Name: Treasure
+  m_Name: Epic_TreasureChest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,13 +26,61 @@ Transform:
   m_GameObject: {fileID: 193119165628101708}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.97228, y: -4.58336, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8603159420649463784}
   - {fileID: 6235996097805333143}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8512968072537207325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193119165628101708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0b5d5a11fab0f4db6dcf9bc101634a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreasureObject
+  interactIcon: {fileID: 6828181862085575069}
+  chestData: {fileID: 11400000, guid: e7958dc89ae0d7141b641497cd83d51b, type: 2}
+  chestAnimator: {fileID: 2446148427964222465}
+  openAnimName: Open
+  dropTransform: {fileID: 2726779372184491821}
+--- !u!1 &2036814099913807203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2726779372184491821}
+  m_Layer: 9
+  m_Name: DropPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2726779372184491821
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036814099913807203}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8603159420649463784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2406936348849459303
 GameObject:
@@ -43,7 +92,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8603159420649463784}
   - component: {fileID: 183571104902727881}
-  - component: {fileID: 5946240927147679450}
   - component: {fileID: 5315210228183135924}
   - component: {fileID: 2446148427964222465}
   m_Layer: 9
@@ -62,10 +110,11 @@ Transform:
   m_GameObject: {fileID: 2406936348849459303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.55228, y: -0.6366396, z: 0}
-  m_LocalScale: {x: 1.4, y: 1.4, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2726779372184491821}
   m_Father: {fileID: 337184108000667025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &183571104902727881
@@ -117,9 +166,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 526432443, guid: b03a24ffeb6515e41af04a1660c0535f, type: 3}
+  m_Sprite: {fileID: 526432443, guid: c90ee9c1bd3ea814699e8645bf19d05f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.5, y: 1}
@@ -127,21 +176,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &5946240927147679450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2406936348849459303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b0b5d5a11fab0f4db6dcf9bc101634a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TreasureObject
-  interactIcon: {fileID: 6828181862085575069}
-  chestSprite: {fileID: 183571104902727881}
-  chestAnimator: {fileID: 2446148427964222465}
 --- !u!61 &5315210228183135924
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -176,17 +210,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.033836186, y: -0.09801102}
+  m_Offset: {x: -0.030790746, y: 0.41183138}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 1.5, y: 1}
     newSize: {x: 1.5, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.2015547, y: 1.0166569}
+  m_Size: {x: 1.3396763, y: 0.8570535}
   m_EdgeRadius: 0
 --- !u!95 &2446148427964222465
 Animator:
@@ -198,7 +232,7 @@ Animator:
   m_GameObject: {fileID: 2406936348849459303}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fec13f05a7b135a4e836ad77181f59aa, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6f0c74b7cce72f84c89209b950ada832, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -236,7 +270,7 @@ Transform:
   m_GameObject: {fileID: 6828181862085575069}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.55228, y: 0.15, z: 0}
+  m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

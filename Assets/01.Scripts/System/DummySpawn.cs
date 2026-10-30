@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DummySpawn : InteractableBase
@@ -6,32 +7,28 @@ public class DummySpawn : InteractableBase
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform statusBarParent;
 
-    private GameObject spawnedDummy;
-    private EnemyController spawnedEnemy;
-    private EnemyStatusBar spawnedStatusBar;
+    [SerializeField] private bool allowMultiSpawn;
 
-    public override bool CanInteract => spawnedEnemy == null;
+    private readonly Dictionary<EnemyController, EnemyStatusBar> spawnedEnemies = new();
+
+    public override bool CanInteract => allowMultiSpawn || spawnedEnemies.Count == 0;
 
     public override void Interact(PlayerController interactor)
     {
         if (!CanInteract || dummyPrefab == null || spawnPoint == null)
             return;
 
-        spawnedDummy = Instantiate(
-            dummyPrefab,
-            spawnPoint.position,
-            spawnPoint.rotation);
+        GameObject spawnedDummy = Instantiate(dummyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        spawnedEnemy = spawnedDummy.GetComponent<EnemyController>();
+        EnemyController spawnedEnemy = spawnedDummy.GetComponent<EnemyController>();
 
         if (spawnedEnemy == null)
         {
             Destroy(spawnedDummy);
-            spawnedDummy = null;
             return;
         }
 
-        spawnedEnemy.OnDeathFinished += HandleDummyDeath;
+        EnemyStatusBar spawnedStatusBar = null;
 
         if (UIManager.Instance != null && statusBarParent != null)
         { 
@@ -44,6 +41,8 @@ public class DummySpawn : InteractableBase
             }
         }
 
+        spawnedEnemy.OnDeathFinished += HandleDummyDeath;
+        spawnedEnemies.Add(spawnedEnemy, spawnedStatusBar);
         RefreshIcon();
     }
 
@@ -52,12 +51,13 @@ public class DummySpawn : InteractableBase
 
         enemy.OnDeathFinished -= HandleDummyDeath;
 
-        if (spawnedStatusBar != null)
-            spawnedStatusBar.ReturnPool();
+        if (spawnedEnemies.TryGetValue(enemy, out EnemyStatusBar statusBar))
+        {
+            if (statusBar != null)
+                statusBar.ReturnPool();
 
-        spawnedStatusBar = null;
-        spawnedEnemy = null;
-        spawnedEnemy = null;
+            spawnedEnemies.Remove(enemy);
+        }
 
         Destroy(enemy.gameObject);
         RefreshIcon();

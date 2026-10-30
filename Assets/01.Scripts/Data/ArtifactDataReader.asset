@@ -16,7 +16,7 @@ MonoBehaviour:
   itemInfo:
     sheetName: Item Info
     startRow: 2
-    endRow: 27
+    endRow: 33
   saveFolder: Assets/01.Scripts/Data/Item/Artifact
   icons:
   - iconId: ore_004
@@ -71,6 +71,18 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 2528138c187144a79a8be9a911c5b4c2, type: 3}
   - iconId: material_061
     sprite: {fileID: 21300000, guid: acf6882e88c474c328bcf45d5b7b98c3, type: 3}
+  - iconId: seal_006
+    sprite: {fileID: 21300000, guid: c02a62d1afe744b6da7c88f70f8ff2e5, type: 3}
+  - iconId: seal_020
+    sprite: {fileID: 21300000, guid: 610dc5a8451414b68916b9e197f14966, type: 3}
+  - iconId: sword_017
+    sprite: {fileID: 21300000, guid: 92db7c803e11e4579ac84dbce5f26870, type: 3}
+  - iconId: material_016
+    sprite: {fileID: 21300000, guid: 2b50613c4bdc44195b35fa9144b645cc, type: 3}
+  - iconId: sword_022
+    sprite: {fileID: 21300000, guid: bc252f1d8c3f043d8a8557e4f873120d, type: 3}
+  - iconId: seal_008
+    sprite: {fileID: 21300000, guid: 7e88562f01ff14bffa8389938150ed52, type: 3}
   artifacts:
   - {fileID: 11400000, guid: 93de3e23f58a1224eb58de556121ffa2, type: 2}
   - {fileID: 11400000, guid: 76731a0e58f53684fa3acbd7955e9ded, type: 2}
@@ -98,3 +110,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 491a4bd5d7a311840868039f9b527297, type: 2}
   - {fileID: 11400000, guid: 5bd13d11e4748b04e83235459e9278ca, type: 2}
   - {fileID: 11400000, guid: ca1590462b0a5f64bbbb45aa95a38942, type: 2}
+  - {fileID: 11400000, guid: eae90fb07ee59cc47a70b3122720af7b, type: 2}
+  - {fileID: 11400000, guid: 697277a11c251674795203e81158e3a1, type: 2}
+  - {fileID: 11400000, guid: 133478bfe7c126845986a29843e6fa31, type: 2}
+  - {fileID: 11400000, guid: 99351e222e3920343af122682f769e7d, type: 2}
+  - {fileID: 11400000, guid: 4b5bf3597d22ba6499a1909ec8270fbe, type: 2}
+  - {fileID: 11400000, guid: 48f2432eb10849343a4ed7e5f892de76, type: 2}

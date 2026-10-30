@@ -517,6 +517,9 @@ public class PlayerController : MonoBehaviour
 
         if (context.started)
         {
+            if (!combat.CanGuard)
+                return;
+
             InputToCurrentState(PlayerInput.GuardPressed);
         }
         else if (context.canceled)

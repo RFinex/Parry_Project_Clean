@@ -187,4 +187,45 @@ public class GameManager : Singleton<GameManager>
 
         return Inventory.TryAdd(artifact);
     }
+
+    public bool TryGetRandomArtifactData(ItemRarity rarity, out ArtifactData selectedData)
+    {
+        selectedData = null;
+
+        if (artifactReader == null)
+            return false;
+
+        // 해당 등급의 아티팩트 갯수 측정
+        int matchingCount = 0;
+
+        foreach (ArtifactData data in artifactReader.Artifacts)
+        {
+            if (data != null && data.Rarity == rarity)
+                matchingCount++;
+        }
+
+        // 후보가 없으면 실패
+        if (matchingCount == 0)
+            return false;
+
+        // 후보 중 무작위 하나 선택
+        int index = UnityEngine.Random.Range(0, matchingCount);
+
+        // 선택된 후보의 데이터를 찾아서 selectedData에 주입
+        foreach (ArtifactData data in artifactReader.Artifacts)
+        {
+            if (data == null || data.Rarity != rarity)
+                continue;
+
+            if (index == 0)
+            {
+                selectedData = data;
+                return true;
+            }
+
+            index--;
+        }
+
+        return false;
+    }
 }

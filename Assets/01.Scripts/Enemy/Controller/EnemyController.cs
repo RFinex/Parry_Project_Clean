@@ -410,7 +410,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public void TakeBalanceDamage(float damage)
     {
-        if (IsInvincible)
+        if (IsInvincible || IsStaggerState())
             return;
 
         stats.TakeBalanceDamage(damage);

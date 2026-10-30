@@ -50,7 +50,7 @@ public class EnemyStats
 
         OnHealthChanged?.Invoke(nowHp, maxHp);
 
-        Utils.Log<EnemyStats>($"남은 체력 : {nowHp}/{maxHp}");
+        //Utils.Log<EnemyStats>($"남은 체력 : {nowHp}/{maxHp}");
     }
 
     public void TakeBalanceDamage(float damage)

@@ -2287,6 +2287,7 @@ MonoBehaviour:
   dummyPrefab: {fileID: 6465543644819581041, guid: d90b4d0cb0ff6ab4cab5ee57fae0ce5d, type: 3}
   spawnPoint: {fileID: 405767013}
   statusBarParent: {fileID: 443627290}
+  allowMultiSpawn: 1
 --- !u!212 &959391625
 SpriteRenderer:
   serializedVersion: 2

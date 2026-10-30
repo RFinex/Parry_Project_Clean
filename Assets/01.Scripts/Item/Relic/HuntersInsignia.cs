@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-public class EmblemOfHunter : Artifact
+public class HuntersInsignia : Artifact
 {
     private bool isApply;
     private float statUpTimer = 5f;
@@ -23,7 +23,7 @@ public class EmblemOfHunter : Artifact
         value = 30
     };
 
-    public EmblemOfHunter()
+    public HuntersInsignia()
     {
         // 처형 성공 후 5초 동안 이동 속도 +20%, 패리 균형 피해 +30%
     }
