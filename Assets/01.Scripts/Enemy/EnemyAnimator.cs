@@ -11,7 +11,8 @@ public enum EnemyAnimationType
     Hurt,
     Jump,
     Death,
-    Stagger
+    Stagger,
+    Attack2
 }
 
 [Serializable]

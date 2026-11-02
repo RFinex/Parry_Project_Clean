@@ -15,11 +15,11 @@ MonoBehaviour:
   minimumRarity: 3
   rarityWeights:
   - rarity: 0
-    weight: 0
+    weight: 50
   - rarity: 1
-    weight: 0
+    weight: 200
   - rarity: 2
-    weight: 0
+    weight: 750
   - rarity: 3
     weight: 900
   - rarity: 4

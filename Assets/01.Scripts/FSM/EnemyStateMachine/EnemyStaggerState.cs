@@ -19,6 +19,7 @@ public class EnemyStaggerState : EnemyBaseState
         if (blackBoard is EnemyBlackBoard board)
         {
             this.board = board;
+            board.animator.PlayFromStart(EnemyAnimationType.Stagger);
         }
 
         staggerTimer = this.board.stats.StaggerDuration;

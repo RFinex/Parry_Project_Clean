@@ -15,7 +15,7 @@ MonoBehaviour:
   minimumRarity: 1
   rarityWeights:
   - rarity: 0
-    weight: 0
+    weight: 1000
   - rarity: 1
     weight: 800
   - rarity: 2

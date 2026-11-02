@@ -159,11 +159,15 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         blackBoard = new EnemyBlackBoard()
         {
+            data = data,
+
             rb = rb,
             stats = stats,
             combat = combat,
             sr = sr,
-            animator = enemyAnimator
+
+            animator = enemyAnimator,
+            playerLayer = playerLayer
         };
     }
 
@@ -337,16 +341,21 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public bool Move(Vector2 targetPos)
     {
+        if (rb == null || data == null)
+            return false;
+
         float direction = targetPos.x - transform.position.x;
 
+        if (Mathf.Abs(direction) <= data.ArrivalDistance)
+        {
+            StopMove();
+            return true;
+        }
+
         SetFrontDir(direction);
-
         rb.linearVelocity = new Vector2(frontDir * data.MoveSpeed, rb.linearVelocity.y);
-
-        // 도착 지점과의 거리가 ArrivalDistance 보다 가까운지 체크
-        return Mathf.Abs(targetPos.x - transform.position.x) <= data.ArrivalDistance;
+        return false;
     }
-
     public void StopMove()
     {
         if (rb == null)
@@ -607,5 +616,10 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     public void SetInvincible(bool value)
     {
         IsInvincible = value;
+    }
+
+    public virtual Type GetAttackStateType()
+    {
+        return typeof(EnemyAttackState);
     }
 }

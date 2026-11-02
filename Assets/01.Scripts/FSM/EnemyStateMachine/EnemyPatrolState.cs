@@ -9,6 +9,8 @@ public class EnemyPatrolState : EnemyBaseState
     {
         EnterToken(owner.DestroyToken);
 
+        enemyBoard.animator.Play(EnemyAnimationType.Move);
+
         UpdateAsync(owner, token.Token).Forget();
     }
 

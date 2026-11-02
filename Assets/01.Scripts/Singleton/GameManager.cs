@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private ArtifactDataReader artifactReader;
 
     public ItemFactory ItemFactory { get; private set; }
+
+    private readonly HashSet<int> droppedArtifactIds = new();
 
     protected override void AwakeSingleton()
     {
@@ -58,6 +61,12 @@ public class GameManager : Singleton<GameManager>
 
         ItemFactory = new ItemFactory();
         ItemFactory.Initialized();
+
+        ArtifactSystem system = new ArtifactSystem();
+
+        system.Initialized(artifactReader, ItemFactory);
+
+        ServiceLocator.Register<ArtifactSystem>(system);
     }
 
     public void RegisterPlayer(PlayerController player)
@@ -188,44 +197,49 @@ public class GameManager : Singleton<GameManager>
         return Inventory.TryAdd(artifact);
     }
 
-    public bool TryGetRandomArtifactData(ItemRarity rarity, out ArtifactData selectedData)
-    {
-        selectedData = null;
+    //public bool TryGetRandomArtifactData(ItemRarity rarity, out ArtifactData selectedData)
+    //{
+    //    selectedData = null;
 
-        if (artifactReader == null)
-            return false;
+    //    if (artifactReader == null)
+    //        return false;
 
-        // 해당 등급의 아티팩트 갯수 측정
-        int matchingCount = 0;
+    //    // 해당 등급의 드롭 가능한 아티팩트 갯수 측정
+    //    int availableCount = 0;
 
-        foreach (ArtifactData data in artifactReader.Artifacts)
-        {
-            if (data != null && data.Rarity == rarity)
-                matchingCount++;
-        }
+    //    foreach (ArtifactData data in artifactReader.Artifacts)
+    //    {
+    //        if (data != null && data.Rarity == rarity && !droppedArtifactIds.Contains(data.Id))
+    //            availableCount++;
+    //    }
 
-        // 후보가 없으면 실패
-        if (matchingCount == 0)
-            return false;
+    //    // 후보가 없으면 실패
+    //    if (availableCount == 0)
+    //        return false;
 
-        // 후보 중 무작위 하나 선택
-        int index = UnityEngine.Random.Range(0, matchingCount);
+    //    // 후보 중 무작위 하나 선택
+    //    int index = UnityEngine.Random.Range(0, availableCount);
 
-        // 선택된 후보의 데이터를 찾아서 selectedData에 주입
-        foreach (ArtifactData data in artifactReader.Artifacts)
-        {
-            if (data == null || data.Rarity != rarity)
-                continue;
+    //    // 선택된 후보의 데이터를 찾아서 selectedData에 주입
+    //    foreach (ArtifactData data in artifactReader.Artifacts)
+    //    {
+    //        if (data == null || data.Rarity != rarity || droppedArtifactIds.Contains(data.Id))
+    //            continue;
 
-            if (index == 0)
-            {
-                selectedData = data;
-                return true;
-            }
+    //        if (index == 0)
+    //        {
+    //            selectedData = data;
+    //            return true;
+    //        }
 
-            index--;
-        }
+    //        index--;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
+
+    //public void MarkArtifactDropped(int id)
+    //{
+    //    droppedArtifactIds.Add(id);
+    //}
 }
