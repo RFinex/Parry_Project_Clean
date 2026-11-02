@@ -2,23 +2,26 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public class RarityWeight
+{
+    public ItemRarity rarity;
+
+    [Min(0)]
+    public int weight = 1;
+}
+
 [CreateAssetMenu(fileName = "TreasureChestData", menuName = "Data/Room/Treasure Chest")]
 public class TreasureChestData : ScriptableObject
-{
-    [Serializable]
-    public class RarityWeight
-    {
-        public ItemRarity rarity;
-
-        [Min(0)]
-        public int weight = 1;
-    }
-
+{   
     [Header("최소 보장 등급")]
     [SerializeField] private ItemRarity minimumRarity;
 
     [Header("각 등급별 가중치")]
     [SerializeField] private List<RarityWeight> rarityWeights = new();
+
+    public ItemRarity MinimumRarity => minimumRarity;
+    public List<RarityWeight> RarityWeights => rarityWeights;
 
     /// <summary>
     /// 각 상자 가중치에 따른 드롭 아티팩트 등급 랜덤 반환

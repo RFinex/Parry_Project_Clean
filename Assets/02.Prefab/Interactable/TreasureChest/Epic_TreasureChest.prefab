@@ -51,6 +51,7 @@ MonoBehaviour:
   chestAnimator: {fileID: 2446148427964222465}
   openAnimName: Open
   dropTransform: {fileID: 2726779372184491821}
+  pickupPoolId: 1000000
 --- !u!1 &2036814099913807203
 GameObject:
   m_ObjectHideFlags: 0

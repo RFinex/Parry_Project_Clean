@@ -14,6 +14,8 @@ public class EnemyIdleState : EnemyBaseState
 
         owner.StopMove();
 
+        enemyBoard.animator.PlayFromStart(EnemyAnimationType.Idle);
+
         EnterToken(owner.DestroyToken);
 
         UpdateAsync(owner, token.Token).Forget();

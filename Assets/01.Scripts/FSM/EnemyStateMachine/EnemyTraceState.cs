@@ -7,6 +7,12 @@ public class EnemyTraceState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {
+        if (blackBoard is EnemyBlackBoard board)
+        {
+            enemyBoard = board;
+            enemyBoard.animator.Play(EnemyAnimationType.Move);
+        }
+
         EnterToken(owner.DestroyToken);
 
         UpdateAsync(owner, token.Token).Forget();
@@ -37,7 +43,7 @@ public class EnemyTraceState : EnemyBaseState
                 if (owner.IsTargetInAttackRange())
                 {
                     owner.StopMove();
-                    TransitionState(typeof(EnemyAttackState));
+                    TransitionState(owner.GetAttackStateType());
                     return;
                 }
 

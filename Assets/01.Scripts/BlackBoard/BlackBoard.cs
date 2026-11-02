@@ -9,8 +9,8 @@ public class BlackBoard
 
 public class PlayerBlackBoard : BlackBoard
 {
-    public PlayerMovement movement = new PlayerMovement();
-    public PlayerSkill skill = new PlayerSkill();
+    public PlayerMovement movement = new();
+    public PlayerSkill skill = new();
 
     public PlayerBaseData data;
     public PlayerStats stats;
@@ -29,6 +29,8 @@ public class PlayerBlackBoard : BlackBoard
 public class EnemyBlackBoard : BlackBoard
 {
     public bool combatStarted;
+
+    public EnemyBaseData data;
 
     public Rigidbody2D rb;
     public SpriteRenderer sr;
