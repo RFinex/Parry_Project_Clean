@@ -25,6 +25,7 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void Exit(PlayerController owner)
     {
+        owner.StopJump();
         ExitToken();
     }
 

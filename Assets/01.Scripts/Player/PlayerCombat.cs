@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCombat
@@ -116,10 +117,13 @@ public class PlayerCombat
             if (hitEnemyList.Contains(enemy))
                 continue;
 
+            float damage = isDamageConversion ? attackDamage * 0.5f : attackDamage;
+            PlayerAttackInfo info = new(damage, playerBoard.playerTransform);
+
             if (isDamageConversion)
-                enemy.TakeBalanceDamage(attackDamage * 0.5f);
+                enemy.TakeBalanceDamage(info);
             else
-                enemy.TakeDamage(attackDamage);
+                enemy.TakeDamage(info);
 
             hitEnemyList.Add(enemy);
         }

@@ -75,6 +75,11 @@ public class EnemyAnimator
     }
 
     // 나중에 최적화 필요
+    /// <summary>
+    /// 애니메이션 종료 체크
+    /// </summary>
+    /// <param name="type"> 애니메이션 타입 </param>
+    /// <returns></returns>
     public bool Finish(EnemyAnimationType type)
     {
         if (animator == null || !animHashDic.TryGetValue(type, out int hash))

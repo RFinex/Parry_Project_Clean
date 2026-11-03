@@ -18,6 +18,8 @@ public abstract class EliteEnemyController : EnemyController
 
     protected override bool UseStateMachine => false;
 
+    protected override bool CanEnterHurtState => false;
+
     protected override void Initialized()
     {
         base.Initialized();

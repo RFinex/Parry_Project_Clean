@@ -12,26 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3285e16716d480a4781a2a8d3269bf61, type: 3}
   m_Name: MushroomBaseData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
-  maxHp: 150
+  maxHp: 120
   maxBalance: 10
   moveSpeed: 2
   minPatrolDistance: 2
   maxPatrolDistance: 4
   arrivalDistance: 0.05
-  detectRange: 5
+  detectRange: 6
   attackRange: 1
-  traceRange: 7
+  traceRange: 8
   attackDamage: 5
   attackCool: 1
   attackDelay: 0.35714287
   canGuard: 1
   canParry: 1
-  staggerDuration: 3
+  staggerDuration: 10
   minIdleTime: 2
   maxIdleTime: 5
   executeBackOffset: -0.8
   executeDamageRatio: 1
-  deathDuration: 1
+  deathDuration: 2
   detectOffset: {x: 0, y: 0.3}
   introFocusDuration: 0.6
   introFaceDuration: 0.5

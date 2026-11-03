@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661ce0f53e7535d4997c0eedf66d61ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnPoint
-  enemyId: 1001
+  enemyId: 1004
 --- !u!1 &592188368315599822
 GameObject:
   m_ObjectHideFlags: 0
@@ -5893,7 +5893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661ce0f53e7535d4997c0eedf66d61ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnPoint
-  enemyId: 1001
+  enemyId: 1004
 --- !u!1 &5434780753878613203
 GameObject:
   m_ObjectHideFlags: 0
@@ -6602,7 +6602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661ce0f53e7535d4997c0eedf66d61ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnPoint
-  enemyId: 1001
+  enemyId: 1004
 --- !u!1 &8323606408214988208
 GameObject:
   m_ObjectHideFlags: 0
@@ -6647,7 +6647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661ce0f53e7535d4997c0eedf66d61ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnPoint
-  enemyId: 1001
+  enemyId: 1004
 --- !u!1 &8426033670063685473
 GameObject:
   m_ObjectHideFlags: 0

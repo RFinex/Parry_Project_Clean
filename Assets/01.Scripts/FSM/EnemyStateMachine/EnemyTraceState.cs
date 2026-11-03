@@ -7,11 +7,7 @@ public class EnemyTraceState : EnemyBaseState
 {
     public override void Enter(EnemyController owner)
     {
-        if (blackBoard is EnemyBlackBoard board)
-        {
-            enemyBoard = board;
-            enemyBoard.animator.Play(EnemyAnimationType.Move);
-        }
+        enemyBoard.animator.PlayFromStart(EnemyAnimationType.Move);
 
         EnterToken(owner.DestroyToken);
 
@@ -27,12 +23,14 @@ public class EnemyTraceState : EnemyBaseState
 
     private async UniTaskVoid UpdateAsync(EnemyController owner, CancellationToken ctk)
     {
+        bool isWaiting = false;
+
         try
         {
-            await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
-
             while (!ctk.IsCancellationRequested)
             {
+                await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
+
                 if (owner.Target == null)
                 {
                     owner.ClearTarget();
@@ -42,9 +40,26 @@ public class EnemyTraceState : EnemyBaseState
 
                 if (owner.IsTargetInAttackRange())
                 {
-                    owner.StopMove();
-                    TransitionState(owner.GetAttackStateType());
-                    return;
+                    Type attackStateType = owner.GetAttackStateType();
+
+                    if (attackStateType != null)
+                    {
+                        owner.StopMove();
+
+                        if (!owner.IsAttackReady)
+                        {
+                            if (!isWaiting)
+                            {
+                                enemyBoard.animator.PlayFromStart(EnemyAnimationType.Idle);
+                                isWaiting = true;
+                            }
+
+                            continue;
+                        }
+
+                        TransitionState(attackStateType);
+                        return;
+                    }                    
                 }
 
                 if (!owner.IsTargetInTraceRange())
@@ -57,9 +72,21 @@ public class EnemyTraceState : EnemyBaseState
 
                 owner.LookAtTarget();
 
-                owner.Move(owner.Target.position);
+                bool targetX = owner.Move(owner.Target.position);
 
-                await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
+                if (targetX)
+                {
+                    if (!isWaiting)
+                    {
+                        enemyBoard.animator.PlayFromStart(EnemyAnimationType.Idle);
+                        isWaiting = true;
+                    }
+                }
+                else if (isWaiting)
+                {
+                    enemyBoard.animator.PlayFromStart(EnemyAnimationType.Move);
+                    isWaiting = false;
+                }
             }
         }
         catch (OperationCanceledException)
