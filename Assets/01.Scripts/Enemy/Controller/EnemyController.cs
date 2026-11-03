@@ -27,6 +27,12 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     public EnemyStats Stats => stats;
     public EnemyCombat Combat => combat;
 
+    [Header("Warning Effect")]
+    [SerializeField] private Transform warningPos;
+    [SerializeField] private int guardOnlyWarningId;
+    [SerializeField] private int parryOnlyWarningId;
+    [SerializeField] private int neitherWarningId;
+
     [Header("Layer Mask")]
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected LayerMask obstacleLayer;
@@ -72,6 +78,26 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual bool UseStateMachine => true;
     public bool UseStateMachineBehavior => UseStateMachine;
+
+    public virtual bool IsAttackReady => true;
+
+    protected virtual bool CanEnterHurtState => true;
+
+    // Shared warning effect for normal enemies, elites, and bosses.
+    protected void ShowAttackWarning(bool canGuard, bool canParry)
+    {
+        if (warningPos == null || (canGuard && canParry))
+            return;
+
+        int warningId = !canGuard && !canParry
+            ? neitherWarningId
+            : canGuard ? guardOnlyWarningId : parryOnlyWarningId;
+
+        if (warningId == 0 || ObjectPoolManager.Instance == null)
+            return;
+
+        ObjectPoolManager.Instance.Get<EffectBase>(warningId, warningPos.position);
+    }
 
     public bool CanExecute
     {
@@ -181,7 +207,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     protected virtual void AddStates()
     {
         stateMachine.EnemyAddState<EnemyAttackState>();
-        stateMachine.EnemyAddState<EnemyAttackState>();
+        stateMachine.EnemyAddState<EnemyHurtState>();
         stateMachine.EnemyAddState<EnemyDeadState>();
         stateMachine.EnemyAddState<EnemyIdleState>();
         stateMachine.EnemyAddState<EnemyPatrolState>();
@@ -401,6 +427,17 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
     {
         combat.Attack(target, this);
     }
+
+    public virtual void TakeDamage(PlayerAttackInfo info)
+    {
+        if (IsInvincible || stats.IsDead)
+            return;
+
+        if(info.attacker != null)
+            target = info.attacker;
+
+        TakeDamage(info.damage);
+    }
     
     public virtual void TakeDamage(float damage)
     {
@@ -415,6 +452,22 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
             stateMachine.ChangeState(typeof(EnemyDeadState));
             return;
         }
+
+        if (!CanEnterHurtState || IsStaggerState())
+            return;
+
+        stateMachine.ChangeState(typeof(EnemyHurtState), true);
+    }
+
+    public void TakeBalanceDamage(PlayerAttackInfo info)
+    {
+        if (IsInvincible || stats.IsDead || IsStaggerState())
+            return;
+
+        if (info.attacker != null)
+            target = info.attacker;
+
+        TakeBalanceDamage(info.damage);
     }
 
     public void TakeBalanceDamage(float damage)

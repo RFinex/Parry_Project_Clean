@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2d117e1fba81ae4682f4836f3fc1b0f, type: 3}
   m_Name: Attack1_Data_Mushroom
   m_EditorClassIdentifier: Assembly-CSharp::MushroomAttackData
+  canInterrupted: 0
   animType: 2
   warningDelay: 0.25
   warningDuration: 0.625
-  attackDuration: 0.125
+  attackRecovery: 0.25
   damage: 12
   hitboxSize: {x: 0.8, y: 0.5}
   hitboxOffset: {x: 0.7, y: 0.5}

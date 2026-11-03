@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPoolDataBase
   enemyList:
   - id: 1001
-    prefab: {fileID: -1460462792415119054, guid: 7785e38166c50154596075dac1b722b4, type: 3}
+    prefab: {fileID: 8182969074433806899, guid: de3d43da7b16ccd40abc05a00bb461eb, type: 3}
   - id: 1002
     prefab: {fileID: -6333217743914996791, guid: d94ed1e7ed3013b48907121a0665116d, type: 3}
   - id: 1003
     prefab: {fileID: 1534972130394828891, guid: da4292d623dcbab409cc5dc604dc2793, type: 3}
+  - id: 1004
+    prefab: {fileID: 4217702624625482271, guid: 6d2694c86efe32b4fa326dfc8693d0be, type: 3}

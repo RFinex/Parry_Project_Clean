@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using UnityEngine;
 
 public class MushroomAttack1State : MushroomAttackState
 {
@@ -23,8 +22,10 @@ public class MushroomAttack1State : MushroomAttackState
     {
         try
         {
-            await mushroom.AttackAsync(mushroom.Attack1Data, ctk);
-            TransitionState(typeof(EnemyTraceState));
+            bool isCompleted = await mushroom.AttackAsync(mushroom.Attack1Data, ctk);
+            
+            if (isCompleted)
+                TransitionState(typeof(EnemyTraceState));
         }
         catch (OperationCanceledException)
         {

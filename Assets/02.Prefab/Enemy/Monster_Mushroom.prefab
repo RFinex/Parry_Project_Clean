@@ -162,7 +162,7 @@ MonoBehaviour:
     stateName: Attack2
     duration: 0
   - type: 3
-    stateName: Hit
+    stateName: Base Layer.Hit
     duration: 0
   - type: 5
     stateName: Die

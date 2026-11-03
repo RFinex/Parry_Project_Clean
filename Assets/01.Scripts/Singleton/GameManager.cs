@@ -100,8 +100,13 @@ public class GameManager : Singleton<GameManager>
 
     public void RegisterCameraBinder(CameraTargetBinder binder)
     {
-        if(binder != null)
-            cameraBinder = binder;
+        if (binder == null)
+            return;
+
+        cameraBinder = binder;
+
+        if (Player != null)
+            cameraBinder.SetFollowTarget(Player.transform);
     }
 
     public void UnRegisterCameraBinder(CameraTargetBinder binder)

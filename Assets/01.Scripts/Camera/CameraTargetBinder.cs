@@ -60,7 +60,7 @@ public class CameraTargetBinder : MonoBehaviour
         TryRegisterRoomSystem();
 
         if (GameManager.Instance != null)
-            CatchTarget(GameManager.Instance.Player.transform);
+            GameManager.Instance.RegisterCameraBinder(this);
     }
 
     public bool SetBounds(PolygonCollider2D bounds)

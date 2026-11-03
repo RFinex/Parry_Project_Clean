@@ -7,7 +7,7 @@ public class EnemyProjectileBase : PoolableGameObject
 {
     [SerializeField] private EnemyProjectileData data;
 
-    private Rigidbody2D rb;
+    protected Rigidbody2D rb;
 
     private EnemyAttackInfo info;
 
@@ -16,17 +16,21 @@ public class EnemyProjectileBase : PoolableGameObject
 
     private CancellationTokenSource token;
 
-    private void Awake()
+    protected float ProjectileSpeed => data.Speed;
+
+    protected EnemyAttackInfo Info => info;
+
+    protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         token = token.ResetToken();
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         token = token.Cancel_DisposeToken();
     }
@@ -34,17 +38,25 @@ public class EnemyProjectileBase : PoolableGameObject
     public void Shoot(Vector2 dir, EnemyAttackInfo info)
     {
         this.info = info;
-        lifeTimer = 0f;
         hasHit = false;
 
-        UpdateAsync(token.Token).Forget();
+        StartLifeTime();
 
-        Vector2 direction = dir.normalized;
-        rb.linearVelocity = direction * data.Speed;
+        Launch(dir.normalized);
+    }
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    protected virtual void Launch(Vector2 dir)
+    {
+        rb.linearVelocity = dir * ProjectileSpeed;
 
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
+    protected virtual void StartLifeTime()
+    {
+        lifeTimer = 0f;
+        UpdateAsync(token.Token).Forget();
     }
 
     private async UniTaskVoid UpdateAsync(CancellationToken ctk)
@@ -70,7 +82,7 @@ public class EnemyProjectileBase : PoolableGameObject
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (hasHit || collision == null)
             return;
