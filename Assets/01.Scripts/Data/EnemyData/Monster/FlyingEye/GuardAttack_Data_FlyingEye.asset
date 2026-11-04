@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ffe94142f1023c428477e075462cfc3, type: 3}
+  m_Name: GuardAttack_Data_FlyingEye
+  m_EditorClassIdentifier: Assembly-CSharp::FlyingEyeAttackData
+  canInterrupted: 1
+  animType: 7
+  warningDelay: 0
+  warningDuration: 0.7777778
+  attackRecovery: 0.3
+  damage: 20
+  hitboxSize: {x: 1.5, y: 1.5}
+  hitboxOffset: {x: 0, y: 0.5}
+  attackCooldown: 1.5
+  canGuard: 1
+  canParry: 0
+  minAttackRange: 0
+  maxAttackRange: 2

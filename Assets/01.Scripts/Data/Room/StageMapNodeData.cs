@@ -10,6 +10,7 @@ public class StageMapNodeData
     public Vector2 mapPosition;
     public Sprite icon;
     public List<int> nextNodeIds = new List<int>();
+    public int floorIndex;
 
     [NonSerialized] public GameObject roomPrefab;
 }

@@ -17,6 +17,9 @@ public class BanditJumpAttackSkill : EnemySkill
         owner.LookAtTarget();
 
         board.animator.Play(EnemyAnimationType.Idle);
+
+        owner.ShowAttackWarning(jumpAttackData.CanGuard, jumpAttackData.CanParry);
+
         await WaitStartup(ctk);
 
         if (!board.animator.Play(data.AnimationType))

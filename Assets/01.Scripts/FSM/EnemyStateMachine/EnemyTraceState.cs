@@ -58,7 +58,7 @@ public class EnemyTraceState : EnemyBaseState
 
                 owner.LookAtTarget();
 
-                bool targetX = owner.Move(owner.Target.position);
+                bool targetX = owner.MoveToTarget(owner.Target.position);
 
                 if (targetX)
                 {

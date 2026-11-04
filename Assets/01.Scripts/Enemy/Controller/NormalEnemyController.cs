@@ -43,12 +43,17 @@ public class NormalEnemyController : EnemyController
     /// <returns></returns>
     public override Type GetAttackStateType()
     {
-        if (!IsTargetInAttackRange() || attackDatas == null)
+        if (!isAttackReady || attackDatas == null)
             return null;
 
         for (int i = 0; i < attackDatas.Length; i++)
         {
-            if (attackDatas[i] != null)
+            EnemyAttackData attackData = attackDatas[i];
+
+            if (attackData == null || attackData is EnemyProjectileAttackData)
+                continue;
+
+            if(IsTargetInRange(attackData))
                 return typeof(NormalEnemyAttackState);
         }
 

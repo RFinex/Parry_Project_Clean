@@ -15,6 +15,7 @@ public class BanditDaggerSkill : EnemySkill
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
+        owner.ShowAttackWarning(daggerData.CanGuard, daggerData.CanParry);
         // 선딜
         await WaitStartup(ctk);
         if (owner == null || board == null || daggerData.ShotTimes == null)

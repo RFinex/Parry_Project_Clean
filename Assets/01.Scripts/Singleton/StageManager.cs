@@ -47,7 +47,7 @@ public class StageManager : Singleton<StageManager>
 
     private void Start()
     {
-        Debug.Log($"StageManager Start | id={GetInstanceID()} | scene={gameObject.scene.name} | frame={Time.frameCount}");
+        Utils.Log<StageManager>($"Start | id={GetInstanceID()} | scene={gameObject.scene.name} | frame={Time.frameCount}");
 
         if (ServiceLocator.IsRegister<RoomSystem>())
         {
