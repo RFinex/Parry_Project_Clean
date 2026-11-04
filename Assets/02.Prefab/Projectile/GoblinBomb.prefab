@@ -257,7 +257,7 @@ MonoBehaviour:
   flightTime: 0.8
   gravityScale: 1
   groundCheckPoint: {fileID: 2427203884182560998}
-  groundCheckDistance: 0.1
+  groundCheckDistance: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 64

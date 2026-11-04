@@ -48,11 +48,11 @@ MonoBehaviour:
   startNodeId: 0
   mapShowDelay: 2
   mapGenerator:
-    floorCount: 8
-    laneCount: 7
+    floorCount: 10
+    laneCount: 9
     pathCount: 5
-    eliteFloor: 4
-    horizontalSpacing: 190
+    eliteFloor: 5
+    horizontalSpacing: 170
     verticalSpacing: 125
-    treasureRoomCount: 2
-    shopRoomCount: 2
+    treasureRoomCount: 4
+    shopRoomCount: 0

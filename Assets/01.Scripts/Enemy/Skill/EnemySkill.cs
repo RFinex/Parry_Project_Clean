@@ -151,6 +151,8 @@ public abstract class EnemySkill
 
     protected async UniTask WaitAndApplyAttack(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
+        owner.ShowAttackWarning(data.CanGuard, data.CanParry);
+
         if (data.AttackDelay > 0f)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(data.AttackDelay), cancellationToken: ctk);

@@ -22,10 +22,10 @@ public class MushroomAttack2State : MushroomAttackState
     {
         try
         {
-            bool isCompleted = await mushroom.AttackAsync(mushroom.Attack2Data, ctk);
+            //bool isCompleted = await mushroom.AttackAsync(mushroom.Attack2Data, ctk);
             
-            if (isCompleted)
-                TransitionState(typeof(EnemyTraceState));
+            //if (isCompleted)
+            //    TransitionState(typeof(EnemyTraceState));
         }
         catch (OperationCanceledException)
         {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d53b08cb01d174e4fa6488bdb6971aba, type: 3}
-  m_Name: Attack_Data_Bomb_Goblin
+  m_Name: BombAttack_Data_Goblin
   m_EditorClassIdentifier: Assembly-CSharp::GoblinBombAttackData
   canInterrupted: 0
   animType: 7
@@ -23,7 +23,8 @@ MonoBehaviour:
   attackCooldown: 10
   canGuard: 0
   canParry: 0
-  bombSpawnOffset: {x: 0.5, y: 0.5}
-  bombPoolId: 10002
+  minAttackRange: 3
+  maxAttackRange: 8
+  projectileSpawnOffset: {x: 0.5, y: 0.5}
+  projectilePoolId: 10002
   targetOffset: {x: 0, y: 0.5}
-  minThrowDistance: 3

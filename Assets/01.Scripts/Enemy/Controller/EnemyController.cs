@@ -83,8 +83,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual bool CanEnterHurtState => true;
 
-    // Shared warning effect for normal enemies, elites, and bosses.
-    protected void ShowAttackWarning(bool canGuard, bool canParry)
+    public void ShowAttackWarning(bool canGuard, bool canParry)
     {
         if (warningPos == null || (canGuard && canParry))
             return;
@@ -365,7 +364,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         sr.flipX = frontDir > 0f == isLeftFaces;
     }
 
-    public bool Move(Vector2 targetPos)
+    public virtual bool Move(Vector2 targetPos)
     {
         if (rb == null || data == null)
             return false;
@@ -382,7 +381,13 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         rb.linearVelocity = new Vector2(frontDir * data.MoveSpeed, rb.linearVelocity.y);
         return false;
     }
-    public void StopMove()
+
+    public virtual bool MoveToTarget(Vector2 targetPos)
+    {
+        return Move(targetPos);
+    }
+
+    public virtual void StopMove()
     {
         if (rb == null)
             return;

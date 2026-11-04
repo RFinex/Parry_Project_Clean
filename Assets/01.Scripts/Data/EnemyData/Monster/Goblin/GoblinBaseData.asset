@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoblinBaseData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
   maxHp: 200
-  maxBalance: 15
+  maxBalance: 10
   moveSpeed: 3
   minPatrolDistance: 2
   maxPatrolDistance: 5

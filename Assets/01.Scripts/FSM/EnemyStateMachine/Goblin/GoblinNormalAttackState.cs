@@ -11,26 +11,10 @@ public class GoblinNormalAttackState : EnemyBaseState
             return;
 
         EnterToken(owner.DestroyToken);
-        AttackAsync(goblin, token.Token).Forget();
     }
 
     public override void Exit(EnemyController owner)
     {
         ExitToken();
-    }
-
-    private async UniTaskVoid AttackAsync(Goblin goblin, CancellationToken ctk)
-    {
-        try
-        {
-            bool isCompleted = await goblin.AttackAsync(goblin.NormalAttackData, ctk);
-
-            if (isCompleted)
-                TransitionState(typeof(EnemyTraceState));
-        }
-        catch (OperationCanceledException)
-        {
-
-        }
     }
 }

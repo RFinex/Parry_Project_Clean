@@ -46,6 +46,7 @@ public class BanditChargeSkill : EnemySkill
             {
                 warning.transform.localScale = new Vector3(warningWidth, data.HitboxSize.y, 1f);
 
+                owner.ShowAttackWarning(chargeData.CanGuard, chargeData.CanParry);
                 await warning.FillAsync(data.StartupDelay, owner.FrontDir, ctk);
 
                 warning.ReturnPool();

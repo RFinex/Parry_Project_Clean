@@ -38,28 +38,14 @@ public class EnemyTraceState : EnemyBaseState
                     return;
                 }
 
-                if (owner.IsTargetInAttackRange())
+                Type attackStateType = owner.GetAttackStateType();
+
+                if (attackStateType != null)
                 {
-                    Type attackStateType = owner.GetAttackStateType();
+                    owner.StopMove();
 
-                    if (attackStateType != null)
-                    {
-                        owner.StopMove();
-
-                        if (!owner.IsAttackReady)
-                        {
-                            if (!isWaiting)
-                            {
-                                enemyBoard.animator.PlayFromStart(EnemyAnimationType.Idle);
-                                isWaiting = true;
-                            }
-
-                            continue;
-                        }
-
-                        TransitionState(attackStateType);
-                        return;
-                    }                    
+                    TransitionState(attackStateType);
+                    return;
                 }
 
                 if (!owner.IsTargetInTraceRange())
@@ -72,7 +58,7 @@ public class EnemyTraceState : EnemyBaseState
 
                 owner.LookAtTarget();
 
-                bool targetX = owner.Move(owner.Target.position);
+                bool targetX = owner.MoveToTarget(owner.Target.position);
 
                 if (targetX)
                 {

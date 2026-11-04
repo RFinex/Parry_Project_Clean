@@ -42,4 +42,7 @@ public class EnemyBlackBoard : BlackBoard
 
     public List<EnemySkill> skills = new();
     public EnemySkill currentSkill;
+
+    public EnemyAttackData[] attackDatas;
+    public EnemyAttackData currentAttackData;
 }

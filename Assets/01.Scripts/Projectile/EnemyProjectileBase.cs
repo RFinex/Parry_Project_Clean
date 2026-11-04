@@ -45,6 +45,12 @@ public class EnemyProjectileBase : PoolableGameObject
         Launch(dir.normalized);
     }
 
+    public virtual void ShootAt(Vector2 targetPos, EnemyAttackInfo info)
+    {
+        Vector2 dir = targetPos - (Vector2)transform.position;
+        Shoot(dir, info);
+    }
+
     protected virtual void Launch(Vector2 dir)
     {
         rb.linearVelocity = dir * ProjectileSpeed;
