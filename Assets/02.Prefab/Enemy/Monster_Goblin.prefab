@@ -263,9 +263,10 @@ MonoBehaviour:
   - type: 5
     stateName: Die
     duration: 0
+  attackDatas:
+  - {fileID: 11400000, guid: be8d782cbd69e364cb465ca0be0166d9, type: 2}
+  - {fileID: 11400000, guid: 8ccaa612026c18142b63dd90c85ca56d, type: 2}
   attackGizmoDuration: 0.2
-  normalAttackData: {fileID: 11400000, guid: be8d782cbd69e364cb465ca0be0166d9, type: 2}
-  bombAttackData: {fileID: 11400000, guid: 8ccaa612026c18142b63dd90c85ca56d, type: 2}
 --- !u!61 &1917466420808953454
 BoxCollider2D:
   m_ObjectHideFlags: 0

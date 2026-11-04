@@ -132,6 +132,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mushroom
   data: {fileID: 11400000, guid: 601cae632b4f9ca489877973fd460ccf, type: 2}
+  warningPos: {fileID: 5546588916942148125}
+  guardOnlyWarningId: 4
+  parryOnlyWarningId: 5
+  neitherWarningId: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -167,13 +171,17 @@ MonoBehaviour:
   - type: 5
     stateName: Die
     duration: 0
-  attack1Data: {fileID: 11400000, guid: 4123e4bde44dcc2499a192ec49818395, type: 2}
-  attack2Data: {fileID: 11400000, guid: b28ab1b8d6579f8478515a25a6da63fc, type: 2}
-  warningPos: {fileID: 5546588916942148125}
-  guardOnlyWarningId: 4
-  parryOnlyWarningId: 5
-  neitherWarningId: 3
+  - type: 6
+    stateName: Stagger
+    duration: 0
+  attackDatas:
+  - {fileID: 11400000, guid: b28ab1b8d6579f8478515a25a6da63fc, type: 2}
+  - {fileID: 11400000, guid: 4123e4bde44dcc2499a192ec49818395, type: 2}
+  projectileAttackData: {fileID: 0}
   attackGizmoDuration: 1
+  parryAttackData: {fileID: 11400000, guid: 4123e4bde44dcc2499a192ec49818395, type: 2}
+  normalAttackData: {fileID: 11400000, guid: b28ab1b8d6579f8478515a25a6da63fc, type: 2}
+  maxAttackIndex: 1
 --- !u!61 &2765711564352769778
 BoxCollider2D:
   m_ObjectHideFlags: 0

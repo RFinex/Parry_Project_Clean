@@ -63,7 +63,7 @@ public class GoblinBomb : EnemyProjectileBase
         fixedToken = fixedToken.Cancel_DisposeToken();
     }
 
-    public void ShootAt(Vector2 targetPos, EnemyAttackInfo info)
+    public override void ShootAt(Vector2 targetPos, EnemyAttackInfo info)
     {
         this.targetPos = targetPos;
         base.Shoot(Vector2.zero, info);

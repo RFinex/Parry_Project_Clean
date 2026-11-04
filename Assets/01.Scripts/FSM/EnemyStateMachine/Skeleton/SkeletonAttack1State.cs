@@ -23,7 +23,10 @@ public class SkeletonAttack1State : SkeletonAttackState
     {
         try
         {
+            //bool isCompleted = await skeleton.AttackAsync(skeleton.Attack1Data, ctk);
 
+            //if (isCompleted)
+            //    TransitionState(typeof(EnemyTraceState));
         }
         catch (OperationCanceledException)
         {

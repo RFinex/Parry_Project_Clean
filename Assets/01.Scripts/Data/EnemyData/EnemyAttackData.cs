@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EnemyAttackData : ScriptableObject
 {
@@ -24,6 +25,13 @@ public class EnemyAttackData : ScriptableObject
     [SerializeField] private bool canGuard = true;
     [SerializeField] private bool canParry = true;
 
+    [Header("Attack Range")]
+    [FormerlySerializedAs("minThrowDistance")]
+    [SerializeField, Min(0f)] private float minAttackRange;
+
+    [FormerlySerializedAs("normalAttackRange")]
+    [SerializeField, Min(0f)] private float maxAttackRange = 1.5f;
+
     public EnemyAnimationType AnimType => animType;
 
     public float WarningDelay => warningDelay;
@@ -37,5 +45,8 @@ public class EnemyAttackData : ScriptableObject
 
     public bool CanGuard => canGuard;
     public bool CanParry => canParry;
+
+    public float MinAttackRange => minAttackRange;
+    public float MaxAttackRange => maxAttackRange;
     
 }

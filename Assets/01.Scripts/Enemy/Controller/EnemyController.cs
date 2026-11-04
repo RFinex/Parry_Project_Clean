@@ -83,8 +83,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected virtual bool CanEnterHurtState => true;
 
-    // Shared warning effect for normal enemies, elites, and bosses.
-    protected void ShowAttackWarning(bool canGuard, bool canParry)
+    public void ShowAttackWarning(bool canGuard, bool canParry)
     {
         if (warningPos == null || (canGuard && canParry))
             return;
