@@ -223,6 +223,11 @@ public class PlayerStats
         OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
     }
 
+    public void SetInvincible(bool invincible)
+    {
+        isInvincible = invincible;
+    }
+
     public void StartInvincible()
     {
         invincibleTimer = InvincibleTime;

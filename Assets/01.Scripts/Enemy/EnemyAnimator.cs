@@ -12,7 +12,13 @@ public enum EnemyAnimationType
     Jump,
     Death,
     Stagger,
-    Attack2
+    Attack2,
+
+    ComboAttack1,
+    ComboAttack2,
+    ComboAttack3,
+    Dash,
+    Run
 }
 
 [Serializable]

@@ -201,7 +201,8 @@ public class StageMapGenerator
         int requiredCount = treasureRoomCount + shopRoomCount;
         bool hasEnoughCandidates = candidates.Count >= requiredCount;
 
-        AssignRoomType(candidates, RoomType.Treasure, treasureRoomCount);
+        AssignRoomTypeOnUniqueFloors(candidates, RoomType.Treasure, treasureRoomCount);
+        //AssignRoomType(candidates, RoomType.Treasure, treasureRoomCount);
         AssignRoomType(candidates, RoomType.Shop, shopRoomCount);
 
         if (!hasEnoughCandidates)
@@ -223,6 +224,39 @@ public class StageMapGenerator
             int index = UnityEngine.Random.Range(0, candidates.Count);
             candidates[index].roomType = roomType;
             candidates.RemoveAt(index);
+        }
+    }
+
+    /// <summary>
+    /// AssignRoomType과 비슷한 기능. 같은 층에는 같은 특수방을 배치하지 않는 조건을 추가
+    /// </summary>
+    /// <param name="candidates"> 배치된 모든 Normal 타입 방 </param>
+    /// <param name="roomType"> 변경할 방 타입 </param>
+    /// <param name="count"> 반복 횟수 </param>
+    private void AssignRoomTypeOnUniqueFloors(List<StageMapNodeData> candidates, RoomType roomType, int count)
+    {
+        // 이미 배정된 층에는 다시 배치하지 않음
+        HashSet<int> usedFloors = new();
+        List<StageMapNodeData> floorCandidates = new();
+
+        for (int i = 0; i < count && candidates.Count > 0; i++)
+        {
+            floorCandidates.Clear();
+
+            foreach (StageMapNodeData candidate in candidates)
+            {
+                if (!usedFloors.Contains(candidate.floorIndex))
+                    floorCandidates.Add(candidate);
+            }
+
+            if (floorCandidates.Count == 0)
+                break;
+
+            StageMapNodeData selected = floorCandidates[UnityEngine.Random.Range(0, floorCandidates.Count)];
+
+            selected.roomType = roomType;
+            usedFloors.Add(selected.floorIndex);
+            candidates.Remove(selected);
         }
     }
 }
