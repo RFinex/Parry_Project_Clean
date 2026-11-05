@@ -274,8 +274,19 @@ MonoBehaviour:
   - type: 14
     stateName: Base Layer.SpecialAttack
     duration: 0
+  - type: 15
+    stateName: Base Layer.ComboAttack1Fast
+    duration: 0
+  - type: 16
+    stateName: Base Layer.ComboAttack2Fast
+    duration: 0
+  - type: 17
+    stateName: Base Layer.ComboAttack3Fast
+    duration: 0
   parryComboData: {fileID: 11400000, guid: a997315f54f405b49b8c22f128984501, type: 2}
   throwData: {fileID: 11400000, guid: e08a5f58c83ebda41afb548d51bad1d9, type: 2}
+  upperData: {fileID: 11400000, guid: 1b9f5531a5ecdff4b88568cead47aaf2, type: 2}
+  largeComboData: {fileID: 11400000, guid: afa02d2a0df3e0c41a1a39e319c5d1d8, type: 2}
 --- !u!95 &6185599990955698208
 Animator:
   serializedVersion: 7

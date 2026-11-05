@@ -21,7 +21,10 @@ public enum EnemyAnimationType
     Run,
 
     SamuraiThrow,
-    SamuraiUpperAttack
+    SamuraiUpperAttack,
+    ComboAttack1Fast,
+    ComboAttack2Fast,
+    ComboAttack3Fast
 }
 
 [Serializable]

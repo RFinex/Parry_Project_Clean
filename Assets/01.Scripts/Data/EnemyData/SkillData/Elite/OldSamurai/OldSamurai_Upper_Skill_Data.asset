@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c485847ed87c1434aba1d739f1256ee8, type: 3}
+  m_Name: OldSamurai_Upper_Skill_Data
+  m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiUpperSkillData
+  minRange: 0
+  maxRange: 1
+  cooldown: 10
+  damage: 0
+  attackDelay: 0
+  animationType: 14
+  hitboxSize: {x: 1.7, y: 3.1}
+  hitboxOffset: {x: 0, y: 1.6}
+  startupDelay: 0.2
+  recoveryDelay: 0.5
+  canGuard: 0
+  canParry: 0
+  warningDelay: 0.16666667
+  hitDelay: 0.5833333
+  animEndDelay: 0.6666667

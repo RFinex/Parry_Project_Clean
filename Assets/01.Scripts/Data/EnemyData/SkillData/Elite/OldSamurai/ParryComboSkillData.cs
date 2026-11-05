@@ -5,8 +5,17 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "OldSamurai_Parry_Combo_Skill_Data", menuName = "Enemy/Skills/Old Samurai Parry Combo")]
 public class ParryComboSkillData : EnemySkillData
 {
-    [SerializeField] private List<ParryComboStrikeData> strikes = new();    
+    [Header("Combo Attack Strikes")]
+    [SerializeField] private List<ParryComboStrikeData> strikes = new();
+
+    [Header("Charge Setting")]
+    [SerializeField] private float chargeDistance = 3f;
+    [SerializeField] private float chargeDuration = 0.05f;
+
     public List<ParryComboStrikeData> Strikes => strikes;
+
+    public float ChargeDistance => chargeDistance;
+    public float ChargeDuration => chargeDuration;
 }
 
 [Serializable]
