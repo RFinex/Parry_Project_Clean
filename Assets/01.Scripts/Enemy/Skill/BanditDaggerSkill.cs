@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class BanditDaggerSkill : EnemySkill
@@ -59,7 +58,7 @@ public class BanditDaggerSkill : EnemySkill
             if (projectile == null)
                 continue;
 
-            EnemyAttackInfo attackInfo = new EnemyAttackInfo(data.Damage, owner, data.CanGuard, data.CanParry, false);
+            EnemyAttackInfo attackInfo = new(data.Damage, owner, data.CanGuard, data.CanParry, false);
 
             projectile.Shoot(direction, attackInfo);
         }

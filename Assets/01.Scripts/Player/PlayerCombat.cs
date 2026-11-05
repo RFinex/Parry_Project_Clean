@@ -176,7 +176,7 @@ public class PlayerCombat
         {
             IExecuteTarget enemy = hit.GetComponentInParent<IExecuteTarget>();
 
-            if (enemy == null | !enemy.CanExecute)
+            if (enemy == null || !enemy.CanExecute)
                 continue;
 
             Vector2 dir = (Vector2)hit.transform.position - pos;

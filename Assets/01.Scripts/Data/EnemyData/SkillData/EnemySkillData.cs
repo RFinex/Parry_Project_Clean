@@ -16,7 +16,7 @@ public class EnemySkillData : ScriptableObject
 
     [Header("Hitbox")]
     [SerializeField] private Vector2 hitboxSize;
-    [SerializeField] private float hitboxXOffset;
+    [SerializeField] private Vector2 hitboxOffset;
 
     [Header("Start Up")]
     [SerializeField] private float startupDelay;
@@ -36,7 +36,7 @@ public class EnemySkillData : ScriptableObject
     public EnemyAnimationType AnimationType => animationType;
 
     public Vector2 HitboxSize => hitboxSize;
-    public float HitboxXOffset => hitboxXOffset;
+    public Vector2 HitboxOffset => hitboxOffset;
 
     public float StartupDelay => startupDelay;
     public float RecoveryDelay => recoveryDelay;

@@ -12,6 +12,7 @@ public class EnemyBaseData : ScriptableObject
     [SerializeField] private float minPatrolDistance = 2f;
     [SerializeField] private float maxPatrolDistance = 4f;
     [SerializeField] private float arrivalDistance = 0.05f;
+    [SerializeField] private float traceStopDistance = 0.3f;
 
     [Header("Range")]
     [SerializeField] private float detectRange = 5f;
@@ -55,6 +56,7 @@ public class EnemyBaseData : ScriptableObject
     public float MinPatrolDistance => minPatrolDistance;
     public float MaxPatrolDistance => maxPatrolDistance;
     public float ArrivalDistance => arrivalDistance;
+    public float TraceStopDistance => traceStopDistance;
 
     public float DetectRange => detectRange;
     public float AttackRange => attackRange;

@@ -12,7 +12,8 @@ public class PlayerStats
     private float nowStamina;
 
     private float invincibleTimer;
-    private bool isInvincible;
+    private bool isDamageInvincible;
+    private bool isDashInvincible;
 
     public float NowHp => nowHp;
     public float MaxHp => GetStats(StatId.MaxHp);
@@ -20,7 +21,7 @@ public class PlayerStats
     public float MaxStamina => GetStats(StatId.MaxStamina);
 
     public bool IsDead => nowHp <= 0f;
-    public bool IsInvincible => isInvincible;
+    public bool IsInvincible => isDamageInvincible || isDashInvincible;
     public float InvincibleTime => GetStats(StatId.InvincibleTime);
 
     public event Action<float, float> OnHealthChanged;
@@ -223,10 +224,15 @@ public class PlayerStats
         OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
     }
 
+    public void SetDashInvincible(bool invincible)
+    {
+        isDashInvincible = invincible;
+    }
+
     public void StartInvincible()
     {
         invincibleTimer = InvincibleTime;
-        isInvincible = InvincibleTime > 0f;
+        isDamageInvincible = InvincibleTime > 0f;
     }
 
     /// <summary>
@@ -235,7 +241,7 @@ public class PlayerStats
     /// <param name="deltaTime"> Time.deltaTime </param>
     public void UpdateInvincible(float deltaTime)
     {
-        if (!isInvincible)
+        if (!isDamageInvincible)
             return;
 
         invincibleTimer -= deltaTime;
@@ -246,7 +252,7 @@ public class PlayerStats
 
     public void EndInvincible()
     {
-        isInvincible = false;
+        isDamageInvincible = false;
         invincibleTimer = 0f;
     }
 

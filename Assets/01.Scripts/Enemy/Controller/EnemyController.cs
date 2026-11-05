@@ -384,7 +384,21 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     public virtual bool MoveToTarget(Vector2 targetPos)
     {
-        return Move(targetPos);
+        if (data == null)
+            return false;
+
+        float distanceX = targetPos.x - transform.position.x;
+        float stopDistance = data.TraceStopDistance;
+
+        if (Mathf.Abs(distanceX) <= stopDistance)
+        {
+            StopMove();
+            return true;
+        }
+
+        Vector2 moveTarget = new(targetPos.x - Mathf.Sign(distanceX) * stopDistance, transform.position.y);
+
+        return Move(moveTarget);
     }
 
     public virtual void StopMove()

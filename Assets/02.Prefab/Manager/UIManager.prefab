@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d0aaac211d69d4e8b6aeea83c9e444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  ddol: 0
+  ddol: 1
   popupPrefabs:
   - {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
   - {fileID: 3503980271824841110, guid: d9e016f5270344440bbb55c0aebeee2a, type: 3}

@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class FlyingEnemyController : NormalEnemyController
 {
-    [SerializeField, Min(0f)] private float traceStopDistance = 0.5f;
-
     public override bool Move(Vector2 targetPos)
     {
         if (rb == null || data == null)
@@ -34,7 +32,7 @@ public class FlyingEnemyController : NormalEnemyController
             dir = Vector2.right * FrontDir;
 
         // 추적 지점 거리 보정
-        Vector2 moveTarget = targetPos - dir.normalized * traceStopDistance;
+        Vector2 moveTarget = targetPos - dir.normalized * data.TraceStopDistance;
 
         return Move(moveTarget);
     }

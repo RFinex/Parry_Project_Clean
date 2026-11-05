@@ -19,12 +19,14 @@ public class PlayerDashState : PlayerBaseState
         float dashCooldown = playerBoard.stats.GetStats(StatId.DashCooldown);
 
         playerBoard.skill.DashCoolTime(dashCooldown, owner.DestroyToken).Forget();
-
+        playerBoard.stats.SetDashInvincible(true);
+        
         DashAsync(dashTime, dashSpeed, token.Token).Forget();
     }
 
     public override void Exit(PlayerController owner)
     {
+        playerBoard.stats.SetDashInvincible(false);
         ExitToken();
     }
 

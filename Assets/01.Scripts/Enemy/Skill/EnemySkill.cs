@@ -30,7 +30,7 @@ public abstract class EnemySkill
     public bool IsReady => !isCooldown;
 
     public Vector2 HitboxSize => data != null ? data.HitboxSize : Vector2.zero;
-    public float HitboxXOffset => data != null ? data.HitboxXOffset : 0f;
+    public Vector2 HitboxOffset => data != null ? data.HitboxOffset : Vector2.zero;
 
     protected EnemySkill(EnemySkillData data)
     {
@@ -137,7 +137,10 @@ public abstract class EnemySkill
         if (Target == null)
             return false;
 
-        Vector2 center = (Vector2)owner.transform.position + Vector2.right * owner.FrontDir * data.HitboxXOffset;
+        Vector2 offset = data.HitboxOffset;
+        offset.x *= owner.FrontDir;
+
+        Vector2 center = (Vector2)owner.transform.position + offset;
 
         Collider2D hit = Physics2D.OverlapBox(center, data.HitboxSize, 0f, board.playerLayer);
 
