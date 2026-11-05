@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ParryComboSkillData
   minRange: 0
   maxRange: 1.5
-  cooldown: 3
-  damage: 10
+  cooldown: 4
+  damage: 12
   attackDelay: 0
   animationType: 8
-  hitboxSize: {x: 1, y: 1}
-  hitboxXOffset: 0.5
+  hitboxSize: {x: 1.5, y: 1}
+  hitboxOffset: {x: 0.5, y: 0.5}
   startupDelay: 1
-  recoveryDelay: 1
+  recoveryDelay: 0.3
   canGuard: 0
   canParry: 1
   strikes:

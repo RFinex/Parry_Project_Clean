@@ -6,8 +6,10 @@ public class OldSamurai : EliteEnemyController
 {
     [Header("Skill Data")]
     [SerializeField] private ParryComboSkillData parryComboData;
+    [SerializeField] private OldSamuraiThrowSkillData throwData;
 
     private OldSamuraiParryComboSkill parryComboSkill;
+    private OldSamuraiThrowSkill throwSkill;
     
 
     protected override void InitBlackBoard()
@@ -15,13 +17,20 @@ public class OldSamurai : EliteEnemyController
         base.InitBlackBoard();
 
         parryComboSkill = new(parryComboData);
+        throwSkill = new(throwData);
 
         blackBoard.skills.Clear();
         blackBoard.skills.Add(parryComboSkill);
+        blackBoard.skills.Add(throwSkill);
     }
 
     protected override INode BuildCombatBT()
     {
+        SequenceNode throwSequence = new();
+        throwSequence.Add(new ActionNode(CheckThrowRange));
+        throwSequence.Add(new ActionNode(CheckThrowCooldown));
+        throwSequence.Add(new ActionNode(UseThrowAttack));
+
         SequenceNode parryComboSequence = new();
         parryComboSequence.Add(new ActionNode(CheckParryComboRange));
         parryComboSequence.Add(new ActionNode(CheckParryComboCooldown));
@@ -32,6 +41,7 @@ public class OldSamurai : EliteEnemyController
         traceSequence.Add(new ActionNode(TracePlayer));
 
         SelectorNode combatSelector = new();
+        combatSelector.Add(throwSequence);
         combatSelector.Add(parryComboSequence);
         combatSelector.Add(traceSequence);
         combatSelector.Add(new ActionNode(Idle));
@@ -41,6 +51,10 @@ public class OldSamurai : EliteEnemyController
 
     #region BT Method
     
+    private UniTask<INode.State> CheckThrowRange(CancellationToken ctk)
+    {
+        return CheckSkillRange(throwSkill);
+    }
     private UniTask<INode.State> CheckParryComboRange(CancellationToken ctk)
     {
         return CheckSkillRange(parryComboSkill);
@@ -52,6 +66,10 @@ public class OldSamurai : EliteEnemyController
         return UniTask.FromResult(inRange ? INode.State.Success : INode.State.Failure);
     }
 
+    private UniTask<INode.State> CheckThrowCooldown(CancellationToken ctk)
+    {
+        return CheckSkillReady(throwSkill);
+    }
     private UniTask<INode.State> CheckParryComboCooldown(CancellationToken ctk)
     {
         return CheckSkillReady(parryComboSkill);
@@ -61,6 +79,11 @@ public class OldSamurai : EliteEnemyController
     {
         bool isReady = skill != null && skill.IsReady;
         return UniTask.FromResult(isReady ? INode.State.Success : INode.State.Failure);
+    }
+
+    private UniTask<INode.State> UseThrowAttack(CancellationToken ctk)
+    {
+        return throwSkill.TryUse(this, blackBoard, ctk);
     }
 
     private UniTask<INode.State> UseParryComboAttack(CancellationToken ctk)

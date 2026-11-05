@@ -18,7 +18,10 @@ public enum EnemyAnimationType
     ComboAttack2,
     ComboAttack3,
     Dash,
-    Run
+    Run,
+
+    SamuraiThrow,
+    SamuraiUpperAttack
 }
 
 [Serializable]

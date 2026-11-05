@@ -136,8 +136,12 @@ public abstract class EliteEnemyController : EnemyController
         isIdle = false;
 
         LookAtTarget();
-        blackBoard.animator.Play(EnemyAnimationType.Move);
-        Move(player.transform.position);
+
+        bool stopDistance = MoveToTarget(player.transform.position);
+
+        blackBoard.animator.Play(stopDistance ? EnemyAnimationType.Idle : EnemyAnimationType.Move);
+
+        isIdle = stopDistance;
 
         return UniTask.FromResult(INode.State.Running);
     }

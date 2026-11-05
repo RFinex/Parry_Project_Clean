@@ -16,15 +16,6 @@ public class BanditChargeSkill : EnemySkill
     {
         ChargeWarning warning = null;
 
-
-
-        //await WaitStartup(ctk);
-
-        //if (!board.animator.Play(data.AnimationType))
-        //    return;
-
-        //board.rb.linearVelocity = new Vector2(owner.FrontDir * chargeData.ChargeSpeed, board.rb.linearVelocity.y);
-
         try
         {
             owner.StopMove();
@@ -34,10 +25,11 @@ public class BanditChargeSkill : EnemySkill
 
             float chargeDistance = chargeData.ChargeSpeed * chargeData.ChargeDuration;
 
-            float warningWidth = chargeDistance + data.HitboxSize.x;
-            float warningOffset = data.HitboxXOffset + chargeDistance * 0.5f;
+            Vector2 hitboxOffset = data.HitboxOffset;
+            hitboxOffset.x *= owner.FrontDir;
 
-            Vector2 warningCenter = (Vector2)owner.transform.position + Vector2.right * owner.FrontDir * warningOffset;
+            float warningWidth = chargeDistance + data.HitboxSize.x;
+            Vector2 warningCenter = (Vector2)owner.transform.position + hitboxOffset + Vector2.right * owner.FrontDir * (chargeDistance * 0.5f);
             warningCenter.y += chargeData.Offset;
 
             warning = ObjectPoolManager.Instance.Get<ChargeWarning>(chargeData.WarningId, warningCenter);

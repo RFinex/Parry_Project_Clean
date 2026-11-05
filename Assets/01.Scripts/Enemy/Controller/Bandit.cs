@@ -125,7 +125,10 @@ public class Bandit : EliteEnemyController
         if (blackBoard == null || blackBoard.currentSkill == null)
             return;
 
-        Vector2 center = (Vector2)transform.position + (frontDir * blackBoard.currentSkill.HitboxXOffset) * Vector2.right;
+        Vector2 offset = blackBoard.currentSkill.HitboxOffset;
+        offset.x *= frontDir;
+
+        Vector2 center = (Vector2)transform.position + offset;
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(center, blackBoard.currentSkill.HitboxSize);

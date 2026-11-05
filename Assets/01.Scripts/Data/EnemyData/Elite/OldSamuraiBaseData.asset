@@ -18,6 +18,7 @@ MonoBehaviour:
   minPatrolDistance: 2
   maxPatrolDistance: 4
   arrivalDistance: 0.05
+  traceStopDistance: 1
   detectRange: 10
   attackRange: 2
   traceRange: 7

@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class OldSamuraiParryComboSkill : EnemySkill
@@ -15,16 +14,20 @@ public class OldSamuraiParryComboSkill : EnemySkill
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
     {
+        board.animator.Play(EnemyAnimationType.Idle);
+
         owner.StopMove();
-        owner.LookAtTarget();
+
+        await WaitStartup(ctk);
 
         for (int i = 0; i < comboData.Strikes.Count; i++)
         {
             ParryComboStrikeData strike = comboData.Strikes[i];
 
-            if (strike == null || board.animator.PlayFromStart(strike.animType))
+            if (strike == null || !board.animator.PlayFromStart(strike.animType))
                 return;
 
+            owner.LookAtTarget();
 
             if (strike.warningDelay > 0)
             {
@@ -46,7 +49,10 @@ public class OldSamuraiParryComboSkill : EnemySkill
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(remainTime), cancellationToken: ctk);
             }
-
         }
+
+        board.animator.Play(EnemyAnimationType.Idle);
+
+        await WaitRecovery(ctk);
     }
 }
