@@ -14,7 +14,7 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
     public OldSamuraiLargeComboAttackSkill(OldSamuraiLargeComboAttackData data) : base(data)
     {
         largeComboData = data;
-        attackPoints = new List<Vector2>(data != null && data.Strikes != null ? data.Strikes.Count : 0);
+        attackPoints = new List<Vector2>();
     }
 
     public override async UniTask ExecuteAsync(EnemyController owner, EnemyBlackBoard board, CancellationToken ctk)
@@ -26,15 +26,13 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
 
         try
         {
+            owner.LookAtTarget();
+
             await WaitStartup(ctk);
 
-            PlayerController target = Target;
-
-            if (target == null || largeComboData.Strikes == null || largeComboData.Strikes.Count == 0)
+            if (Target == null || largeComboData.Strikes == null || largeComboData.Strikes.Count == 0)
                 return;
-
-            // 패턴 시작 시 위치를 고정해, 미리보기와 실제 공격 위치가 일치하게 함
-            Vector2 targetStartPos = target.transform.position;
+                        
             Vector2 hitboxOffset = data.HitboxOffset;
             hitboxOffset.x *= owner.FrontDir;
 
@@ -42,20 +40,16 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
 
             for (int i = 0; i < largeComboData.Strikes.Count; i++)
             {
-                OldSamuraiLargeAttackData strike = largeComboData.Strikes[i];
+                Vector2 targetPos = Target.transform.position;
 
-                if (strike == null)
-                    return;
+                OldSamuraiLargeAttackData strike = largeComboData.Strikes[i];
 
                 Vector2 strikeOffset = strike.TargetOffset;
                 strikeOffset.x *= owner.FrontDir;
 
-                attackPoints.Add(targetStartPos + hitboxOffset + strikeOffset);
-            }
+                // 공격 예정 좌표 저장
+                attackPoints.Add(targetPos + hitboxOffset + strikeOffset);
 
-            // 공격 지점에 원형 미리보기 표시
-            for (int i = 0; i < attackPoints.Count; i++)
-            {
                 if (largeComboData.PreviewEffectId != 0 && ObjectPoolManager.Instance != null)
                 {
                     ObjectPoolManager.Instance.Get<EffectBase>(largeComboData.PreviewEffectId, attackPoints[i]);
@@ -70,6 +64,24 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
                     await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken: ctk);
                 }
             }
+
+            // 공격 지점에 원형 미리보기 표시
+            //for (int i = 0; i < attackPoints.Count; i++)
+            //{
+            //    if (largeComboData.PreviewEffectId != 0 && ObjectPoolManager.Instance != null)
+            //    {
+            //        ObjectPoolManager.Instance.Get<EffectBase>(largeComboData.PreviewEffectId, attackPoints[i]);
+            //    }
+
+            //    if (largeComboData.PreviewInterval > 0f)
+            //    {
+            //        await UniTask.Delay(TimeSpan.FromSeconds(largeComboData.PreviewInterval), cancellationToken: ctk);
+            //    }
+            //    else
+            //    {
+            //        await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken: ctk);
+            //    }
+            //}
 
             for (int i = 0; i < largeComboData.Strikes.Count; i++)
             {

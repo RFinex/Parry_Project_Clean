@@ -26,7 +26,7 @@ public class OldSamuraiParryComboSkill : EnemySkill
             {
                 ParryComboStrikeData strike = comboData.Strikes[i];
 
-                if (strike == null || !board.animator.PlayFromStart(strike.animType))
+                if (!board.animator.PlayFromStart(strike.animType))
                     return;
 
                 owner.LookAtTarget();
@@ -45,16 +45,19 @@ public class OldSamuraiParryComboSkill : EnemySkill
 
                 float chargePower = comboData.ChargeDistance / comboData.ChargeDuration;
                 float timer = 0f;
+                bool hasHit = false;
 
                 board.rb.linearVelocity = new Vector2(owner.FrontDir * chargePower, board.rb.linearVelocity.y);
 
                 // 돌진 시간동안 히트박스 유지
                 while (timer < comboData.ChargeDuration)
                 {
-                    ApplyAttack(owner, board);
+                    await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, cancellationToken: ctk);
 
-                    timer += Time.deltaTime;
-                    await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken: ctk);
+                    if (!hasHit)
+                        hasHit = ApplyAttack(owner, board);
+
+                    timer += Time.fixedDeltaTime;
                 }
 
                 owner.StopMove();

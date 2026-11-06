@@ -19,7 +19,7 @@ public class ParryComboSkillData : EnemySkillData
 }
 
 [Serializable]
-public class ParryComboStrikeData
+public struct ParryComboStrikeData
 {
     // 애니메이션 타입
     [Header("Animation Type")]

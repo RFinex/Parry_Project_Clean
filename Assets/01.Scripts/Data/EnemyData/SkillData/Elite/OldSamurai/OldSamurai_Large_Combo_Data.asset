@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiLargeComboAttackData
   minRange: 0
   maxRange: 20
-  cooldown: 1
+  cooldown: 20
   damage: 15
   attackDelay: 0
   animationType: 15

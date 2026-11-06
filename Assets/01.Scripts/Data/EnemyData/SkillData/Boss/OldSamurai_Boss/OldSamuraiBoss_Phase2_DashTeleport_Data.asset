@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a946f87fe854cf347bd3ae002ccd3ca7, type: 3}
+  m_Name: OldSamuraiBoss_Phase2_DashTeleport_Data
+  m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiPhase2DashTeleportData
+  minRange: 3
+  maxRange: 12
+  cooldown: 8
+  damage: 10
+  attackDelay: 0.08
+  animationType: 11
+  hitboxSize: {x: 1.5, y: 1.5}
+  hitboxOffset: {x: 0.4, y: 0}
+  startupDelay: 0
+  recoveryDelay: 0
+  canGuard: 1
+  canParry: 1
+  rearDistance: 1.5
+  dashStartDelay: 0.2
+  animEndDelay: 0.2

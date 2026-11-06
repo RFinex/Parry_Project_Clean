@@ -53,6 +53,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
+    protected Collider2D col;
     protected Animator animator;
 
     protected Transform target;
@@ -157,6 +158,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
         animator = GetComponent<Animator>();
 
         deathDuration = data.DeathDuration;
@@ -190,9 +192,11 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
             stats = stats,
             combat = combat,
             sr = sr,
+            col = col,
 
             animator = enemyAnimator,
-            playerLayer = playerLayer
+            playerLayer = playerLayer,
+            obstacleLayer = obstacleLayer
         };
     }
 

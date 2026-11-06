@@ -19,22 +19,22 @@ public class OldSamuraiLargeComboAttackData : EnemySkillData
 }
 
 [Serializable]
-public class OldSamuraiLargeAttackData
+public struct OldSamuraiLargeAttackData
 {
     [Header("Target Offset")]
     [SerializeField] private Vector2 targetOffset;
 
     [Header("Attack")]
     [SerializeField] private EnemyAnimationType animationType;
-    [SerializeField] private Vector2 hitboxSize = new(2f, 1.5f);
+    [SerializeField] private Vector2 hitboxSize;
     [SerializeField] private float warningDelay;
-    [SerializeField] private float warningDuration = 0.4f;
-    [SerializeField] private float hitDelay = 0.3f;
-    [SerializeField] private float animDuration = 0.8f;
+    [SerializeField] private float warningDuration;
+    [SerializeField] private float hitDelay;
+    [SerializeField] private float animDuration;
 
     [Header("Guard / Parry")]
-    [SerializeField] private bool canGuard = true;
-    [SerializeField] private bool canParry = true;
+    [SerializeField] private bool canGuard;
+    [SerializeField] private bool canParry;
 
     public Vector2 TargetOffset => targetOffset;
 

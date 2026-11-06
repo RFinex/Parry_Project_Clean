@@ -72,9 +72,11 @@ public class PlayerController : MonoBehaviour
     public PlayerStats Stats => stats;
 
     [Header("Move")]
-    [SerializeField] private float frontDir = 1f;
+    private float frontDir = 1f;
     private Vector2 moveInput;
     private Vector2 cacheMoveInput;
+
+    public float FrontDir => frontDir;
 
     [Header("Ground Check")]
     private Vector2 checkSize;
