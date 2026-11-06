@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public enum SceneName
 {
     LobbyScene,
-    Stage1_Scene
+    Stage1_Scene,
+    Stage2_Scene
 }
 
 public class SceneLoadManager : Singleton<SceneLoadManager>
@@ -16,6 +17,7 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
 
     private bool isLoading;
     private bool isReady;
+    private bool isWaitForSceneReady;
 
     private CancellationTokenSource token;
 
@@ -54,6 +56,7 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
         try
         {
             isReady = false;
+            isWaitForSceneReady = false;
 
             await transitionUI.FadeOutAsync(token.Token);
             transitionUI.ShowLoading();
@@ -67,7 +70,7 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
 
             // DDOL ÃÊ±âÈ­
 
-            if (name == SceneName.Stage1_Scene)
+            if (isWaitForSceneReady)
             {
                 await UniTask.WaitUntil(() => isReady, cancellationToken: token.Token);
             }
@@ -89,5 +92,10 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
     public void SceneReady()
     {
         isReady = true;
+    }
+
+    public void RequireSceneReady()
+    {
+        isWaitForSceneReady = true;
     }
 }

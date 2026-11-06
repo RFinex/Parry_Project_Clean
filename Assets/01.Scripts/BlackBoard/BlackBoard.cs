@@ -34,11 +34,14 @@ public class EnemyBlackBoard : BlackBoard
 
     public Rigidbody2D rb;
     public SpriteRenderer sr;
+    public Collider2D col;
+
     public EnemyStats stats;
     public EnemyCombat combat;
     public EnemyAnimator animator;
 
     public LayerMask playerLayer;
+    public LayerMask obstacleLayer;
 
     public List<EnemySkill> skills = new();
     public EnemySkill currentSkill;

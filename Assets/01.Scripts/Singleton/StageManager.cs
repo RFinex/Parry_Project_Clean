@@ -12,6 +12,8 @@ public class StageManager : Singleton<StageManager>
 
     [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
 
+    [SerializeField] private SceneName nextSceneAfterClear;
+
     private List<StageMapNodeData> nodes;
     private int currentNodeId;
     
@@ -23,9 +25,9 @@ public class StageManager : Singleton<StageManager>
 
     private void OnEnable()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = new CancellationTokenSource();
+        token = token.ResetToken();
+
+        SceneLoadManager.Instance.RequireSceneReady();
 
         EventBus.Subscribe<RoomClearedEvent>(HandleRoomClear);
         EventBus.Subscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
@@ -35,9 +37,7 @@ public class StageManager : Singleton<StageManager>
 
     private void OnDisable()
     {
-        token?.Cancel();
-        token?.Dispose();
-        token = null;
+        token = token.Cancel_DisposeToken();
 
         EventBus.UnSubscribe<RoomClearedEvent>(HandleRoomClear);
         EventBus.UnSubscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
@@ -90,9 +90,10 @@ public class StageManager : Singleton<StageManager>
 
         if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
         {
-            EventBus.Publish(new StageClearedEvent());
-            Utils.Log<StageManager>("스테이지 클리어");
-            SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene).Forget();
+            if(nextSceneAfterClear == SceneName.LobbyScene)
+                EventBus.Publish(new StageClearedEvent());
+
+            SceneLoadManager.Instance.LoadSceneAsync(nextSceneAfterClear).Forget();
             return;
         }
     }

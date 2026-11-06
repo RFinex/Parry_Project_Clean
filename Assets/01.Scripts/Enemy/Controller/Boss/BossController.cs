@@ -15,6 +15,9 @@ public abstract class BossController : EliteEnemyController
 
     public BossPhase CurrentPhase { get; private set; } = BossPhase.Phase1;
 
+    private bool isPhase2Transition;
+    protected virtual bool HasPhase2Intro => false;
+
     protected override INode BuildCombatBT()
     {
         SelectorNode root = new();
@@ -27,6 +30,7 @@ public abstract class BossController : EliteEnemyController
         phase1.Add(new ActionNode(CheckPhase1));
         phase1.Add(BuildPhase1BT());
 
+        root.Add(new ActionNode(CheckPhase2Transition));
         root.Add(phase2);
         root.Add(phase1);
 
@@ -48,6 +52,21 @@ public abstract class BossController : EliteEnemyController
         return UniTask.FromResult(CurrentPhase == BossPhase.Phase2 ? INode.State.Success : INode.State.Failure);
     }
 
+    private UniTask<INode.State> CheckPhase2Transition(CancellationToken ctk)
+    {
+        return UniTask.FromResult(isPhase2Transition ? INode.State.Running : INode.State.Failure);
+    }
+
+    protected virtual UniTask PlayPhase2IntroAsync(CancellationToken ctk)
+    {
+        return UniTask.CompletedTask;
+    }
+
+    protected void CompletePhase2Transition()
+    {
+        isPhase2Transition = false;
+    }
+
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
@@ -60,15 +79,32 @@ public abstract class BossController : EliteEnemyController
         {
             CurrentPhase = BossPhase.Phase2;
 
-            if (IsEnemyState(typeof(BTState)))
+            if (HasPhase2Intro)
+            {
+                isPhase2Transition = true;
+
+                if (IsEnemyState(typeof(BTState)))
+                    EnemyChangeState(typeof(BTState), true);
+
+                PlayPhase2IntroAsync(DestroyToken).Forget();
+            }
+            else if (IsEnemyState(typeof(BTState)))
+            {
                 EnemyChangeState(typeof(BTState), true);
+            }
         }
     }
 
     public override void InitPool()
     {
         CurrentPhase = BossPhase.Phase1;
+        isPhase2Transition = false;
         base.InitPool();
+    }
+
+    public virtual void SetRoomCenter(Transform center)
+    {
+
     }
 
     public abstract UniTask PlayIntroAsync(PlayerController player, Transform jumpPoint, Transform jumpPoint2, CancellationToken ctk);

@@ -8,7 +8,14 @@ public class AttackPointPreviewEffect : EffectBase
     [SerializeField] private float holdDuration = 0.04f;
     [SerializeField] private float fadeOutDuration = 0.12f;
 
+    private Vector3 originScale;
+
     private Sequence fadeSequence;
+
+    private void Awake()
+    {
+        originScale = transform.localScale;
+    }
 
     public override void InitPool()
     {
@@ -38,6 +45,8 @@ public class AttackPointPreviewEffect : EffectBase
     {
         fadeSequence?.Kill();
         fadeSequence = null;
+
+        transform.localScale = originScale;
 
         base.InitPoolReturn();
     }

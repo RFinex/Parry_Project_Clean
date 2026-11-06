@@ -196,4 +196,9 @@ public abstract class EliteEnemyController : EnemyController
     {
         EnemyChangeState(typeof(BTState));
     }
+
+    public virtual UniTask PlayIntroAsync(PlayerController player, CancellationToken ctk)
+    {
+        return UniTask.CompletedTask;
+    }
 }

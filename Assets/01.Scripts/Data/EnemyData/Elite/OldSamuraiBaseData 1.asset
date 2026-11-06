@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3285e16716d480a4781a2a8d3269bf61, type: 3}
-  m_Name: OldSamuraiBaseData
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
+  m_Script: {fileID: 11500000, guid: 920799917ab54eb41981bc4605c52699, type: 3}
+  m_Name: OldSamuraiBaseData 1
+  m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiBaseData
   maxHp: 6000
   maxBalance: 80
   moveSpeed: 4
@@ -37,3 +37,5 @@ MonoBehaviour:
   introFocusDuration: 0.6
   introFaceDuration: 0.5
   introReturnDuration: 0.6
+  walkSpeed: 1.5
+  walkDuration: 5

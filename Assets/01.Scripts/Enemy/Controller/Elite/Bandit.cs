@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -134,4 +135,20 @@ public class Bandit : EliteEnemyController
         Gizmos.DrawWireCube(center, blackBoard.currentSkill.HitboxSize);
     }
 #endif
+
+    public override async UniTask PlayIntroAsync(PlayerController player, CancellationToken ctk)
+    {
+        if (player == null)
+            return;
+
+        FacePlayer(player);
+
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
 }

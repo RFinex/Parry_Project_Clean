@@ -10,6 +10,8 @@ public class BossRoomEncounter : MonoBehaviour
     [SerializeField] private Transform bossJumpPoint_1;
     [SerializeField] private Transform bossJumpPoint_2;
 
+    [SerializeField] private Transform roomCenter;
+
     private BossController boss;
     private PlayerController player;
 
@@ -31,6 +33,9 @@ public class BossRoomEncounter : MonoBehaviour
     {
         this.boss = boss;
         this.player = player;
+
+        if (boss != null)
+            boss.SetRoomCenter(roomCenter);
 
         isStarted = false;
 

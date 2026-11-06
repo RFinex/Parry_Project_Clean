@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a2956b5b6358648a933ebd0275aa77, type: 3}
+  m_Name: OldSamuraiBoss_Phase2_Sweep_Data
+  m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiPhase2SweepData
+  minRange: 2
+  maxRange: 6
+  cooldown: 5
+  damage: 10
+  attackDelay: 0
+  animationType: 0
+  hitboxSize: {x: 0, y: 0}
+  hitboxOffset: {x: 0, y: 0}
+  startupDelay: 0.5
+  recoveryDelay: 0.6
+  canGuard: 1
+  canParry: 1
+  attackPointEffectId: 7
+  attackPointDuration: 0.25
+  strikes:
+  - animationType: 15
+    hitboxOffset: {x: 0.6, y: 0.6}
+    hitboxSize: {x: 2, y: 2}
+    warningDelay: 0.25
+    hitDelay: 0.4
+    animEndDelay: 0.2
+    canGuard: 0
+    canParry: 1
+    attackPointScale: {x: 2, y: 2}
+  - animationType: 16
+    hitboxOffset: {x: 1.2, y: 1.2}
+    hitboxSize: {x: 3, y: 3}
+    warningDelay: 0.25
+    hitDelay: 0.3
+    animEndDelay: 0.3
+    canGuard: 0
+    canParry: 1
+    attackPointScale: {x: 3, y: 3}
+  - animationType: 17
+    hitboxOffset: {x: 1.8, y: 1.8}
+    hitboxSize: {x: 4, y: 4}
+    warningDelay: 0.25
+    hitDelay: 0.2
+    animEndDelay: 0.3
+    canGuard: 0
+    canParry: 1
+    attackPointScale: {x: 4, y: 4}
+  - animationType: 16
+    hitboxOffset: {x: 2.4, y: 2.4}
+    hitboxSize: {x: 5, y: 5}
+    warningDelay: 0.25
+    hitDelay: 0.3
+    animEndDelay: 0.3
+    canGuard: 0
+    canParry: 1
+    attackPointScale: {x: 5, y: 5}
+  - animationType: 17
+    hitboxOffset: {x: 3, y: 3}
+    hitboxSize: {x: 6, y: 6}
+    warningDelay: 0.25
+    hitDelay: 0.2
+    animEndDelay: 0.3
+    canGuard: 0
+    canParry: 0
+    attackPointScale: {x: 6, y: 6}

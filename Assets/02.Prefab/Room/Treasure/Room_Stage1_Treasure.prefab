@@ -328,7 +328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8988278641614040887}
   m_Layer: 0
-  m_Name: Room_Stage1_Elite
+  m_Name: Room_Stage1_Treasure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
