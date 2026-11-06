@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58688598858afe04b9e7c88ef99ac83e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OldSamurai
-  data: {fileID: 11400000, guid: bde10040dfc4929479098b5b173bbdbf, type: 2}
+  data: {fileID: 11400000, guid: 26932069e7c11da47af52b51d3c78842, type: 2}
   warningPos: {fileID: 3491415291226524125}
   guardOnlyWarningId: 4
   parryOnlyWarningId: 5
@@ -282,6 +282,9 @@ MonoBehaviour:
     duration: 0
   - type: 17
     stateName: Base Layer.ComboAttack3Fast
+    duration: 0
+  - type: 19
+    stateName: Base Layer.Walk
     duration: 0
   parryComboData: {fileID: 11400000, guid: a997315f54f405b49b8c22f128984501, type: 2}
   throwData: {fileID: 11400000, guid: e08a5f58c83ebda41afb548d51bad1d9, type: 2}

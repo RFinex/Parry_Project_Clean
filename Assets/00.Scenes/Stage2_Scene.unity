@@ -1391,7 +1391,7 @@ PrefabInstance:
     - target: {fileID: 6115807090472416877, guid: 383ce3f8eea9f844b843b19674b59d90, type: 3}
       propertyPath: 'roomPrefabGroups.Array.data[1].prefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 7494745883464025524, guid: 2ec9ea4eb056fa64c999d4645ab74f40, type: 3}
+      objectReference: {fileID: 7494745883464025524, guid: 1ea73e39b1ec2f94fb65c6a659812c70, type: 3}
     - target: {fileID: 6115807090472416877, guid: 383ce3f8eea9f844b843b19674b59d90, type: 3}
       propertyPath: 'roomPrefabGroups.Array.data[2].prefabs.Array.data[0]'
       value: 

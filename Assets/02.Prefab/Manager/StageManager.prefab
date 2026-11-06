@@ -56,3 +56,4 @@ MonoBehaviour:
     verticalSpacing: 125
     treasureRoomCount: 4
     shopRoomCount: 0
+  nextSceneAfterClear: 0

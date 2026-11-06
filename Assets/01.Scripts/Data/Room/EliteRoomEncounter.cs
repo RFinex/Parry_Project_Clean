@@ -67,8 +67,7 @@ public class EliteRoomEncounter : MonoBehaviour
             //gameManager.SetCameraTarget(elite.transform);
             //await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFocusDuration), cancellationToken: ctk);
 
-            elite.FacePlayer(player);
-            await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFaceDuration), cancellationToken: ctk);
+            await elite.PlayIntroAsync(player, ctk);
 
             await gameManager.MoveCameraTargetAsync(player.transform, elite.Data.IntroReturnDuration, ctk);
 

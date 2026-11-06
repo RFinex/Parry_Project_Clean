@@ -10,7 +10,7 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
     private readonly List<Vector2> attackPoints = new();
     private readonly List<AttackLinePreviewEffect> lineEffects = new();
     private readonly List<float> attackAngles = new();
-    private readonly Transform lineAttackCenter;
+    private Transform lineAttackCenter;
 
     public OldSamuraiPhase2LineBarrageSkill(OldSamuraiPhase2LineBarrageData data, Transform lineAttackCenter) : base(data)
     {
@@ -142,5 +142,10 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
 
             owner.StopMove();
         }
+    }
+
+    public void SetRoomCenter(Transform center)
+    {
+        lineAttackCenter = center;
     }
 }

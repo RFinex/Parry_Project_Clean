@@ -25,7 +25,9 @@ public enum EnemyAnimationType
     ComboAttack1Fast,
     ComboAttack2Fast,
     ComboAttack3Fast,
-    Fall
+    Fall,
+    Walk,
+    Heal
 }
 
 [Serializable]

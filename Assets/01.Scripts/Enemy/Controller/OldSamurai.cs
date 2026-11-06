@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -162,4 +163,68 @@ public class OldSamurai : EliteEnemyController
         Gizmos.DrawWireCube(center, skillData.HitboxSize);
     }
 #endif
+
+    public async override UniTask PlayIntroAsync(PlayerController player, CancellationToken ctk)
+    {
+        if (player == null || blackBoard == null || blackBoard.rb == null)
+            return;
+
+        if (data is not OldSamuraiBaseData samuraiData)
+            return;
+
+        if (samuraiData.WalkSpeed <= 0f || samuraiData.WalkDuration <= 0f)
+            return;
+
+        isIntroRunning = true;
+
+        try
+        {
+            FacePlayer(player);
+            blackBoard.animator.Play(EnemyAnimationType.Walk);
+
+            float timer = 0f;
+
+            while (timer < samuraiData.WalkDuration)
+            {
+                ctk.ThrowIfCancellationRequested();
+
+                float dir = player.transform.position.x - transform.position.x;
+                float remainDistance = Mathf.Abs(dir) - data.TraceStopDistance;
+
+                if (remainDistance <= data.ArrivalDistance)
+                    break;
+
+                SetFrontDir(dir);
+
+                float speed = Mathf.Min(samuraiData.WalkSpeed, remainDistance / Time.fixedDeltaTime);
+
+                blackBoard.rb.linearVelocity = new Vector2(FrontDir * speed, blackBoard.rb.linearVelocity.y);
+
+                await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
+                timer += Time.fixedDeltaTime;
+            }
+
+            StopMove();
+            FacePlayer(player);
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(data.IntroFaceDuration), cancellationToken: ctk);
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+        finally
+        {
+            StopMove();
+            isIntroRunning = false;
+        }
+    }
+
+    public override void InitPool()
+    {
+        base.InitPool();
+
+        isIntroRunning = false;
+    }
 }

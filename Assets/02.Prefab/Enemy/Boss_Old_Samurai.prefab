@@ -305,6 +305,9 @@ MonoBehaviour:
   - type: 17
     stateName: Base Layer.ComboAttack3Fast
     duration: 0
+  - type: 20
+    stateName: Base Layer.Heal
+    duration: 0
   bossData: {fileID: 11400000, guid: 2a05178de8db73749874388b507c1503, type: 2}
   roomCenter: {fileID: 0}
   parryComboData: {fileID: 11400000, guid: fcf31aa8ef4c53240a138747896fd488, type: 2}

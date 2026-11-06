@@ -39,6 +39,11 @@ public class OldSamurai_Boss : BossController
     private OldSamuraiPhase2LineBarrageSkill lineSkill;
     private OldSamuraiPhase2DashTeleportSkill dashSkill;
 
+    private Transform jumpPoint_1;
+    private Transform jumpPoint_2;
+
+    protected override bool HasPhase2Intro => true;
+
     protected override void InitBlackBoard()
     {
         base.InitBlackBoard();
@@ -370,8 +375,134 @@ public class OldSamurai_Boss : BossController
     }
     #endregion
 
+    private const float JumpLandingTimeout = 5f;
+
     public override async UniTask PlayIntroAsync(PlayerController player, Transform jumpPoint, Transform jumpPoint2, CancellationToken ctk)
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ctk);
+        if (player == null || jumpPoint == null || jumpPoint2 == null)
+            return;
+
+        jumpPoint_1 = jumpPoint;
+        jumpPoint_2 = jumpPoint2;
+        isIntroRunning = true;
+
+        try
+        {
+            FacePlayer(player);
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
+
+            if (Data.IntroFaceDuration > 0f)
+                await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+
+            await JumpToPointAsync(jumpPoint_2, ctk);
+
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+            StopMove();
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
+            isIntroRunning = false;
+        }
+    }
+
+    protected override async UniTask PlayPhase2IntroAsync(CancellationToken ctk)
+    {
+        GameManager gameManager = GameManager.Instance;
+
+        if (jumpPoint_1 == null || jumpPoint_2 == null || blackBoard == null || blackBoard.rb == null)
+        {
+            CompletePhase2Transition();
+            return;
+        }
+
+        isIntroRunning = true;
+
+        if (gameManager != null)
+            gameManager.SetGameState(GameState.Cutscene);
+
+        try
+        {
+            if (gameManager != null)
+                await gameManager.MoveCameraTargetAsync(transform, Data.IntroFocusDuration, ctk);
+
+            if (Data.IntroFaceDuration > 0f)
+                await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+            if (!await JumpToPointAsync(jumpPoint_1, ctk))
+                return;
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
+            if (Data.IntroFaceDuration > 0f)
+                await UniTask.Delay(TimeSpan.FromSeconds(Data.IntroFaceDuration), cancellationToken: ctk);
+
+            FacePlayer(GetPlayer());
+
+            if (blackBoard.animator.PlayFromStart(EnemyAnimationType.Heal))
+                await UniTask.WaitUntil(
+                    () => blackBoard.animator.Finish(EnemyAnimationType.Heal),
+                    cancellationToken: ctk);
+            await JumpToPointAsync(jumpPoint_2, ctk);
+
+            if (gameManager != null && gameManager.Player != null)
+                await gameManager.MoveCameraTargetAsync(gameManager.Player.transform, Data.IntroReturnDuration, ctk);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+            StopMove();
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
+            isIntroRunning = false;
+
+            if (gameManager != null)
+            {
+                if (gameManager.Player != null)
+                    gameManager.SetCameraTarget(gameManager.Player.transform);
+
+                if (gameManager.CurrentState == GameState.Cutscene)
+                    gameManager.SetGameState(GameState.Play);
+            }
+            CompletePhase2Transition();
+        }
+    }
+
+    private async UniTask<bool> JumpToPointAsync(Transform point, CancellationToken ctk)
+    {
+        if (point == null || blackBoard == null || blackBoard.rb == null || BossData == null)
+            return false;
+
+        SetFrontDir(point.position.x - transform.position.x);
+        blackBoard.animator.PlayFromStart(EnemyAnimationType.Jump);
+        blackBoard.rb.linearVelocity = new Vector2(
+            FrontDir * BossData.IntroJumpSpeed,
+            BossData.IntroJumpForce);
+
+        float elapsed = 0f;
+
+        while (elapsed < JumpLandingTimeout)
+        {
+            ctk.ThrowIfCancellationRequested();
+
+            if (IsGround() && blackBoard.rb.linearVelocity.y <= 0f)
+            {
+                StopMove();
+                return true;
+            }
+
+            await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
+            elapsed += Time.fixedDeltaTime;
+        }
+
+        StopMove();
+        Utils.LogWarning<OldSamurai_Boss>($"Jump landing timeout at {point.name}.");
+        return false;
+    }
+
+    public override void SetRoomCenter(Transform center)
+    {
+        roomCenter = center;
+        lineSkill?.SetRoomCenter(center);
     }
 }

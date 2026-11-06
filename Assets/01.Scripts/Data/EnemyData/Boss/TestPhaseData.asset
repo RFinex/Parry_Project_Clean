@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3bcb2a55a77654fa4f2218d22f23ef, type: 3}
   m_Name: TestPhaseData
   m_EditorClassIdentifier: Assembly-CSharp::BossData
-  phase2HpRatio: 0.9
+  phase2HpRatio: 0.7
   introJumpSpeed: 5
   introJumpForce: 6
