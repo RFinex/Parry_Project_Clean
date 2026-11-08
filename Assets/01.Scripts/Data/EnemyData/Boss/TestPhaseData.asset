@@ -15,3 +15,7 @@ MonoBehaviour:
   phase2HpRatio: 0.7
   introJumpSpeed: 5
   introJumpForce: 6
+  introUpJumpHeight: 3
+  introDownJumpHeight: 10
+  introUpJumpDuration: 4
+  introDownJumpDuration: 3

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -475,29 +476,33 @@ public class OldSamurai_Boss : BossController
 
         SetFrontDir(point.position.x - transform.position.x);
         blackBoard.animator.PlayFromStart(EnemyAnimationType.Jump);
-        blackBoard.rb.linearVelocity = new Vector2(
-            FrontDir * BossData.IntroJumpSpeed,
-            BossData.IntroJumpForce);
+        blackBoard.rb.linearVelocity = Vector2.zero;
 
-        float elapsed = 0f;
+        float startY = transform.position.y;
+        float endY = point.position.y;
+        bool isJumpDown = endY < startY;
 
-        while (elapsed < JumpLandingTimeout)
+        float height = isJumpDown ? BossData.IntroDownJumpHeight : BossData.IntroUpJumpHeight;
+
+        float jumpPower = Mathf.Abs(endY - startY) * 0.5f + height;
+
+        float duration = isJumpDown ? BossData.IntroDownJumpDuration : BossData.IntroUpJumpDuration;
+
+        try
         {
-            ctk.ThrowIfCancellationRequested();
+            blackBoard.rb.linearVelocity = Vector2.zero;
 
-            if (IsGround() && blackBoard.rb.linearVelocity.y <= 0f)
-            {
-                StopMove();
-                return true;
-            }
+            Tween jumpTween = transform.DOJump(point.position, jumpPower, 1, duration)
+                .SetEase(Ease.Linear);
 
-            await UniTask.NextFrame(PlayerLoopTiming.FixedUpdate, ctk);
-            elapsed += Time.fixedDeltaTime;
+            await jumpTween.ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, ctk);
+
+            return true;
         }
-
-        StopMove();
-        Utils.LogWarning<OldSamurai_Boss>($"Jump landing timeout at {point.name}.");
-        return false;
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
     }
 
     public override void SetRoomCenter(Transform center)
