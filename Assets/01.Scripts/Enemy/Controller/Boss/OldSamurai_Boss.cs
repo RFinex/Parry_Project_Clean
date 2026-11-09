@@ -440,16 +440,18 @@ public class OldSamurai_Boss : BossController
             FacePlayer(GetPlayer());
 
             if (blackBoard.animator.PlayFromStart(EnemyAnimationType.Heal))
-                await UniTask.WaitUntil(
-                    () => blackBoard.animator.Finish(EnemyAnimationType.Heal),
-                    cancellationToken: ctk);
+                await UniTask.WaitUntil(() => blackBoard.animator.Finish(EnemyAnimationType.Heal), cancellationToken: ctk);
+
             await JumpToPointAsync(jumpPoint_2, ctk);
+
+            blackBoard.animator.Play(EnemyAnimationType.Idle);
 
             if (gameManager != null && gameManager.Player != null)
                 await gameManager.MoveCameraTargetAsync(gameManager.Player.transform, Data.IntroReturnDuration, ctk);
         }
         catch (OperationCanceledException)
         {
+
         }
         finally
         {

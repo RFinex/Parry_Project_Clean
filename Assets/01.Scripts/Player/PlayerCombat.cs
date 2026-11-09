@@ -126,6 +126,7 @@ public class PlayerCombat
                 enemy.TakeDamage(info);
 
             hitEnemyList.Add(enemy);
+            SoundManager.Instance.PlaySFX(SFXType.Swrod_Hit);
         }
 
         // 최적화 전
@@ -213,6 +214,7 @@ public class PlayerCombat
         enemy.Execute(stats.GetStats(StatId.DamageDealtMultiplier));
 
         OnExecuteSucceed?.Invoke();
+        SoundManager.Instance.PlaySFX(SFXType.Special_Attack);
     }
 
     public void RequestCombo()

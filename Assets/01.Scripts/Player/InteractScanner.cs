@@ -33,14 +33,13 @@ public class InteractScanner : MonoBehaviour
 
     private void OnEnable()
     {
-        Utils.EnterToken(ref token);
-
+        token = token.ResetToken();
         UpdateAsync(token.Token).Forget();
     }
 
     private void OnDisable()
     {
-        Utils.ExitToken(ref token);
+        token = token.Cancel_DisposeToken();
 
         interactCache.Clear();
 
@@ -172,8 +171,7 @@ public class InteractScanner : MonoBehaviour
         if (previousComponent != null)
             previousTarget.SetTrigger(false);
 
-        if (nearestTarget != null)
-            nearestTarget.SetTrigger(true);
+        nearestTarget?.SetTrigger(true);
     }
 
     private void RemoveTarget(GameObject targetObject)

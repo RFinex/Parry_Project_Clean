@@ -31,6 +31,8 @@ public class GameManager : Singleton<GameManager>
 
     private readonly HashSet<int> droppedArtifactIds = new();
 
+    private float timeScaleBeforePaused;
+
     protected override void AwakeSingleton()
     {
         Initialized();
@@ -62,7 +64,7 @@ public class GameManager : Singleton<GameManager>
         ItemFactory = new ItemFactory();
         ItemFactory.Initialized();
 
-        ArtifactSystem system = new ArtifactSystem();
+        ArtifactSystem system = new();
 
         system.Initialized(artifactReader, ItemFactory);
 
@@ -202,49 +204,22 @@ public class GameManager : Singleton<GameManager>
         return Inventory.TryAdd(artifact);
     }
 
-    //public bool TryGetRandomArtifactData(ItemRarity rarity, out ArtifactData selectedData)
-    //{
-    //    selectedData = null;
+    public void GamePausedOn()
+    {
+        if (CurrentState != GameState.Play)
+            return;
 
-    //    if (artifactReader == null)
-    //        return false;
+        timeScaleBeforePaused = Time.timeScale;
+        Time.timeScale = 0f;
+        SetGameState(GameState.Paused);
+    }
 
-    //    // 해당 등급의 드롭 가능한 아티팩트 갯수 측정
-    //    int availableCount = 0;
+    public void GamePausedOff()
+    {
+        if (CurrentState != GameState.Paused)
+            return;
 
-    //    foreach (ArtifactData data in artifactReader.Artifacts)
-    //    {
-    //        if (data != null && data.Rarity == rarity && !droppedArtifactIds.Contains(data.Id))
-    //            availableCount++;
-    //    }
-
-    //    // 후보가 없으면 실패
-    //    if (availableCount == 0)
-    //        return false;
-
-    //    // 후보 중 무작위 하나 선택
-    //    int index = UnityEngine.Random.Range(0, availableCount);
-
-    //    // 선택된 후보의 데이터를 찾아서 selectedData에 주입
-    //    foreach (ArtifactData data in artifactReader.Artifacts)
-    //    {
-    //        if (data == null || data.Rarity != rarity || droppedArtifactIds.Contains(data.Id))
-    //            continue;
-
-    //        if (index == 0)
-    //        {
-    //            selectedData = data;
-    //            return true;
-    //        }
-
-    //        index--;
-    //    }
-
-    //    return false;
-    //}
-
-    //public void MarkArtifactDropped(int id)
-    //{
-    //    droppedArtifactIds.Add(id);
-    //}
+        Time.timeScale = timeScaleBeforePaused;
+        SetGameState(GameState.Play);
+    }
 }

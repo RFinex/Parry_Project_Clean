@@ -18,17 +18,24 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
     private bool isLoading;
     private bool isReady;
     private bool isWaitForSceneReady;
+    public bool IsLobby { get; private set; }
 
     private CancellationTokenSource token;
 
     private void OnEnable()
     {
-        Utils.EnterToken(ref token);
+        token = token.ResetToken();
+
+        HandleActiveSceneChanged(default, SceneManager.GetActiveScene());
+        SceneManager.activeSceneChanged -= HandleActiveSceneChanged;
+        SceneManager.activeSceneChanged += HandleActiveSceneChanged;
     }
 
     private void OnDisable()
     {
-        Utils.ExitToken(ref token);
+        token = token.Cancel_DisposeToken();
+     
+        SceneManager.activeSceneChanged += HandleActiveSceneChanged;
     }
 
     public void LoadScene(SceneName sceneName)
@@ -97,5 +104,15 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
     public void RequireSceneReady()
     {
         isWaitForSceneReady = true;
+    }
+
+    /// <summary>
+    /// 현재 씬이 로비인지 체크
+    /// </summary>
+    /// <param name="previousScene"></param>
+    /// <param name="currentScene"></param>
+    private void HandleActiveSceneChanged(Scene previousScene, Scene currentScene)
+    {
+        IsLobby = currentScene.name == nameof(SceneName.LobbyScene);
     }
 }

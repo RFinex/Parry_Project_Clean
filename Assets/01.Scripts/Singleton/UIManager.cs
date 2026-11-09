@@ -9,7 +9,11 @@ public enum UIName
     Popup_Map_Node_Btn = 102,
     Popup_Map_Connection = 103,
     Enemy_Status_Bar = 104,
-    Popup_Inventory = 105
+    Popup_Inventory = 105,
+    Popup_Paused = 106,
+    Popup_Setting = 107,
+    Popup_Warning = 108,
+    Popup_Credit = 109
 }
 
 public class UIManager : Singleton<UIManager>
@@ -148,6 +152,9 @@ public class UIManager : Singleton<UIManager>
         if (popup.gameObject.activeSelf)
             return;
 
+        if (name == UIName.Popup_Paused)
+            GameManager.Instance.GamePausedOn();
+
         popup.gameObject.SetActive(true);
         popup.OpenPopup();
         popup.transform.SetAsLastSibling();
@@ -163,8 +170,25 @@ public class UIManager : Singleton<UIManager>
             return;
         }
 
+        bool resume = name == UIName.Popup_Paused && popup.gameObject.activeSelf;
+
         popup.ClosePopup();
+
+        if (resume)
+            GameManager.Instance.GamePausedOff();
+
         RefreshPopupDim();
+    }
+
+    public void OpenWarningPopup(string message, System.Action action)
+    {
+        WarningPopup popup = GetOrCreatePopup<WarningPopup>(UIName.Popup_Warning);
+
+        if (popup == null)
+            return;
+
+        popup.SetWarningUI(message, action);
+        OpenPopup(UIName.Popup_Warning);
     }
 
     private void RefreshPopupDim()
@@ -172,7 +196,7 @@ public class UIManager : Singleton<UIManager>
         if (dim == null)
             return;
 
-        int popupIndex = int.MaxValue;
+        int popupIndex = -1;
 
         foreach (PopupBase popup in runtimePopupDic.Values)
         {
@@ -182,11 +206,11 @@ public class UIManager : Singleton<UIManager>
 
             int index = popup.transform.GetSiblingIndex();
 
-            if (index < popupIndex)
+            if (index > popupIndex)
                 popupIndex = index;
         }
 
-        if (popupIndex == int.MaxValue)
+        if (popupIndex == -1)
         {
             dim.SetActive(false);
             return;
@@ -301,7 +325,14 @@ public class UIManager : Singleton<UIManager>
             }
         }
 
-        if (topPopup != null)
-            ClosePopup(topPopup.UiName);
+        if (topPopup == null)
+        {
+            if(GameManager.Instance.CurrentState == GameState.Play)
+                OpenPopup(UIName.Popup_Paused);
+
+            return;
+        }
+
+        topPopup.CancelPopup();
     }
 }

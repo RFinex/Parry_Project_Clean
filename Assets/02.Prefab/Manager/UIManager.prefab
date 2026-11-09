@@ -48,4 +48,8 @@ MonoBehaviour:
   popupPrefabs:
   - {fileID: 3001069698688709874, guid: cdb0165917437564ea56e2cdca55c033, type: 3}
   - {fileID: 3503980271824841110, guid: d9e016f5270344440bbb55c0aebeee2a, type: 3}
+  - {fileID: 8834769454590511728, guid: e969be790369de4479c97a9cd4072eb2, type: 3}
+  - {fileID: -5683105814310515105, guid: 958a4b24c8372cb4c83b8f5fdf231580, type: 3}
+  - {fileID: -93004857719675478, guid: 49f29a81acc6b634aa4132e69ac16e5b, type: 3}
+  - {fileID: 2693353672056177286, guid: 0169d34a5e61f7a4ba7c2028137e8186, type: 3}
   uiCanvas: {fileID: 0}

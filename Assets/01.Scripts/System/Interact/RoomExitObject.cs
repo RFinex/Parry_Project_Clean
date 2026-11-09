@@ -8,9 +8,8 @@ public class RoomExitObject : InteractableBase
 
 
     public bool isOpen;
-    public bool hasInteracted;
 
-    public override bool CanInteract => isOpen && !hasInteracted;
+    public override bool CanInteract => isOpen;
 
     private void OnEnable()
     {
@@ -42,9 +41,6 @@ public class RoomExitObject : InteractableBase
     {
         if (!CanInteract)
             return;
-
-        hasInteracted = true;
-        RefreshIcon();
 
         EventBus.Publish(new RoomExitInteractedEvent());
     }
