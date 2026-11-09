@@ -1114,6 +1114,7 @@ MonoBehaviour:
   bgmClip: []
   sfxClip:
   - {fileID: 8300000, guid: eb93be91d9129eb4581b8d0954d65698, type: 3}
+  - {fileID: 8300000, guid: b82a984d08781bc4e91069ee7242280d, type: 3}
   defaultVolume: 0.5
 --- !u!82 &668788112
 AudioSource:
