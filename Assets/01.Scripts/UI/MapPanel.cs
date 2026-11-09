@@ -16,7 +16,7 @@ public class MapPanel : PopupBase
     [SerializeField] private Transform connectionLayer;
     [SerializeField] private Transform nodeLayer;
 
-    private readonly Dictionary<int, MapNode> nodeDic = new Dictionary<int, MapNode>();
+    private readonly Dictionary<int, MapNode> nodeDic = new();
 
     private Sequence seq;
 
@@ -48,6 +48,11 @@ public class MapPanel : PopupBase
     {
         seq?.Kill();
         seq = null;
+    }
+
+    public override void CancelPopup()
+    {
+        EventBus.Publish(new StageMapCancelEvent());
     }
 
     /// <summary>

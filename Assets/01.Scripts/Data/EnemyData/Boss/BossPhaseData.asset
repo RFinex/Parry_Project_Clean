@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: BossPhaseData
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   phase2HpRatio: 0.5
+  introJumpSpeed: 5
+  introJumpForce: 6
+  introJumpHeight: 1
+  introJumpDuration: 5

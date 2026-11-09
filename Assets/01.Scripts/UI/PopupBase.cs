@@ -18,6 +18,11 @@ public class PopupBase : UIBase
         PlayCloseTween();
     }
 
+    public virtual void CancelPopup()
+    {
+        UIManager.Instance.ClosePopup(uiName);
+    }
+
     protected virtual void Initialized()
     {
 
@@ -27,6 +32,7 @@ public class PopupBase : UIBase
     {
 
     }
+
     protected virtual void PlayCloseTween()
     {
 

@@ -18,10 +18,11 @@ MonoBehaviour:
   minPatrolDistance: 0
   maxPatrolDistance: 0
   arrivalDistance: 0.05
+  traceStopDistance: 0.3
   detectRange: 5
   attackRange: 1
   traceRange: 7
-  attackDamage: 25
+  attackDamage: 0
   attackCool: 1
   attackDelay: 0.14285715
   canGuard: 1

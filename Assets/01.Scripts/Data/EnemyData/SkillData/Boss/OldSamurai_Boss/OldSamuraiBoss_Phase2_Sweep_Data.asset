@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a2956b5b6358648a933ebd0275aa77, type: 3}
   m_Name: OldSamuraiBoss_Phase2_Sweep_Data
   m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiPhase2SweepData
-  minRange: 2
+  minRange: 0
   maxRange: 6
   cooldown: 5
   damage: 10

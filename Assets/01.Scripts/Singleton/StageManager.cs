@@ -33,6 +33,7 @@ public class StageManager : Singleton<StageManager>
         EventBus.Subscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
         EventBus.Subscribe<RoomExitInteractedEvent>(HandleRoomExitInteracted);
         EventBus.Subscribe<PlayerDiedEvent>(HandlePlayerDied);
+        EventBus.Subscribe<StageMapCancelEvent>(HandleStageMapCancel);
     }
 
     private void OnDisable()
@@ -43,6 +44,7 @@ public class StageManager : Singleton<StageManager>
         EventBus.UnSubscribe<MapNodeSelectedEvent>(HandleMapNodeSelected);
         EventBus.UnSubscribe<RoomExitInteractedEvent>(HandleRoomExitInteracted);
         EventBus.UnSubscribe<PlayerDiedEvent>(HandlePlayerDied);
+        EventBus.UnSubscribe<StageMapCancelEvent>(HandleStageMapCancel);
     }
 
     private void Start()
@@ -184,6 +186,15 @@ public class StageManager : Singleton<StageManager>
     private void HandlePlayerDied(PlayerDiedEvent eventData)
     {
         SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene).Forget();
+    }
+
+    private void HandleStageMapCancel(StageMapCancelEvent eventData)
+    {
+        if (isRoomTransition)
+            return;
+
+        EventBus.Publish(new StageMapClosedEvent());
+        EventBus.Publish(new GameStateRequestEvent(GameState.Play));
     }
 
     private StageMapNodeData GetNode(int id)

@@ -28,6 +28,6 @@ MonoBehaviour:
   lineInterval: 0.1
   attackCount: 15
   angleRange: {x: -75, y: 75}
-  lineHitboxSize: {x: 50, y: 0.15}
+  lineHitboxSize: {x: 100, y: 0.15}
   randomPositionRange: {x: 10, y: 10}
   warningStartDelay: 1
