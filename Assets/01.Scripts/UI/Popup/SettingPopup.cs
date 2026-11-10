@@ -9,13 +9,26 @@ public class SettingPopup : PopupBase
 
     private void Awake()
     {
-        if (exitBtn != null)
-            exitBtn.onClick.AddListener(CancelPopup);
+        bgmSlider.onValueChanged.AddListener(BGMVolumeChanged);
+        sfxSlider.onValueChanged.AddListener(SFXVolumeChanged);
+        exitBtn.onClick.AddListener(CancelPopup);
+
     }
 
     private void OnDestroy()
     {
-        if (exitBtn != null)
-            exitBtn.onClick.RemoveListener(CancelPopup);
+        bgmSlider.onValueChanged.RemoveListener(BGMVolumeChanged);
+        sfxSlider.onValueChanged.RemoveListener(SFXVolumeChanged);
+        exitBtn.onClick.RemoveListener(CancelPopup);
+    }
+
+    private void BGMVolumeChanged(float vol)
+    {
+        SoundManager.Instance.SetBGMVolume(vol);
+    }
+
+    private void SFXVolumeChanged(float vol)
+    {
+        SoundManager.Instance.SetSFXVolume(vol);
     }
 }

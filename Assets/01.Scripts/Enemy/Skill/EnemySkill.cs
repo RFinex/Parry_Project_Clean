@@ -7,6 +7,8 @@ public abstract class EnemySkill
 {
     protected readonly EnemySkillData data;
 
+    public EnemySkillData Data => data;
+
     private bool isCooldown;
 
     private CancellationTokenSource coolToken;

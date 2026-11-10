@@ -28,6 +28,10 @@ public class RoomSystem : MonoBehaviour, IService
 
     private TreasureRoomSystem treasureRoom;
 
+    public Transform CurrentRoomTransform => currentRoom != null ? currentRoom.transform : null;
+
+    private readonly List<ItemPickupPool> pickups = new();
+
     private void Awake()
     {
         roomFactory = new RoomFactory();
@@ -197,13 +201,32 @@ public class RoomSystem : MonoBehaviour, IService
 
         activeEnemies.Clear();
 
-        if (currentRoom != null)
+        // 방에 버려진 모든 아이템을 풀로 반환 후 리스트 Clear
+        for (int i = 0; i < pickups.Count; i++)
         {
+            if (pickups[i] != null)
+                pickups[i].ReturnPool();
+        }
+
+        pickups.Clear();
+
+        if (currentRoom != null)
+        {           
             Destroy(currentRoom);
             currentRoom = null;
         }
 
         treasureRoom = null;
+    }
+
+    /// <summary>
+    /// 방 내에 아이템이 버려질 시 반드시 호출
+    /// </summary>
+    /// <param name="pickup"> 드랍된 픽업 </param>
+    public void RegisterRoomPickup(ItemPickupPool pickup)
+    {
+        if (pickup != null && !pickups.Contains(pickup))
+            pickups.Add(pickup);
     }
 
     /// <summary>

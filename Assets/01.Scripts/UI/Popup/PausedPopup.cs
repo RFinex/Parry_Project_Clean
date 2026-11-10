@@ -27,11 +27,6 @@ public class PausedPopup : PopupBase
 
     [SerializeField] private List<ButtonBind> buttonList;
 
-    [Header("Warning Message")]
-    [SerializeField] private string restartMessage = "현재 진행도를 초기화 하고 처음부터 시작합니다.";
-    [SerializeField] private string retireMessage = "현재 진행도를 초기화 하고 로비로 돌아갑니다.";
-    [SerializeField] private string exitMessage = "게임을 종료합니다.";
-
     private readonly Dictionary<PausedButtonType, Button> buttonDic = new();
 
     private void Awake()
@@ -84,12 +79,12 @@ public class PausedPopup : PopupBase
 
     public void HandleRestart()
     {
-        UIManager.Instance.OpenWarningPopup(restartMessage, () => ExitRun(SceneName.Stage1_Scene).Forget());
+        UIManager.Instance.OpenWarningPopup(ConstString.RestartMessage, () => ExitRun(SceneName.Stage1_Scene).Forget());
     }
 
     public void HandleRetire()
     {
-        UIManager.Instance.OpenWarningPopup(retireMessage, () => ExitRun(SceneName.LobbyScene).Forget());
+        UIManager.Instance.OpenWarningPopup(ConstString.RetireMessage, () => ExitRun(SceneName.LobbyScene).Forget());
     }
 
     public void HandleSetting()
@@ -104,7 +99,7 @@ public class PausedPopup : PopupBase
 
     public void HandleExit()
     {
-        UIManager.Instance.OpenWarningPopup(exitMessage, Application.Quit);
+        UIManager.Instance.OpenWarningPopup(ConstString.ExitMessage, Application.Quit);
     }
 
     private async UniTask ExitRun(SceneName scene)

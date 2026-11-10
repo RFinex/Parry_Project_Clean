@@ -14,6 +14,8 @@ public class BanditMeleeSkill : EnemySkill
         owner.StopMove();
         owner.LookAtTarget();
 
+       await WaitStartup(ctk);
+
         if (!board.animator.Play(EnemyAnimationType.Attack))
             return;
 

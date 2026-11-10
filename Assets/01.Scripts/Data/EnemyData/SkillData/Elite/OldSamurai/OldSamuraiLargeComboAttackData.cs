@@ -36,6 +36,9 @@ public struct OldSamuraiLargeAttackData
     [SerializeField] private bool canGuard;
     [SerializeField] private bool canParry;
 
+    [Header("Effect")]
+    [SerializeField] private int slashEffectId;
+
     public Vector2 TargetOffset => targetOffset;
 
     public EnemyAnimationType AnimationType => animationType;
@@ -47,4 +50,6 @@ public struct OldSamuraiLargeAttackData
 
     public bool CanGuard => canGuard;
     public bool CanParry => canParry;
+
+    public int SlashEffectId => slashEffectId;
 }

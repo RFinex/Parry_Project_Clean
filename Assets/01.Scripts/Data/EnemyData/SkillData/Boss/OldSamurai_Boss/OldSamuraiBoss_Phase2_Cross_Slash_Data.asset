@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9970553d235bd4cac417e47f7cc546, type: 3}
   m_Name: OldSamuraiBoss_Phase2_Cross_Slash_Data
   m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiPhase2CrossSlashData
-  minRange: 0
-  maxRange: 8
-  cooldown: 10
+  minRange: 2
+  maxRange: 10
+  cooldown: 7
   damage: 10
   attackDelay: 0
   animationType: 0
@@ -25,6 +25,7 @@ MonoBehaviour:
   canGuard: 0
   canParry: 0
   attackPointEffectId: 7
+  slashEffectId: 11
   strikes:
   - animationType: 15
     targetOffset: {x: 0, y: 0.5}
