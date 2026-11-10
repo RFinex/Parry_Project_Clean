@@ -84,6 +84,10 @@ public class OldSamuraiPhase2SweepSkill : EnemySkill
                     await UniTask.Delay(TimeSpan.FromSeconds(strike.HitDelay), cancellationToken: ctk);
                 }
 
+                EffectBase effect = ObjectPoolManager.Instance.Get<OldSamuraiEffect>(sweepData.Strikes[i].StrikeEffectId, attackPoints[i]);
+
+                effect.transform.localScale = sweepData.Strikes[i].HitboxSize;
+
                 Collider2D hit = Physics2D.OverlapBox(attackPoints[i], strike.HitboxSize, 0f, board.playerLayer);
 
                 if (hit != null)

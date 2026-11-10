@@ -49,6 +49,8 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float executeSearchRange = 3f;
     [SerializeField] private float executeMoveSpeed = 30f;
     [SerializeField] private float executeBackOffset = 0.8f;
+    [SerializeField] private int executeEffectId = 9;
+    [SerializeField] private Vector2 executeEffectOffset = new(0f, 0.5f);
 
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
@@ -92,6 +94,8 @@ public class PlayerBaseData : ScriptableObject
     public float ExecuteSearchRange => executeSearchRange;
     public float ExecuteMoveSpeed => executeMoveSpeed;
     public float ExecuteBackOffset => executeBackOffset;
+    public int ExecuteEffectId => executeEffectId;
+    public Vector2 ExecuteEffectOffset => executeEffectOffset;
 
     public LayerMask EnemyLayer => enemyLayer;
 

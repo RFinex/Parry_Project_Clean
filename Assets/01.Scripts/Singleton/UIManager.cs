@@ -21,8 +21,8 @@ public class UIManager : Singleton<UIManager>
     [Header("Popup Prefab")]
     [SerializeField] private List<PopupBase> popupPrefabs;
 
-    [Header("Current Scene UI")]
-    [SerializeField] private Canvas uiCanvas;
+    [Header("Current Scene Popup Canvas")]
+    [SerializeField] private Canvas popupCanvas;
 
     private readonly Dictionary<UIName, PopupBase> popupPrefabDic = new();
     private readonly Dictionary<UIName, PopupBase> runtimePopupDic = new();
@@ -120,7 +120,7 @@ public class UIManager : Singleton<UIManager>
     // 현재 씬의 UI 루트가 Canvas를 등록
     public void RegisterSceneCanvas(Canvas canvas, GameObject dim)
     {
-        uiCanvas = canvas;
+        popupCanvas = canvas;
         this.dim = dim;
         popupSceneHandle = canvas.gameObject.scene.handle;
 
@@ -130,7 +130,7 @@ public class UIManager : Singleton<UIManager>
 
     public void OpenPopup(UIName name)
     {
-        if (uiCanvas == null)
+        if (popupCanvas == null)
         {
             Utils.LogWarning<UIManager>("현재 씬의 Canvas가 등록되지 않았습니다.");
             return;
@@ -144,10 +144,12 @@ public class UIManager : Singleton<UIManager>
                 return;
             }
 
-            popup = Instantiate(prefab, uiCanvas.transform);
+            popup = Instantiate(prefab, popupCanvas.transform);
             popup.gameObject.SetActive(false);
             runtimePopupDic[name] = popup;
         }
+
+        Debug.Log("설정팝업 생성");
 
         if (popup.gameObject.activeSelf)
             return;
@@ -233,7 +235,7 @@ public class UIManager : Singleton<UIManager>
 
         // 씬 오브젝트는 씬과 함께 파괴되므로 보관 중인 참조를 비움
         runtimePopupDic.Clear();
-        uiCanvas = null;
+        popupCanvas = null;
         popupSceneHandle = -1;
         dim = null;
     }
@@ -251,7 +253,7 @@ public class UIManager : Singleton<UIManager>
 
     private T GetOrCreatePopup<T>(UIName name) where T : PopupBase
     {
-        if (uiCanvas == null)
+        if (popupCanvas == null)
         {
             Utils.LogWarning<UIManager>("현재 씬의 Canvas가 등록되지 않았습니다.");
             return null;
@@ -266,7 +268,7 @@ public class UIManager : Singleton<UIManager>
             return null;
         }
 
-        T popup = Instantiate(prefab, uiCanvas.transform) as T;
+        T popup = Instantiate(prefab, popupCanvas.transform) as T;
 
         if (popup == null)
         {
@@ -325,9 +327,11 @@ public class UIManager : Singleton<UIManager>
             }
         }
 
+        bool isMenuScene = SceneManager.GetActiveScene().name == nameof(SceneName.MenuScene);
+
         if (topPopup == null)
         {
-            if(GameManager.Instance.CurrentState == GameState.Play)
+            if(GameManager.Instance.CurrentState == GameState.Play && !isMenuScene)
                 OpenPopup(UIName.Popup_Paused);
 
             return;

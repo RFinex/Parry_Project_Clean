@@ -3,7 +3,9 @@ using UnityEngine;
 public enum SFXType
 {
     Swrod_Hit,
-    Special_Attack
+    Special_Attack,
+    Parry,
+    Guard
 }
 
 public enum BGMType

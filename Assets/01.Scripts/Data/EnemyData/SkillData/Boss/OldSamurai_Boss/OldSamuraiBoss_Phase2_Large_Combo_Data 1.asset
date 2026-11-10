@@ -20,7 +20,7 @@ MonoBehaviour:
   animationType: 15
   hitboxSize: {x: 0, y: 0}
   hitboxOffset: {x: 0, y: 0}
-  startupDelay: 1
+  startupDelay: 0.3
   recoveryDelay: 1
   canGuard: 1
   canParry: 1
@@ -36,6 +36,7 @@ MonoBehaviour:
     animDuration: 0.6
     canGuard: 1
     canParry: 0
+    slashEffectId: 13
   - targetOffset: {x: 0, y: 0.5}
     animationType: 16
     hitboxSize: {x: 2.2, y: 1.3}
@@ -45,6 +46,7 @@ MonoBehaviour:
     animDuration: 0.6
     canGuard: 0
     canParry: 1
+    slashEffectId: 12
   - targetOffset: {x: 0, y: 0.5}
     animationType: 15
     hitboxSize: {x: 2.2, y: 1.3}
@@ -54,6 +56,7 @@ MonoBehaviour:
     animDuration: 0.6
     canGuard: 0
     canParry: 1
+    slashEffectId: 12
   - targetOffset: {x: 0, y: 0.5}
     animationType: 16
     hitboxSize: {x: 2.2, y: 1.3}
@@ -63,6 +66,7 @@ MonoBehaviour:
     animDuration: 0.6
     canGuard: 1
     canParry: 0
+    slashEffectId: 13
   - targetOffset: {x: 0, y: 0.5}
     animationType: 17
     hitboxSize: {x: 2.2, y: 1.3}
@@ -72,3 +76,4 @@ MonoBehaviour:
     animDuration: 0.5
     canGuard: 0
     canParry: 0
+    slashEffectId: 10

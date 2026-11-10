@@ -27,6 +27,9 @@ public struct OldSamuraiPhase2SweepStrike
     [SerializeField] private bool canParry;
     [SerializeField] private Vector2 attackPointScale;
 
+    [Header("Effect")]
+    [SerializeField] private int strikeEffectId;
+
     public EnemyAnimationType AnimationType => animationType;
     public Vector2 HitboxOffset => hitboxOffset;
     public Vector2 HitboxSize => hitboxSize;
@@ -36,4 +39,6 @@ public struct OldSamuraiPhase2SweepStrike
     public bool CanGuard => canGuard;
     public bool CanParry => canParry;
     public Vector2 AttackPointScale => attackPointScale;
+
+    public int StrikeEffectId => strikeEffectId;
 }

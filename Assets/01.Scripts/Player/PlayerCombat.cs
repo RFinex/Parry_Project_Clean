@@ -214,7 +214,10 @@ public class PlayerCombat
         enemy.Execute(stats.GetStats(StatId.DamageDealtMultiplier));
 
         OnExecuteSucceed?.Invoke();
+
         SoundManager.Instance.PlaySFX(SFXType.Special_Attack);
+
+        ObjectPoolManager.Instance.Get<SpecialAttackEffect>(data.ExecuteEffectId, (Vector2)target.transform.position + data.ExecuteEffectOffset);
     }
 
     public void RequestCombo()
@@ -362,12 +365,14 @@ public class PlayerCombat
             }
 
             OnParrySucceed?.Invoke();
+            SoundManager.Instance.PlaySFX(SFXType.Parry);
             Utils.Log<PlayerController>("패리 성공");
             return true;
         }
 
         if (info.canGuard)
         {
+            SoundManager.Instance.PlaySFX(SFXType.Guard);
             Utils.Log<PlayerController>("가드 성공");
             return true;
         }

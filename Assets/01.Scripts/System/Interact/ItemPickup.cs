@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class ItemPickup : InteractableBase
 {
+    private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
     [SerializeField] private SpriteRenderer itemRenderer;
     [SerializeField] private ItemPickupPool poolObject;
     [SerializeField] private LayerMask groundLayer;
@@ -29,12 +30,15 @@ public class ItemPickup : InteractableBase
 
     private bool isDropping;
     private Vector3 baseRendererLocalPos;
+    private MaterialPropertyBlock rendererProperties;
 
     public override bool CanInteract => !isDropping && item is Artifact artifact && artifact.ArtifactItemData != null;
 
     protected override void Awake()
     {
         base.Awake();
+
+        rendererProperties = new MaterialPropertyBlock();
 
         if(itemRenderer != null)
             baseRendererLocalPos = itemRenderer.transform.localPosition;
@@ -54,6 +58,11 @@ public class ItemPickup : InteractableBase
         {
             itemRenderer.sprite = item != null && item.Data != null ? item.Data.Icon : null;
             itemRenderer.transform.localPosition = baseRendererLocalPos;
+
+            ItemRarity rarity = item != null && item.Data != null
+                ? item.Data.Rarity
+                : ItemRarity.Common;
+            ApplyRarityOutline(rarity);
         }
 
         if (CanInteract)
@@ -99,12 +108,28 @@ public class ItemPickup : InteractableBase
         {
             itemRenderer.sprite = null;
             itemRenderer.transform.localPosition = baseRendererLocalPos;
+            ApplyRarityOutline(ItemRarity.Common);
         }
 
         SetTrigger(false);
         RefreshIcon();
     }
 
+    private void ApplyRarityOutline(ItemRarity rarity)
+    {
+        if (itemRenderer == null)
+            return;
+
+        if (rendererProperties == null)
+            rendererProperties = new MaterialPropertyBlock();
+
+        Color outlineColor = Color.white;
+        ColorUtility.TryParseHtmlString(ItemRarityColor.ToHex(rarity), out outlineColor);
+
+        itemRenderer.GetPropertyBlock(rendererProperties);
+        rendererProperties.SetColor(OutlineColorId, outlineColor);
+        itemRenderer.SetPropertyBlock(rendererProperties);
+    }
     private void StartDropMotion()
     {
         dropToken = dropToken.ResetToken();

@@ -6,9 +6,10 @@ using UnityEngine.SceneManagement;
 
 public enum SceneName
 {
-    LobbyScene,
-    Stage1_Scene,
-    Stage2_Scene
+    MenuScene = 0,
+    LobbyScene = 1,
+    Stage1_Scene = 2,
+    Stage2_Scene = 3
 }
 
 public class SceneLoadManager : Singleton<SceneLoadManager>
@@ -35,12 +36,12 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
     {
         token = token.Cancel_DisposeToken();
      
-        SceneManager.activeSceneChanged += HandleActiveSceneChanged;
+        SceneManager.activeSceneChanged -= HandleActiveSceneChanged;
     }
 
     public void LoadScene(SceneName sceneName)
     {
-        SceneManager.LoadScene(sceneName.ToString());
+        SceneManager.LoadScene((int)sceneName);
     }
 
     public void LoadLobbyScene()
@@ -72,7 +73,7 @@ public class SceneLoadManager : Singleton<SceneLoadManager>
 
             // 참조 해제
 
-            await SceneManager.LoadSceneAsync(name.ToString())
+            await SceneManager.LoadSceneAsync((int)name)
                 .ToUniTask(cancellationToken: token.Token);
 
             // DDOL 초기화

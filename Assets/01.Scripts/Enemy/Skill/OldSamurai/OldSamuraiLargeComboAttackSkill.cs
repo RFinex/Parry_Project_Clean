@@ -121,6 +121,8 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
                     await UniTask.Delay(TimeSpan.FromSeconds(delayHit), cancellationToken: ctk);
                 }
 
+                EffectBase effect = ObjectPoolManager.Instance.Get<OldSamuraiEffect>(largeComboData.Strikes[i].SlashEffectId, attackPoints[i]);
+
                 Collider2D hit = Physics2D.OverlapBox(attackPoints[i], strike.HitboxSize, 0f, board.playerLayer);
 
                 if (hit != null)

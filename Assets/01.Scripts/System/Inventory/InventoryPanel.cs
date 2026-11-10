@@ -131,12 +131,19 @@ public class InventoryPanel : PopupBase
         if (gameManager == null || gameManager.Player == null || poolManager == null)
             return;
 
+        ServiceLocator.Inject(out RoomSystem roomSystem);
+
+        if (roomSystem == null || roomSystem.CurrentRoomTransform == null)
+            return;
+
         Vector3 dropPos = gameManager.Player.transform.position + dropOffset;
 
-        ItemPickupPool pickup = poolManager.Get<ItemPickupPool>(pickupPoolId, dropPos, null);
+        ItemPickupPool pickup = poolManager.Get<ItemPickupPool>(pickupPoolId, dropPos, roomSystem.CurrentRoomTransform);
 
         if (pickup == null)
             return;
+
+        roomSystem.RegisterRoomPickup(pickup);
 
         pickup.SetItem(artifact);
 

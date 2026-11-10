@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OldSamuraiPhase2SweepData
   minRange: 0
   maxRange: 6
-  cooldown: 5
+  cooldown: 8
   damage: 10
   attackDelay: 0
   animationType: 0
   hitboxSize: {x: 0, y: 0}
   hitboxOffset: {x: 0, y: 0}
-  startupDelay: 0.5
+  startupDelay: 0
   recoveryDelay: 0.6
   canGuard: 1
   canParry: 1
@@ -36,6 +36,7 @@ MonoBehaviour:
     canGuard: 0
     canParry: 1
     attackPointScale: {x: 2, y: 2}
+    strikeEffectId: 12
   - animationType: 16
     hitboxOffset: {x: 1.2, y: 1.2}
     hitboxSize: {x: 3, y: 3}
@@ -45,6 +46,7 @@ MonoBehaviour:
     canGuard: 0
     canParry: 1
     attackPointScale: {x: 3, y: 3}
+    strikeEffectId: 12
   - animationType: 17
     hitboxOffset: {x: 1.8, y: 1.8}
     hitboxSize: {x: 4, y: 4}
@@ -54,6 +56,7 @@ MonoBehaviour:
     canGuard: 0
     canParry: 1
     attackPointScale: {x: 4, y: 4}
+    strikeEffectId: 12
   - animationType: 16
     hitboxOffset: {x: 2.4, y: 2.4}
     hitboxSize: {x: 5, y: 5}
@@ -63,6 +66,7 @@ MonoBehaviour:
     canGuard: 0
     canParry: 1
     attackPointScale: {x: 5, y: 5}
+    strikeEffectId: 12
   - animationType: 17
     hitboxOffset: {x: 3, y: 3}
     hitboxSize: {x: 6, y: 6}
@@ -72,3 +76,4 @@ MonoBehaviour:
     canGuard: 0
     canParry: 0
     attackPointScale: {x: 6, y: 6}
+    strikeEffectId: 10

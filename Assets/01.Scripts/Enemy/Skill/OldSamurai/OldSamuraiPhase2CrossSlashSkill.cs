@@ -41,6 +41,7 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
                 owner.LookAtTarget();
 
                 Vector2 attackPoint = (Vector2)target.transform.position + data.HitboxOffset + strike.TargetOffset;
+                Vector2 scale = strike.AttackPointScale;
 
                 // 타격 지점 표시
                 if (crossSlashData.AttackPointEffectId != 0 && ObjectPoolManager.Instance != null)
@@ -49,7 +50,7 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
 
                     if (effect != null)
                     {
-                        effect.transform.localScale = new Vector3(strike.AttackPointScale.x, strike.AttackPointScale.y, 1f);
+                        effect.transform.localScale = new Vector3(scale.x, scale.y, 1f);
                     }
                 }
 
@@ -85,10 +86,24 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
                     await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
                 }
 
+                bool isHorizontal = strike.HitboxSize.x > strike.HitboxSize.y;
+                EffectBase slash = ObjectPoolManager.Instance.Get<OldSamuraiEffect>(crossSlashData.SlashEffectId, attackPoint);
+
+                if (isHorizontal)
+                {
+                    slash.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                    slash.transform.localScale = new(scale.y, scale.x, 1f);
+                }
+                else
+                {
+                    slash.transform.rotation = Quaternion.identity;
+                    slash.transform.localScale = new(scale.x, scale.y, 1f);
+                }
+
                 Collider2D hit = Physics2D.OverlapBox(attackPoint, strike.HitboxSize, 0f, board.playerLayer);
 
                 if (hit != null)
-                {
+                {                    
                     board.combat.Attack(hit.transform, owner, data.Damage, strike.CanGuard, strike.CanParry);
                 }
 

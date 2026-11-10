@@ -115,14 +115,21 @@ public class TreasureObject : InteractableBase
             return false;
         }
 
+        ServiceLocator.Inject(out RoomSystem roomSystem);
+
+        if (roomSystem == null || roomSystem.CurrentRoomTransform == null)
+            return false;
+
         // 공용 픽업 프리팹 가져오기
-        ItemPickupPool pickup = poolManager.Get<ItemPickupPool>(pickupPoolId, DropPos, null);
+        ItemPickupPool pickup = poolManager.Get<ItemPickupPool>(pickupPoolId, DropPos, roomSystem.CurrentRoomTransform);
 
         if (pickup == null)
         {
             Utils.LogWarning<TreasureObject>($"픽업 풀 발견 실패 : {pickupPoolId}");
             return false;
         }
+
+        roomSystem.RegisterRoomPickup(pickup);
 
         // 픽업 프리팹에 아이템을 넣고 초기화
         pickup.SetItem(item);

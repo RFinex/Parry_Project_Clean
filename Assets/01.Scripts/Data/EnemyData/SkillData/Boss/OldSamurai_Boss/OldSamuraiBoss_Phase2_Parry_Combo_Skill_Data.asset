@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ParryComboSkillData
   minRange: 0
   maxRange: 3
-  cooldown: 3
+  cooldown: 5
   damage: 10
   attackDelay: 0
   animationType: 8

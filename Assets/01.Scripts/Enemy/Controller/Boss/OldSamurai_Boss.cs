@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,6 +9,7 @@ using UnityEngine;
 public class OldSamurai_Boss : BossController
 {
     [SerializeField] private Transform roomCenter;
+    [SerializeField] private BossBTSequenceData btSequenceData;
 
     [Header("Skill Data(Phase1")]
     [SerializeField] private ParryComboSkillData parryComboData;
@@ -83,6 +85,9 @@ public class OldSamurai_Boss : BossController
 
     protected override INode BuildPhase1BT()
     {
+        if (btSequenceData != null)
+            return BuildPrioritySelector(btSequenceData.Phase1Priority);
+
         SequenceNode largeComboSequence = new();
         largeComboSequence.Add(new ActionNode(CheckLargeComboRange));
         largeComboSequence.Add(new ActionNode(CheckLargeComboCooldown));
@@ -120,6 +125,9 @@ public class OldSamurai_Boss : BossController
 
     protected override INode BuildPhase2BT()
     {
+        if (btSequenceData != null)
+            return BuildPrioritySelector(btSequenceData.Phase2Priority);
+
         SequenceNode lineSequence = new();
         lineSequence.Add(new ActionNode(CheckLineRange));
         lineSequence.Add(new ActionNode(CheckLineCooldown));
@@ -169,14 +177,57 @@ public class OldSamurai_Boss : BossController
         phase2Selector.Add(upperSequence);
         phase2Selector.Add(largeComboSequence);
         phase2Selector.Add(dashSequence);
-        phase2Selector.Add(parryComboSequence);
-        phase2Selector.Add(sweepSequence);
         phase2Selector.Add(crossSequence);
+        phase2Selector.Add(sweepSequence);
+        phase2Selector.Add(parryComboSequence);
         phase2Selector.Add(throwSequence);
         phase2Selector.Add(traceSequence);
         phase2Selector.Add(new ActionNode(Idle));
 
         return phase2Selector;
+    }
+
+    private INode BuildPrioritySelector(IReadOnlyList<EnemySkillData> orderedSkillData)
+    {
+        SelectorNode selector = new();
+
+        if (orderedSkillData != null)
+        {
+            for (int i = 0; i < orderedSkillData.Count; i++)
+            {
+                EnemySkillData skillData = orderedSkillData[i];
+                if (skillData == null)
+                    continue;
+
+                EnemySkill skill = FindRuntimeSkill(skillData);
+                if (skill == null)
+                {
+                    Utils.LogWarning<OldSamurai_Boss>($"BT sequence has no runtime skill registered for: {skillData.name}");
+                    continue;
+                }
+
+                selector.Add(new ActionNode(ctk => skill.TryUse(this, blackBoard, ctk)));
+            }
+        }
+
+        SequenceNode traceSequence = new();
+        traceSequence.Add(new ActionNode(CheckPlayerAlive));
+        traceSequence.Add(new ActionNode(TracePlayer));
+
+        selector.Add(traceSequence);
+        selector.Add(new ActionNode(Idle));
+        return selector;
+    }
+
+    private EnemySkill FindRuntimeSkill(EnemySkillData skillData)
+    {
+        foreach (EnemySkill skill in blackBoard.skills)
+        {
+            if (skill != null && skill.Data == skillData)
+                return skill;
+        }
+
+        return null;
     }
 
     #region BT Method

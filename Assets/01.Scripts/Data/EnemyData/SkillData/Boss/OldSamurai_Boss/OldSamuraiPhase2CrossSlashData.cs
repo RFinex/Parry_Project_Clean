@@ -6,9 +6,11 @@ using UnityEngine;
 public class OldSamuraiPhase2CrossSlashData : EnemySkillData
 {
     [SerializeField] private int attackPointEffectId = 7;
+    [SerializeField] private int slashEffectId = 11;
     [SerializeField] private List<OldSamuraiPhase2CrossSlashStrike> strikes = new();
 
     public int AttackPointEffectId => attackPointEffectId;
+    public int SlashEffectId => slashEffectId;
     public List<OldSamuraiPhase2CrossSlashStrike> Strikes => strikes;
 }
 
