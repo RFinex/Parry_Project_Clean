@@ -3,63 +3,101 @@ using UnityEngine;
 
 public class DummySpawn : InteractableBase
 {
-    [SerializeField] private GameObject dummyPrefab;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform statusBarParent;
 
-    [SerializeField] private bool allowMultiSpawn;
+    private bool isPopupOpen;
+    private EnemyController spawnedEnemy;
+    private EnemyStatusBar spawnedStatusBar;
 
-    private readonly Dictionary<EnemyController, EnemyStatusBar> spawnedEnemies = new();
-
-    public override bool CanInteract => allowMultiSpawn || spawnedEnemies.Count == 0;
+    public override bool CanInteract => !isPopupOpen;
 
     public override void Interact(PlayerController interactor)
     {
-        if (!CanInteract || dummyPrefab == null || spawnPoint == null)
+        if (!CanInteract || UIManager.Instance == null)
             return;
 
-        GameObject spawnedDummy = Instantiate(dummyPrefab, spawnPoint.position, spawnPoint.rotation);
+        isPopupOpen = UIManager.Instance.OpenSpawnDummyPopup(this);
+        RefreshIcon();
+    }
 
-        EnemyController spawnedEnemy = spawnedDummy.GetComponent<EnemyController>();
+    public void HandlePopupClosed()
+    {
+        isPopupOpen = false;
+        RefreshIcon();
+    }
 
-        if (spawnedEnemy == null)
+    /// <summary>
+    /// 더미 소환 시, 기존 더미 제거 후 재소화
+    /// </summary>
+    /// <param name="prefab"> 교체할 프리팹 </param>
+    /// <returns></returns>
+    public bool ReplaceDummy(GameObject prefab)
+    {
+        if (prefab == null || spawnPoint == null)
+            return false;
+
+        RemoveCurrentDummy();
+
+        GameObject instance = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+        EnemyController enemy = instance.GetComponent<EnemyController>();
+
+        if (enemy == null)
         {
-            Destroy(spawnedDummy);
-            return;
+            Destroy(instance);
+            return false;
         }
 
-        EnemyStatusBar spawnedStatusBar = null;
+        spawnedEnemy = enemy;
 
         if (UIManager.Instance != null && statusBarParent != null)
-        { 
-            spawnedStatusBar = UIManager.Instance.GetUI<EnemyStatusBar>(UIName.Enemy_Status_Bar, spawnedEnemy.transform.position, statusBarParent);
+        {
+            spawnedStatusBar = UIManager.Instance.GetUI<EnemyStatusBar>(UIName.Enemy_Status_Bar, enemy.transform.position, statusBarParent);
 
             if (spawnedStatusBar != null)
             {
-                spawnedEnemy.SetStatusBar(spawnedStatusBar);
-                spawnedStatusBar.Bind(spawnedEnemy);
+                enemy.SetStatusBar(spawnedStatusBar);
+                spawnedStatusBar.Bind(enemy);
             }
         }
 
-        spawnedEnemy.OnDeathFinished += HandleDummyDeath;
-        spawnedEnemies.Add(spawnedEnemy, spawnedStatusBar);
-        RefreshIcon();
+        enemy.OnDeathFinished -= HandleDummyDeath;
+        enemy.OnDeathFinished += HandleDummyDeath;
+        return true;
+    }
+
+    /// <summary>
+    /// 소환중인 더미 제거
+    /// </summary>
+    private void RemoveCurrentDummy()
+    {
+        if (spawnedEnemy != null)
+        {
+            spawnedEnemy.OnDeathFinished -= HandleDummyDeath;
+            Destroy(spawnedEnemy.gameObject);
+            spawnedEnemy = null;
+        }
+
+        if (spawnedStatusBar != null)
+        {
+            spawnedStatusBar.ReturnPool();
+            spawnedStatusBar = null;
+        }
     }
 
     private void HandleDummyDeath(EnemyController enemy)
     {
+        if (enemy != spawnedEnemy)
+            return;
 
         enemy.OnDeathFinished -= HandleDummyDeath;
 
-        if (spawnedEnemies.TryGetValue(enemy, out EnemyStatusBar statusBar))
-        {
-            if (statusBar != null)
-                statusBar.ReturnPool();
+        if (spawnedStatusBar != null)
+            spawnedStatusBar.ReturnPool();
 
-            spawnedEnemies.Remove(enemy);
-        }
+        spawnedEnemy = null;
+        spawnedStatusBar = null;
 
         Destroy(enemy.gameObject);
-        RefreshIcon();
     }
 }

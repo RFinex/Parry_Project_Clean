@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class RecoveryObject : InteractableBase
 {
+    [SerializeField] private ParticleSystem particle;
     [SerializeField] private float recoveryAmount;
 
     private bool isAvailable = true;
@@ -15,6 +16,12 @@ public class RecoveryObject : InteractableBase
 
         interactor.Stats.RestoreHp(recoveryAmount);
 
+        if (particle != null)
+            particle.Stop();
+
+        SoundManager.Instance.PlaySFX(SFXType.Heal);
+
+
         isAvailable = false;
         RefreshIcon();
 
@@ -24,6 +31,15 @@ public class RecoveryObject : InteractableBase
     public void SetAvailable(bool isAvailable)
     {
         this.isAvailable = isAvailable;
+
+        if (particle != null)
+        {
+            if (isAvailable)
+                particle.Play();
+            else
+                particle.Stop();
+        }
+
         RefreshIcon();
     }
 }

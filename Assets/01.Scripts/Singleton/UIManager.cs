@@ -13,7 +13,8 @@ public enum UIName
     Popup_Paused = 106,
     Popup_Setting = 107,
     Popup_Warning = 108,
-    Popup_Credit = 109
+    Popup_Credit = 109,
+    Popup_Spawn_Dummy = 110
 }
 
 public class UIManager : Singleton<UIManager>
@@ -30,6 +31,20 @@ public class UIManager : Singleton<UIManager>
     private int popupSceneHandle = -1;
 
     private GameObject dim;
+
+    public bool HasActivePopup
+    {
+        get
+        {
+            foreach (PopupBase popup in runtimePopupDic.Values)
+            {
+                if (popup != null && popup.gameObject.activeInHierarchy)
+                    return true;
+            }
+
+            return false;
+        }
+    }
 
     protected override void Awake()
     {
@@ -148,8 +163,6 @@ public class UIManager : Singleton<UIManager>
             popup.gameObject.SetActive(false);
             runtimePopupDic[name] = popup;
         }
-
-        Debug.Log("설정팝업 생성");
 
         if (popup.gameObject.activeSelf)
             return;
@@ -338,5 +351,18 @@ public class UIManager : Singleton<UIManager>
         }
 
         topPopup.CancelPopup();
+    }
+
+    public bool OpenSpawnDummyPopup(DummySpawn spawner)
+    {
+        SpawnDummyPopup popup = GetOrCreatePopup<SpawnDummyPopup>(UIName.Popup_Spawn_Dummy);
+
+        if (popup == null || spawner == null)
+            return false;
+
+        popup.SetSpawner(spawner);
+        OpenPopup(UIName.Popup_Spawn_Dummy);
+
+        return popup.gameObject.activeSelf;
     }
 }
