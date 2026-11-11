@@ -5,7 +5,11 @@ public enum SFXType
     Swrod_Hit,
     Special_Attack,
     Parry,
-    Guard
+    Guard,
+    Sword_NoHit,
+    MouseOnButton,
+    ClickButton,
+    Heal
 }
 
 public enum BGMType

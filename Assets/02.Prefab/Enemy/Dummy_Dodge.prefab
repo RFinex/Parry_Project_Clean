@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2329643963884283456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1097735356097744436}
+  m_Layer: 8
+  m_Name: WarningPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1097735356097744436
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329643963884283456}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.1999998, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7532712854290124534}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3569863961499619044
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,9 +75,9 @@ GameObject:
   - component: {fileID: 1177301457373953394}
   - component: {fileID: 3882265356245811558}
   - component: {fileID: 7943300529606303964}
-  - component: {fileID: -1460462792415119054}
+  - component: {fileID: 2515892708089152872}
   m_Layer: 8
-  m_Name: DummyEnemy
+  m_Name: Dummy_Dodge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,6 +97,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6406536147496673700}
+  - {fileID: 1097735356097744436}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6522490581026366305
@@ -222,7 +254,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-1460462792415119054
+--- !u!114 &2515892708089152872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,10 +263,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6465543644819581041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 166b515291e434843b6d1dab21026e18, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ae1bc5a425a5f44f94c584b9c33e8d3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestEnemyController
+  m_EditorClassIdentifier: Assembly-CSharp::Dummy
   data: {fileID: 11400000, guid: 19fd1220d3e6f304e9bf31ae78b1405c, type: 2}
+  warningPos: {fileID: 1097735356097744436}
+  guardOnlyWarningId: 4
+  parryOnlyWarningId: 5
+  neitherWarningId: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -253,22 +289,11 @@ MonoBehaviour:
   currentStateName: 
   animations:
   - type: 0
-    stateName: 
-    duration: 0
-  - type: 1
-    stateName: 
+    stateName: Base Layer.Idle
     duration: 0
   - type: 2
     stateName: Base Layer.Test Enemy_Attack
     duration: 0
-  - type: 3
-    stateName: 
-    duration: 0
-  - type: 4
-    stateName: 
-    duration: 0
-  - type: 5
-    stateName: 
-    duration: 0
-  attackBoxSize: {x: 1.6, y: 1}
-  attackBoxForwardOffset: 0.3
+  attackDatas:
+  - {fileID: 11400000, guid: 2e386d196d7ab944b85a748ec080d690, type: 2}
+  attackGizmoDuration: 0.2

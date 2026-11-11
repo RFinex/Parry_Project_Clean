@@ -475,6 +475,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance != null && UIManager.Instance.HasActivePopup)
+            return;
+
         if (!canInput || IsDeadState())
             return;
 

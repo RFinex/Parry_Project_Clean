@@ -536,6 +536,7 @@ GameObject:
   - component: {fileID: 450047829539690686}
   - component: {fileID: 6447473259724399748}
   - component: {fileID: 8168674866960819198}
+  - component: {fileID: 2485037291332746843}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -644,6 +645,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2485037291332746843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121347091824581077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7860a26e60ffa443a04dcd8cee565a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonEffector
+  tweenSize: {x: 1.1, y: 1.1}
+  tweenTime: 0.1
 --- !u!1 &3659368002635331100
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3285e16716d480a4781a2a8d3269bf61, type: 3}
   m_Name: DummyEnemyData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseData
-  maxHp: 10000
-  maxBalance: 100
+  maxHp: 9999999
+  maxBalance: 9999999
   moveSpeed: 0
   minPatrolDistance: 0
   maxPatrolDistance: 0
@@ -31,7 +31,7 @@ MonoBehaviour:
   minIdleTime: 2
   maxIdleTime: 5
   executeBackOffset: -0.8
-  executeDamageRatio: 1
+  executeDamageRatio: 0
   deathDuration: 1
   detectOffset: {x: 0, y: 0.8}
   introFocusDuration: 0.6

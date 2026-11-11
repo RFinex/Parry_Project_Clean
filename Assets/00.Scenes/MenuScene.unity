@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 140118012}
   - component: {fileID: 140118011}
   - component: {fileID: 140118010}
+  - component: {fileID: 140118013}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -297,6 +298,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 140118008}
   m_CullTransparentMesh: 1
+--- !u!114 &140118013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140118008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7860a26e60ffa443a04dcd8cee565a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonEffector
+  tweenSize: {x: 1.1, y: 1.1}
+  tweenTime: 0.1
 --- !u!1 &170776945
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +703,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uBD88\uB7EC\uC624\uAE30"
+  m_text: "\uBD88\uB7EC\uC624\uAE30\n(\uC900\uBE44\uC911)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 637bf44f9ca077e428806388f697123b, type: 2}
   m_sharedMaterial: {fileID: 1594459440087663755, guid: 637bf44f9ca077e428806388f697123b, type: 2}
@@ -715,8 +730,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -883,6 +898,7 @@ GameObject:
   - component: {fileID: 929801674}
   - component: {fileID: 929801673}
   - component: {fileID: 929801672}
+  - component: {fileID: 929801675}
   m_Layer: 5
   m_Name: StartBtn
   m_TagString: Untagged
@@ -992,6 +1008,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 929801670}
   m_CullTransparentMesh: 1
+--- !u!114 &929801675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929801670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7860a26e60ffa443a04dcd8cee565a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonEffector
+  tweenSize: {x: 1.1, y: 1.1}
+  tweenTime: 0.1
 --- !u!1001 &973245002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1326,6 +1356,7 @@ GameObject:
   - component: {fileID: 1783026028}
   - component: {fileID: 1783026027}
   - component: {fileID: 1783026026}
+  - component: {fileID: 1783026029}
   m_Layer: 5
   m_Name: SettingBtn
   m_TagString: Untagged
@@ -1435,6 +1466,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783026024}
   m_CullTransparentMesh: 1
+--- !u!114 &1783026029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1783026024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7860a26e60ffa443a04dcd8cee565a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonEffector
+  tweenSize: {x: 1.1, y: 1.1}
+  tweenTime: 0.1
 --- !u!1 &1811604544
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,6 +1919,7 @@ GameObject:
   - component: {fileID: 2002296376}
   - component: {fileID: 2002296375}
   - component: {fileID: 2002296374}
+  - component: {fileID: 2002296377}
   m_Layer: 5
   m_Name: LoadBtn
   m_TagString: Untagged
@@ -1983,6 +2029,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2002296372}
   m_CullTransparentMesh: 1
+--- !u!114 &2002296377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002296372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7860a26e60ffa443a04dcd8cee565a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonEffector
+  tweenSize: {x: 1.1, y: 1.1}
+  tweenTime: 0.1
 --- !u!1 &2094607829
 GameObject:
   m_ObjectHideFlags: 0

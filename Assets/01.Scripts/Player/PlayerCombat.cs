@@ -156,8 +156,12 @@ public class PlayerCombat
             OnAttackHitTargets?.Invoke(hitEnemyList, attackDamage);
             Utils.Log<PlayerController>($"가한 대미지 : {attackDamage}");
         }
+        else
+        {
+            SoundManager.Instance.PlaySFX(SFXType.Sword_NoHit);
+        }
 
-        OnAttackEnded?.Invoke();
+            OnAttackEnded?.Invoke();
     }
 
     /// <summary>

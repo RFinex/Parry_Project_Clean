@@ -249,4 +249,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b82a984d08781bc4e91069ee7242280d, type: 3}
   - {fileID: 8300000, guid: 2aef4e3e9a782634a8978e0249cba902, type: 3}
   - {fileID: 8300000, guid: 64ffc2c4a606f364989d46c34576192c, type: 3}
+  - {fileID: 8300000, guid: ee8fdf6df0b237c4f9a1016200771392, type: 3}
+  - {fileID: 8300000, guid: 1dc2f2287b118ff45939a91b08a2244e, type: 3}
+  - {fileID: 8300000, guid: 52104bc3637e70540be457e0ba1ba9cd, type: 3}
+  - {fileID: 8300000, guid: eb4f9cd05fe26a248a3e033a926c7fc4, type: 3}
   defaultVolume: 0.5
