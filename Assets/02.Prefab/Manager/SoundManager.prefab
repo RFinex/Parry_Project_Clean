@@ -46,10 +46,10 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -143,7 +143,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -243,7 +243,13 @@ MonoBehaviour:
   ddol: 1
   bgmSource: {fileID: 2027414608097949187}
   sfxSource: {fileID: 324688775365997049}
-  bgmClip: []
+  bgmClip:
+  - {fileID: 8300000, guid: ac699d8cc40c8f644ab5330e41d96588, type: 3}
+  - {fileID: 8300000, guid: f7c94b00546f2484ea827051a05081a4, type: 3}
+  - {fileID: 8300000, guid: b8dac465e64567948b9569336937bfe9, type: 3}
+  - {fileID: 8300000, guid: e6203b2c85de4c240a42967822e0bd71, type: 3}
+  - {fileID: 8300000, guid: ff94d5cc0af7b4146894c4850047c72e, type: 3}
+  - {fileID: 8300000, guid: b95bbf1f7da9f2c4eb23d714e21a8903, type: 3}
   sfxClip:
   - {fileID: 8300000, guid: eb93be91d9129eb4581b8d0954d65698, type: 3}
   - {fileID: 8300000, guid: b82a984d08781bc4e91069ee7242280d, type: 3}
@@ -253,4 +259,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1dc2f2287b118ff45939a91b08a2244e, type: 3}
   - {fileID: 8300000, guid: 52104bc3637e70540be457e0ba1ba9cd, type: 3}
   - {fileID: 8300000, guid: eb4f9cd05fe26a248a3e033a926c7fc4, type: 3}
+  - {fileID: 8300000, guid: 6dce80fc630b7b545b115edbbbd9e2c0, type: 3}
   defaultVolume: 0.5
+  fadeDuration: 0.2

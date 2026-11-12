@@ -15,11 +15,11 @@ MonoBehaviour:
   minRange: 5
   maxRange: 8
   cooldown: 8
-  damage: 50
+  damage: 15
   attackDelay: 0
   animationType: 4
   hitboxSize: {x: 1, y: 1}
-  hitboxXOffset: 0
+  hitboxOffset: {x: 0, y: 0}
   startupDelay: 0.5
   recoveryDelay: 0
   canGuard: 0

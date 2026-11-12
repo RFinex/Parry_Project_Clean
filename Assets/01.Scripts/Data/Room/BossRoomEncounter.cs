@@ -70,6 +70,9 @@ public class BossRoomEncounter : MonoBehaviour
 
         try
         {
+            if(SoundManager.Instance != null)
+                await SoundManager.Instance.StopBGMFadeOut(ctk);
+
             await gameManager.MoveCameraTargetAsync(boss.transform, boss.Data.IntroFocusDuration, ctk);
 
             await boss.PlayIntroAsync(player, bossJumpPoint_1, bossJumpPoint_2, ctk);
@@ -78,9 +81,13 @@ public class BossRoomEncounter : MonoBehaviour
 
             EventBus.Publish(new BossFightStartedEvent(boss));
             boss.StartCombat(player);
+
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayBGM(BGMType.Boss);
         }
         catch (OperationCanceledException)
         {
+
         }
         finally
         {

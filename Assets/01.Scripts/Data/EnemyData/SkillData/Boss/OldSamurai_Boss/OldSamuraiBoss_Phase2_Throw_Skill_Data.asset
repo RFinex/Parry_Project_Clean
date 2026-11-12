@@ -20,7 +20,7 @@ MonoBehaviour:
   animationType: 13
   hitboxSize: {x: 0, y: 0}
   hitboxOffset: {x: 0, y: 0}
-  startupDelay: 0.2
+  startupDelay: 0
   recoveryDelay: 0.3
   canGuard: 1
   canParry: 1

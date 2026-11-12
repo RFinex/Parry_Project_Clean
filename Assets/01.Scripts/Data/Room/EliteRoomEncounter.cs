@@ -24,6 +24,9 @@ public class EliteRoomEncounter : MonoBehaviour
     private void OnDisable()
     {
         token = token.Cancel_DisposeToken();
+
+        if(elite != null)
+            elite.OnDeathFinished -= HandleEliteDeath;
     }
 
     public void Initialized(EliteEnemyController elite, PlayerController player)
@@ -35,6 +38,9 @@ public class EliteRoomEncounter : MonoBehaviour
 
         if (introTrigger != null)
             introTrigger.enabled = true;
+
+        elite.OnDeathFinished -= HandleEliteDeath;
+        elite.OnDeathFinished += HandleEliteDeath;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -63,6 +69,9 @@ public class EliteRoomEncounter : MonoBehaviour
 
         try
         {
+            if (SoundManager.Instance != null)
+                await SoundManager.Instance.StopBGMFadeOut(ctk);
+
             await gameManager.MoveCameraTargetAsync(elite.transform, elite.Data.IntroFocusDuration, ctk);
             //gameManager.SetCameraTarget(elite.transform);
             //await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroFocusDuration), cancellationToken: ctk);
@@ -75,6 +84,9 @@ public class EliteRoomEncounter : MonoBehaviour
             //await UniTask.Delay(TimeSpan.FromSeconds(elite.Data.IntroReturnDuration), cancellationToken: ctk);
 
             elite.StartCombat(player);
+
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayBGM(BGMType.Elite);
         }
         catch (OperationCanceledException)
         {
@@ -87,5 +99,14 @@ public class EliteRoomEncounter : MonoBehaviour
             if (gameManager.CurrentState == GameState.Cutscene)
                 gameManager.SetGameState(GameState.Play);
         }
+    }
+
+    private void HandleEliteDeath(EnemyController enemy)
+    {
+        if(enemy != null)
+            enemy.OnDeathFinished -= HandleEliteDeath;
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayPreviousBGM();
     }
 }

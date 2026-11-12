@@ -18,14 +18,21 @@ public class OldSamuraiEffect : EffectBase
     private void OnEnable()
     {
         token = token.ResetToken();
-        particle.Play();
-
-        ReturnTimer(token.Token).Forget();
     }
 
     private void OnDisable()
     {
         token = token.Cancel_DisposeToken();
+    }
+
+    public void PlayEffect()
+    {
+        if (particle == null)
+            return;
+
+        particle.Play();
+
+        ReturnTimer(token.Token).Forget();
     }
 
     private async UniTaskVoid ReturnTimer(CancellationToken ctk)

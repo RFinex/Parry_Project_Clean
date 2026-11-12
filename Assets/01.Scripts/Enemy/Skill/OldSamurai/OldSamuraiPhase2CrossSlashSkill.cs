@@ -46,11 +46,11 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
                 // 타격 지점 표시
                 if (crossSlashData.AttackPointEffectId != 0 && ObjectPoolManager.Instance != null)
                 {
-                    EffectBase effect = ObjectPoolManager.Instance.Get<EffectBase>(crossSlashData.AttackPointEffectId, attackPoint);
+                    EffectBase warning = ObjectPoolManager.Instance.Get<EffectBase>(crossSlashData.AttackPointEffectId, attackPoint);
 
-                    if (effect != null)
+                    if (warning != null)
                     {
-                        effect.transform.localScale = new Vector3(scale.x, scale.y, 1f);
+                        warning.transform.localScale = new Vector3(scale.x, scale.y, 1f);
                     }
                 }
 
@@ -87,18 +87,21 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
                 }
 
                 bool isHorizontal = strike.HitboxSize.x > strike.HitboxSize.y;
-                EffectBase slash = ObjectPoolManager.Instance.Get<OldSamuraiEffect>(crossSlashData.SlashEffectId, attackPoint);
+                EffectBase effect = ObjectPoolManager.Instance.Get<EffectBase>(crossSlashData.SlashEffectId, attackPoint);
 
                 if (isHorizontal)
                 {
-                    slash.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-                    slash.transform.localScale = new(scale.y, scale.x, 1f);
+                    effect.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                    effect.transform.localScale = new(scale.y, scale.x, 1f);
                 }
                 else
                 {
-                    slash.transform.rotation = Quaternion.identity;
-                    slash.transform.localScale = new(scale.x, scale.y, 1f);
+                    effect.transform.rotation = Quaternion.identity;
+                    effect.transform.localScale = new(scale.x, scale.y, 1f);
                 }
+
+                if (effect is OldSamuraiEffect slash)
+                    slash.PlayEffect();
 
                 Collider2D hit = Physics2D.OverlapBox(attackPoint, strike.HitboxSize, 0f, board.playerLayer);
 

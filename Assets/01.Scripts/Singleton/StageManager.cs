@@ -13,6 +13,7 @@ public class StageManager : Singleton<StageManager>
     [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
 
     [SerializeField] private SceneName nextSceneAfterClear;
+    [SerializeField] private BGMType stageBGMType;
 
     private List<StageMapNodeData> nodes;
     private int currentNodeId;
@@ -80,6 +81,7 @@ public class StageManager : Singleton<StageManager>
         if (!roomSystem.StartRoom(startNode.roomPrefab))
             return;
 
+        SoundManager.Instance.PlayBGM(stageBGMType);
         SceneLoadManager.Instance.SceneReady();
     }
 

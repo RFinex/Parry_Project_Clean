@@ -29,6 +29,7 @@ public struct OldSamuraiPhase2SweepStrike
 
     [Header("Effect")]
     [SerializeField] private int strikeEffectId;
+    [SerializeField] private Vector2 strikeEffectScale;
 
     public EnemyAnimationType AnimationType => animationType;
     public Vector2 HitboxOffset => hitboxOffset;
@@ -41,4 +42,5 @@ public struct OldSamuraiPhase2SweepStrike
     public Vector2 AttackPointScale => attackPointScale;
 
     public int StrikeEffectId => strikeEffectId;
+    public Vector2 StrikeEffectScale => strikeEffectScale;
 }

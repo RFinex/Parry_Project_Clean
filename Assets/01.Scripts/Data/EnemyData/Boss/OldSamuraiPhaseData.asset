@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f3bcb2a55a77654fa4f2218d22f23ef, type: 3}
-  m_Name: TestPhaseData
+  m_Name: OldSamuraiPhaseData
   m_EditorClassIdentifier: Assembly-CSharp::BossData
   phase2HpRatio: 0.7
   introJumpSpeed: 5
   introJumpForce: 6
-  introUpJumpHeight: 0
-  introDownJumpHeight: 10
+  introUpJumpHeight: 10
+  introDownJumpHeight: 25
   introUpJumpDuration: 4
   introDownJumpDuration: 3

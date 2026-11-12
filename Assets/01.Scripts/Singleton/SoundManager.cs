@@ -1,3 +1,7 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
+using System.Threading;
 using UnityEngine;
 
 public enum SFXType
@@ -9,12 +13,18 @@ public enum SFXType
     Sword_NoHit,
     MouseOnButton,
     ClickButton,
-    Heal
+    Heal,
+    Chest
 }
 
 public enum BGMType
 {
-
+    Menu,
+    Lobby,
+    Stage1,
+    Stage2,
+    Elite,
+    Boss
 }
 
 public class SoundManager : Singleton<SoundManager>
@@ -32,6 +42,15 @@ public class SoundManager : Singleton<SoundManager>
     [Header("Default Volume")]
     [SerializeField] private float defaultVolume = 0.5f;
 
+    private float currentBGMVolume = 0.5f;
+    private float fadeMultiplier = 1f;
+    [SerializeField] private float fadeDuration = 0.2f;
+
+    private CancellationTokenSource token;
+
+    private BGMType previousBGM;
+    private BGMType currentBGM;
+
     protected override void AwakeSingleton()
     {
         SetBGMVolume(PlayerPrefs.GetFloat(ConstString.BGMVolume, defaultVolume));
@@ -40,16 +59,33 @@ public class SoundManager : Singleton<SoundManager>
         MuteSFX(PlayerPrefs.GetInt(ConstString.SFXMute, 0));
     }
 
+    private void OnEnable()
+    {
+        token = token.ResetToken();
+    }
+
+    private void OnDisable()
+    {
+        token = token.Cancel_DisposeToken();
+    }
+
     public void SetBGMVolume(float vol)
     {
-        bgmSource.volume = vol;
+        currentBGMVolume = vol;
         PlayerPrefs.SetFloat(ConstString.BGMVolume, vol);
+
+        UpdateBGMVolume();
     }
 
     public void SetSFXVolume(float vol)
     {
         sfxSource.volume = vol;
         PlayerPrefs.SetFloat(ConstString.SFXVolume, vol);
+    }
+
+    private void UpdateBGMVolume()
+    {
+        bgmSource.volume = currentBGMVolume * fadeMultiplier;
     }
 
     public void MuteBGM(int mute)
@@ -92,7 +128,7 @@ public class SoundManager : Singleton<SoundManager>
     // 볼륨 정보 외부 제공용
     public float GetBGMVolume()
     {
-        return bgmSource.volume;
+        return currentBGMVolume;
     }
 
     public float GetSFXVolume()
@@ -130,13 +166,46 @@ public class SoundManager : Singleton<SoundManager>
         if (bgmSource.clip == bgmClip[(int)type] && bgmSource.isPlaying)
             return;
 
+        previousBGM = currentBGM;
+        currentBGM = type;
+
+        fadeMultiplier = 1f;
+        UpdateBGMVolume();
 
         bgmSource.clip = bgmClip[(int)type];
         bgmSource.Play();
     }
 
+    public void PlayPreviousBGM()
+    {
+        PlayBGM(previousBGM);
+    }
+
     public void StopBGM()
     {
         bgmSource.Stop();
+    }
+
+    public async UniTask StopBGMFadeOut(CancellationToken ctk)
+    {
+        try
+        {
+            await DOTween.To(() => fadeMultiplier,
+                value =>
+                {
+                    fadeMultiplier = value;
+                    UpdateBGMVolume();
+                },
+                0f,
+                fadeDuration)
+                .SetEase(Ease.Linear)
+                .ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, ctk);
+
+            StopBGM();
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
     }
 }

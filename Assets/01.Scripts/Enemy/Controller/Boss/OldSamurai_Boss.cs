@@ -537,7 +537,8 @@ public class OldSamurai_Boss : BossController
 
         float height = isJumpDown ? BossData.IntroDownJumpHeight : BossData.IntroUpJumpHeight;
 
-        float jumpPower = Mathf.Abs(endY - startY) * 0.5f + height;
+        //float jumpPower = Mathf.Abs(endY - startY) * 0.5f + height;
+        float jumpPower = height;
 
         float duration = isJumpDown ? BossData.IntroDownJumpDuration : BossData.IntroUpJumpDuration;
 

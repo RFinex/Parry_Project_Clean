@@ -71,6 +71,7 @@ public class TreasureObject : InteractableBase
             return;
 
         chestAnimator.enabled = true;
+        SoundManager.Instance.PlaySFX(SFXType.Chest);
         chestAnimator.Play(openAnimHash, 0, 0f);
     }
 
