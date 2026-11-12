@@ -21,13 +21,16 @@ MonoBehaviour:
   hitboxSize: {x: 0, y: 0}
   hitboxOffset: {x: 0, y: 0}
   startupDelay: 0
-  recoveryDelay: 0.8
+  recoveryDelay: 0.4
   canGuard: 0
   canParry: 0
-  lineEffectId: 8
+  linePreviewId: 8
+  lineEffectId: 11
   lineInterval: 0.1
   attackCount: 15
   angleRange: {x: -75, y: 75}
-  lineHitboxSize: {x: 100, y: 0.15}
+  lineHitboxSize: {x: 0.15, y: 100}
   randomPositionRange: {x: 10, y: 10}
   warningStartDelay: 1
+  lineEffectScale: {x: 1.5, y: 100}
+  linePreviewScale: {x: 0.7, y: 100}

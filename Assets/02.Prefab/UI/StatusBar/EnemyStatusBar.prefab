@@ -510,4 +510,4 @@ MonoBehaviour:
   followDuration: 0.5
   balanceFillLeft: {fileID: 2955178031358823035}
   balanceFillRight: {fileID: 7689319114639872958}
-  offset: {x: 0, y: -0.5, z: 0}
+  offset: {x: 0, y: -0.2, z: 0}

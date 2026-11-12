@@ -8,7 +8,7 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
 {
     private readonly OldSamuraiPhase2LineBarrageData lineData;
     private readonly List<Vector2> attackPoints = new();
-    private readonly List<AttackLinePreviewEffect> lineEffects = new();
+    private readonly List<AttackLinePreviewEffect> linePreviews = new();
     private readonly List<float> attackAngles = new();
     private Transform lineAttackCenter;
 
@@ -26,7 +26,7 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
         owner.StopMove();
         attackPoints.Clear();
         attackAngles.Clear();
-        lineEffects.Clear();
+        linePreviews.Clear();
 
         try
         {
@@ -48,18 +48,18 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
 
                 AttackLinePreviewEffect preview = null;
 
-                if (lineData.LineEffectId != 0 && ObjectPoolManager.Instance != null)
+                if (lineData.LinePreviewId != 0 && ObjectPoolManager.Instance != null)
                 {
-                    preview = ObjectPoolManager.Instance.Get<AttackLinePreviewEffect>(lineData.LineEffectId, attackPoint);
+                    preview = ObjectPoolManager.Instance.Get<AttackLinePreviewEffect>(lineData.LinePreviewId, attackPoint);
                 }
 
                 if (preview != null)
                 {
-                    preview.transform.localScale = new Vector3(lineData.LineHitboxSize.x, lineData.LineHitboxSize.y, 1f);
+                    preview.transform.localScale = new Vector3(lineData.LinePreviewScale.x, lineData.LinePreviewScale.y, 1f);
 
                     preview.transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
-                    lineEffects.Add(preview);
+                    linePreviews.Add(preview);
                 }
 
                 if (i < lineData.AttackCount - 1)
@@ -98,6 +98,31 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
                 await UniTask.NextFrame(PlayerLoopTiming.Update, ctk);
             }
 
+            for (int i = 0; i < linePreviews.Count; i++)
+            {
+                if (linePreviews[i] != null)
+                    linePreviews[i].ReturnPool();
+            }
+
+            linePreviews.Clear();
+
+            if (lineData.LineEffectId != 0 && ObjectPoolManager.Instance != null)
+            {
+                for (int i = 0; i < attackPoints.Count; i++)
+                {
+                    EffectBase effect = ObjectPoolManager.Instance.Get<EffectBase>(lineData.LineEffectId, attackPoints[i]);
+
+                    if (effect == null)
+                        return;
+
+                    effect.transform.localScale = new Vector3(lineData.LineEffectScale.x, lineData.LineEffectScale.y, 1f);
+                    effect.transform.rotation = Quaternion.Euler(0f, 0f, attackAngles[i]);
+
+                    if (effect is OldSamuraiEffect slash)
+                        slash.PlayEffect();
+                }
+            }            
+
             // 모든 선의 판정을 같은 타이밍에 확인
             // 겹친 선에 플레이어가 여러 번 맞는 것을 방지
             for (int i = 0; i < attackPoints.Count; i++)
@@ -110,16 +135,7 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
                 board.combat.Attack(hit.transform, owner, data.Damage, data.CanGuard, data.CanParry);
 
                 break;
-            }
-
-            // 판정이 끝났으므로 표시한 선을 모두 제거한다.
-            for (int i = 0; i < lineEffects.Count; i++)
-            {
-                if (lineEffects[i] != null)
-                    lineEffects[i].ReturnPool();
-            }
-
-            lineEffects.Clear();
+            }            
 
             board.animator.Play(EnemyAnimationType.Idle);
             await WaitRecovery(ctk);
@@ -130,15 +146,15 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
         }
         finally
         {
-            for (int i = 0; i < lineEffects.Count; i++)
+            for (int i = 0; i < linePreviews.Count; i++)
             {
-                if (lineEffects[i] != null)
-                    lineEffects[i].ReturnPool();
+                if (linePreviews[i] != null)
+                    linePreviews[i].ReturnPool();
             }
 
             attackPoints.Clear();
             attackAngles.Clear();
-            lineEffects.Clear();
+            linePreviews.Clear();
 
             owner.StopMove();
         }

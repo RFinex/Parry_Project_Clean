@@ -20,6 +20,8 @@ public class OldSamuraiUpperSkill : EnemySkill
 
         await WaitStartup(ctk);
 
+        owner.LookAtTarget();
+
         if (!board.animator.Play(data.AnimationType))
             return;
 

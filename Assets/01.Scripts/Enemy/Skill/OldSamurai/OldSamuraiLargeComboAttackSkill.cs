@@ -65,24 +65,6 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
                 }
             }
 
-            // 공격 지점에 원형 미리보기 표시
-            //for (int i = 0; i < attackPoints.Count; i++)
-            //{
-            //    if (largeComboData.PreviewEffectId != 0 && ObjectPoolManager.Instance != null)
-            //    {
-            //        ObjectPoolManager.Instance.Get<EffectBase>(largeComboData.PreviewEffectId, attackPoints[i]);
-            //    }
-
-            //    if (largeComboData.PreviewInterval > 0f)
-            //    {
-            //        await UniTask.Delay(TimeSpan.FromSeconds(largeComboData.PreviewInterval), cancellationToken: ctk);
-            //    }
-            //    else
-            //    {
-            //        await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken: ctk);
-            //    }
-            //}
-
             for (int i = 0; i < largeComboData.Strikes.Count; i++)
             {
                 OldSamuraiLargeAttackData strike = largeComboData.Strikes[i];
@@ -121,7 +103,10 @@ public class OldSamuraiLargeComboAttackSkill : EnemySkill
                     await UniTask.Delay(TimeSpan.FromSeconds(delayHit), cancellationToken: ctk);
                 }
 
-                EffectBase effect = ObjectPoolManager.Instance.Get<OldSamuraiEffect>(largeComboData.Strikes[i].SlashEffectId, attackPoints[i]);
+                EffectBase effect = ObjectPoolManager.Instance.Get<EffectBase>(largeComboData.Strikes[i].SlashEffectId, attackPoints[i]);
+
+                if (effect is OldSamuraiEffect slash)
+                    slash.PlayEffect();
 
                 Collider2D hit = Physics2D.OverlapBox(attackPoints[i], strike.HitboxSize, 0f, board.playerLayer);
 

@@ -251,7 +251,7 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
         this.statusBar = statusBar;
     }
 
-    public bool TryDetectTarget()
+    public virtual bool TryDetectTarget()
     {
         Vector2 origin = (Vector2)transform.position + data.DetectOffset;
 

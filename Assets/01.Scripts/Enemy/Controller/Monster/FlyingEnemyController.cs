@@ -44,4 +44,13 @@ public class FlyingEnemyController : NormalEnemyController
 
         rb.linearVelocity = Vector2.zero;
     }
+
+    public override bool TryDetectTarget()
+    {
+        Vector2 origin = (Vector2)transform.position + data.DetectOffset;
+        Collider2D hit = Physics2D.OverlapCircle(origin, data.DetectRange, playerLayer);
+
+        target = hit != null ? hit.transform : null;
+        return target != null;
+    }
 }

@@ -15,11 +15,11 @@ MonoBehaviour:
   minRange: 0
   maxRange: 4.9
   cooldown: 5
-  damage: 40
+  damage: 10
   attackDelay: 0
   animationType: 2
   hitboxSize: {x: 1, y: 1}
-  hitboxXOffset: 0
+  hitboxOffset: {x: 0, y: 0}
   startupDelay: 1
   recoveryDelay: 0
   canGuard: 1
@@ -27,3 +27,4 @@ MonoBehaviour:
   chargeSpeed: 10
   chargeDuration: 0.35
   warningId: 2
+  offset: 0.3

@@ -20,8 +20,8 @@ MonoBehaviour:
   animationType: 15
   hitboxSize: {x: 0, y: 0}
   hitboxOffset: {x: 0, y: 0}
-  startupDelay: 0.3
-  recoveryDelay: 1
+  startupDelay: 0
+  recoveryDelay: 0.4
   canGuard: 1
   canParry: 1
   previewEffectId: 6
