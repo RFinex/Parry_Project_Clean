@@ -293,13 +293,13 @@ public class EnemyController : MonoBehaviour, IExecuteTarget, IPoolable
 
         float distance = UnityEngine.Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
 
-        return (Vector2)transform.position + Vector2.right * dir * distance;
+        return (Vector2)transform.position + dir * distance * Vector2.right;
     }
     public Vector2 GetRandomPatrolPos(float dir)
     {
         float distance = UnityEngine.Random.Range(data.MinPatrolDistance, data.MaxPatrolDistance);
 
-        return (Vector2)transform.position + Vector2.right * Mathf.Sign(dir) * distance;
+        return (Vector2)transform.position + distance * Mathf.Sign(dir) * Vector2.right;
     }
 
     public bool IsGroundAhead(float dir)

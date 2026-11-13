@@ -73,7 +73,7 @@ public class NormalEnemyController : EnemyController
 
         if (hit != null)
         {
-            blackBoard.combat.Attack(hit.transform, this, attackData.Damage, attackData.CanGuard, attackData.CanParry);
+            blackBoard.combat.Attack(hit.transform, this, attackData.Damage, attackData.StaminaDamage, attackData.CanGuard, attackData.CanParry);
         }
     }
 

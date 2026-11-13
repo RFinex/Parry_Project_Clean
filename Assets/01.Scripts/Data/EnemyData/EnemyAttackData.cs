@@ -20,6 +20,7 @@ public class EnemyAttackData : ScriptableObject
     [SerializeField] private Vector2 hitboxSize;
     [SerializeField] private Vector2 hitboxOffset;
     [SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private float staminaDamage = 8f;
 
     [Header("Guard / Parry")]
     [SerializeField] private bool canGuard = true;
@@ -42,6 +43,7 @@ public class EnemyAttackData : ScriptableObject
     public Vector2 HitboxSize => hitboxSize;
     public Vector2 HitboxOffset => hitboxOffset;
     public float AttackCooldown => attackCooldown;
+    public float StaminaDamage => staminaDamage;
 
     public bool CanGuard => canGuard;
     public bool CanParry => canParry;

@@ -95,7 +95,7 @@ public class OldSamuraiPhase2SweepSkill : EnemySkill
 
                 if (hit != null)
                 {
-                    board.combat.Attack(hit.transform, owner, data.Damage, strike.CanGuard, strike.CanParry);
+                    board.combat.Attack(hit.transform, owner, data.Damage, data.StaminaDamage, strike.CanGuard, strike.CanParry);
                 }
 
                 // 타격 후 현재 애니메이션이 끝날 때까지 대기

@@ -116,7 +116,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 7
   m_MaskInteraction: 0
   m_Sprite: {fileID: 815424164945274260, guid: 39ce8d27164a99641b40535a2363fbbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -310,6 +310,7 @@ MonoBehaviour:
     duration: 0
   bossData: {fileID: 11400000, guid: 2a05178de8db73749874388b507c1503, type: 2}
   roomCenter: {fileID: 0}
+  btSequenceData: {fileID: 0}
   parryComboData: {fileID: 11400000, guid: fcf31aa8ef4c53240a138747896fd488, type: 2}
   throwData: {fileID: 11400000, guid: 540a5e0ba33803049bc939267d73fa52, type: 2}
   upperData: {fileID: 11400000, guid: ab6c4da1ea77246438c5b6d85749351c, type: 2}

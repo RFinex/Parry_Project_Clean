@@ -132,7 +132,7 @@ public class OldSamuraiPhase2LineBarrageSkill : EnemySkill
                 if (hit == null)
                     continue;
 
-                board.combat.Attack(hit.transform, owner, data.Damage, data.CanGuard, data.CanParry);
+                board.combat.Attack(hit.transform, owner, data.Damage, data.StaminaDamage, data.CanGuard, data.CanParry);
 
                 break;
             }            

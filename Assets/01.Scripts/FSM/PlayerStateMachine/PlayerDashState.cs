@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class PlayerDashState : PlayerBaseState
@@ -20,7 +21,8 @@ public class PlayerDashState : PlayerBaseState
 
         playerBoard.skill.DashCoolTime(dashCooldown, owner.DestroyToken).Forget();
         playerBoard.stats.SetDashInvincible(true);
-        
+
+        playerBoard.stats.UseStamina(playerBoard.stats.GetStats(StatId.DashStaminaCost));
         DashAsync(dashTime, dashSpeed, token.Token).Forget();
     }
 

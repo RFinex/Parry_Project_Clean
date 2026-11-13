@@ -70,5 +70,9 @@ public enum StatId
     AttackRange,
     InvincibleTime,
     DamageTakenMultiplier,
-    DamageDealtMultiplier
+    DamageDealtMultiplier,
+    DashStaminaCost,
+    StaminaRestorePerSec,
+    StaminaRestorePerSecAllUse,
+    StaminaRestoreDelay
 }

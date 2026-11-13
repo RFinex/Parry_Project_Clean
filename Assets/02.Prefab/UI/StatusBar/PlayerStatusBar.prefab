@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 708066105389597488}
   - component: {fileID: 5272905367295822845}
   m_Layer: 5
-  m_Name: Backgorund (1)
+  m_Name: StaminaBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 6325062043805784063}
   - component: {fileID: 5420205305538441411}
   m_Layer: 5
-  m_Name: Backgorund
+  m_Name: HealthBackgorund
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,11 +450,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814f6ab42ba367543b26352b678c84a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatusBar
+  staminaRect: {fileID: 557301211744767283}
   healthFill: {fileID: 9619804308463811}
   healthDelayFill: {fileID: 6197228161155040669}
   healthDelayDuration: 0.5
   healthText: {fileID: 7665263187070718259}
   staminaFill: {fileID: 8576009155402551920}
+  staminaShakeDuration: 0.4
+  staminaShakePower: {x: 50, y: 20}
+  shakeVibrato: 12
+  shakeRandomness: 90
+  shakeFadeOut: 1
+  staminaBrokenColor: {r: 0.0327918, g: 0.47708893, b: 0.048701018, a: 1}
+  staminaBrokenColorDuration: 0.2
 --- !u!1 &5192882317407043929
 GameObject:
   m_ObjectHideFlags: 0

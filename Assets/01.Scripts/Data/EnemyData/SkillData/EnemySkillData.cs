@@ -7,6 +7,7 @@ public class EnemySkillData : ScriptableObject
     [SerializeField] private float maxRange;
     [SerializeField] private float cooldown;
     [SerializeField] private float damage;
+    [SerializeField] private float staminaDamage;
 
     [Header("Attack Delay(Animation")]
     [SerializeField] private float attackDelay;
@@ -30,6 +31,7 @@ public class EnemySkillData : ScriptableObject
     public float MaxRange => maxRange;
     public float Cooldown => cooldown;
     public float Damage => damage;
+    public float StaminaDamage => staminaDamage;
 
     public float AttackDelay => attackDelay;
 
