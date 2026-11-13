@@ -115,7 +115,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 7
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
@@ -235,6 +235,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestEnemyController
   data: {fileID: 11400000, guid: 8c3fe70d4568d7c40b39480d423dd571, type: 2}
+  warningPos: {fileID: 0}
+  guardOnlyWarningId: 0
+  parryOnlyWarningId: 0
+  neitherWarningId: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 128

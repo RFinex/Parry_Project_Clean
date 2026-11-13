@@ -23,6 +23,7 @@ MonoBehaviour:
   dashTime: 0.3
   dashSpeed: 8
   dashCooldown: 2
+  dashStaminaCost: 15
   maxHp: 100
   maxStamina: 100
   attackDamage: 50
@@ -35,6 +36,9 @@ MonoBehaviour:
   - 0.14285715
   - 0.071428575
   - 0.14285715
+  staminaRestorePerSec: 25
+  staminaRestorePerSecAllUse: 15
+  staminaRestoreDelay: 2
   parryTime: 0.5
   parryDamage: 10
   guardStaminaCost: 20
@@ -44,6 +48,8 @@ MonoBehaviour:
   executeSearchRange: 5
   executeMoveSpeed: 80
   executeBackOffset: 0.8
+  executeEffectId: 9
+  executeEffectOffset: {x: 0, y: 0.5}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

@@ -121,7 +121,7 @@ public class NormalEnemyProjectileAttackState : EnemyBaseState
             Vector2 targetPos = (Vector2)owner.Target.position + attackData.TargetOffset;
 
             // 공격 정보
-            EnemyAttackInfo info = new(attackData.Damage, owner, attackData.CanGuard, attackData.CanParry);
+            EnemyAttackInfo info = new(attackData.Damage, attackData.StaminaDamage, owner, attackData.CanGuard, attackData.CanParry);
 
             // 목표 지점 발사
             projectile.ShootAt(targetPos, info);

@@ -85,7 +85,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 7
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4723107735738678597, guid: 4478060f9038c0046b0bfac35bf8c292, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -177,11 +177,7 @@ MonoBehaviour:
   attackDatas:
   - {fileID: 11400000, guid: b28ab1b8d6579f8478515a25a6da63fc, type: 2}
   - {fileID: 11400000, guid: 4123e4bde44dcc2499a192ec49818395, type: 2}
-  projectileAttackData: {fileID: 0}
   attackGizmoDuration: 1
-  parryAttackData: {fileID: 11400000, guid: 4123e4bde44dcc2499a192ec49818395, type: 2}
-  normalAttackData: {fileID: 11400000, guid: b28ab1b8d6579f8478515a25a6da63fc, type: 2}
-  maxAttackIndex: 1
 --- !u!61 &2765711564352769778
 BoxCollider2D:
   m_ObjectHideFlags: 0

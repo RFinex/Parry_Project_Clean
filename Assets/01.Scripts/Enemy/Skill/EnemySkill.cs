@@ -149,7 +149,7 @@ public abstract class EnemySkill
         if (hit == null)
             return false;
 
-        board.combat.Attack(hit.transform, owner, data.Damage, data.CanGuard, data.CanParry);
+        board.combat.Attack(hit.transform, owner, data.Damage, data.StaminaDamage, data.CanGuard, data.CanParry);
 
         return true;
     }

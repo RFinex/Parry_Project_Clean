@@ -51,7 +51,7 @@ public class OldSamuraiThrowSkill : EnemySkill
             if (projectile == null)
                 continue;
 
-            EnemyAttackInfo info = new(data.Damage, owner, data.CanGuard, data.CanParry, false);
+            EnemyAttackInfo info = new(data.Damage, data.StaminaDamage, owner, data.CanGuard, data.CanParry, false);
 
             projectile.Shoot(dir, info);
 

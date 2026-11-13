@@ -25,6 +25,7 @@ public class EnemyBaseData : ScriptableObject
     [SerializeField] private float attackDelay = (5f / 14f);
     [SerializeField] private bool canGuard = true;
     [SerializeField] private bool canParry = true;
+    [SerializeField] private float staminaDamage = 8f;
 
     [Header("Stagger")]
     [SerializeField] private float staggerDuration = 3f;
@@ -67,6 +68,7 @@ public class EnemyBaseData : ScriptableObject
     public float AttackDelay => attackDelay;
     public bool CanGuard => canGuard;
     public bool CanParry => canParry;
+    public float StaminaDamage => staminaDamage;
 
     public float StaggerDuration => staggerDuration;
 

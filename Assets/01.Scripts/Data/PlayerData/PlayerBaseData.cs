@@ -20,6 +20,7 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float dashTime = 0.1f;
     [SerializeField] private float dashSpeed = 20f;
     [SerializeField] private float dashCooldown = 0.5f;
+    [SerializeField] private float dashStaminaCost = 10f;
 
     [Header("Stats")]
     [SerializeField] private float maxHp = 100f;
@@ -34,6 +35,11 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float attackEndTime = 0.5f;
 
     [SerializeField] private List<float> attackHitDelays;
+
+    [Header("Stamina Restore")]
+    [SerializeField] private float staminaRestorePerSec = 15f;
+    [SerializeField] private float staminaRestorePerSecAllUse = 10f;
+    [SerializeField] private float staminaRestoreDelay = 2f;
 
     [Header("Guard")]
     [SerializeField] private float parryTime = 0.15f;
@@ -71,6 +77,7 @@ public class PlayerBaseData : ScriptableObject
     public float DashTime => dashTime;
     public float DashSpeed => dashSpeed;
     public float DashCooldown => dashCooldown;
+    public float DashStaminaCost => dashStaminaCost;
 
     public float MaxHp => maxHp;
     public float MaxStamina => maxStamina;
@@ -82,6 +89,10 @@ public class PlayerBaseData : ScriptableObject
     public float ComboInputTime => comboInputTime;
     public float AttackEndTime => attackEndTime;
     public List<float> AttackHitDelays => attackHitDelays;
+
+    public float StaminaRestorePerSec => staminaRestorePerSec;
+    public float StaminaRestorePerSecAllUse => staminaRestorePerSecAllUse;
+    public float StaminaRestoreDelay => staminaRestoreDelay;
 
     public float ParryTime => parryTime;
     public float ParryDamage => parryDamage;

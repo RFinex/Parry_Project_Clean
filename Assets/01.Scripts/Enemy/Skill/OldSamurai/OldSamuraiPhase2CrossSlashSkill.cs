@@ -107,7 +107,7 @@ public class OldSamuraiPhase2CrossSlashSkill : EnemySkill
 
                 if (hit != null)
                 {                    
-                    board.combat.Attack(hit.transform, owner, data.Damage, strike.CanGuard, strike.CanParry);
+                    board.combat.Attack(hit.transform, owner, data.Damage, data.StaminaDamage, strike.CanGuard, strike.CanParry);
                 }
 
                 if (strike.AnimEndDelay > 0f)

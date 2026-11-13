@@ -376,6 +376,14 @@ public class PlayerCombat
 
         if (info.canGuard)
         {
+            if (stats.IsStaminaBroken)
+                return false;
+
+            bool staminaBrokenThisHit = stats.TakeStaminaDamage(info.staminaDamage);
+
+            if (staminaBrokenThisHit)
+                return false;
+
             SoundManager.Instance.PlaySFX(SFXType.Guard);
             Utils.Log<PlayerController>("가드 성공");
             return true;

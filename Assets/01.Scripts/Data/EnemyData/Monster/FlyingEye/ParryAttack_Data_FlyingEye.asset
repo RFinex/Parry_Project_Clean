@@ -21,6 +21,7 @@ MonoBehaviour:
   hitboxSize: {x: 0.5, y: 0.5}
   hitboxOffset: {x: 0.5, y: 0.5}
   attackCooldown: 1.5
+  staminaDamage: 12
   canGuard: 0
   canParry: 1
   minAttackRange: 0

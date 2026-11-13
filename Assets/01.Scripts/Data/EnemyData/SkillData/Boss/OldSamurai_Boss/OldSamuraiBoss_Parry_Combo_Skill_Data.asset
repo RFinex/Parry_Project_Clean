@@ -16,6 +16,7 @@ MonoBehaviour:
   maxRange: 3
   cooldown: 4
   damage: 12
+  staminaDamage: 10
   attackDelay: 0
   animationType: 8
   hitboxSize: {x: 2.2, y: 1.3}

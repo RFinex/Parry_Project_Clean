@@ -1,9 +1,13 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerStats
 {
+    private PlayerBlackBoard playerBoard;
+
     private readonly Dictionary<StatId, float> baseStats = new();
     private readonly Dictionary<StatId, float> currentStats = new();
     private readonly Dictionary<StatId, float> percentStats = new();
@@ -14,6 +18,7 @@ public class PlayerStats
     private float invincibleTimer;
     private bool isDamageInvincible;
     private bool isDashInvincible;
+    private bool isStaminaBroken;
 
     public float NowHp => nowHp;
     public float MaxHp => GetStats(StatId.MaxHp);
@@ -23,11 +28,16 @@ public class PlayerStats
     public bool IsDead => nowHp <= 0f;
     public bool IsInvincible => isDamageInvincible || isDashInvincible;
     public float InvincibleTime => GetStats(StatId.InvincibleTime);
+    public bool IsStaminaBroken => isStaminaBroken;
 
     public event Action<float, float> OnHealthChanged;
     public event Action<float, float> OnStaminaChanged;
     public event Action<PlayerBlackBoard> OnHealthHalf;
     public event Action OnDamaged;
+    public event Action OnStaminaBroken;
+    public event Action OnStaminaRestore;
+
+    private CancellationTokenSource staminaToken;
     
     public PlayerStats(PlayerBaseData data)
     {
@@ -46,11 +56,20 @@ public class PlayerStats
         SetBaseStats(StatId.InvincibleTime, data.InvincibleTime);
         SetBaseStats(StatId.DamageTakenMultiplier, data.DamageTakenMultiplier);
         SetBaseStats(StatId.DamageDealtMultiplier, data.DamageDealtMultiplier);
+        SetBaseStats(StatId.DashStaminaCost, data.DashStaminaCost);
+        SetBaseStats(StatId.StaminaRestorePerSec, data.StaminaRestorePerSec);
+        SetBaseStats(StatId.StaminaRestorePerSecAllUse, data.StaminaRestorePerSecAllUse);
+        SetBaseStats(StatId.StaminaRestoreDelay, data.StaminaRestoreDelay);
 
         SetCurrentStats();
 
         nowHp = MaxHp;
         nowStamina = MaxStamina;
+    }
+
+    public void Initialized(PlayerBlackBoard board)
+    {
+        playerBoard = board;
     }
 
     public float GetStats(StatId id)
@@ -184,6 +203,33 @@ public class PlayerStats
         OnDamaged?.Invoke();
     }
 
+    public bool TakeStaminaDamage(float damage)
+    {
+        if (IsDead)
+            return false;
+
+        nowStamina -= damage;
+
+        // 이번 대미지에 스테미너가 파괴되었는지 확인
+        bool staminaBrokenThisHit = nowStamina <= 0f;
+
+        if (staminaBrokenThisHit)
+        {
+            nowStamina = 0f;
+            isStaminaBroken = true;
+            OnStaminaBroken?.Invoke();
+        }
+
+        OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
+
+        // 스테미너가 파괴된 상태일 경우 더 느린 회복량으로 회복됨
+        float perSec = isStaminaBroken ? GetStats(StatId.StaminaRestorePerSecAllUse) : GetStats(StatId.StaminaRestorePerSec);
+
+        RestartStaminaRestore(perSec);
+
+        return staminaBrokenThisHit;
+    }
+
     public bool UseStamina(float stamina)
     {
         stamina = stamina < 0f ? 0f : stamina;
@@ -191,11 +237,15 @@ public class PlayerStats
         if (nowStamina < stamina)
         {
             Utils.Log<PlayerStats>("스테미너 부족");
+            // 스테미너 게이지 흔들림
             return false;
         }
 
         nowStamina -= stamina;
         OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
+
+        // 스테미너 사용은 피격을 받는게 아니므로 회복량 그대로 사용
+        RestartStaminaRestore(GetStats(StatId.StaminaRestorePerSec));
 
         return true;
     }
@@ -222,6 +272,37 @@ public class PlayerStats
             nowStamina = MaxStamina;
 
         OnStaminaChanged?.Invoke(nowStamina, MaxStamina);
+    }
+
+    public void RestartStaminaRestore(float perSec)
+    {
+        staminaToken = staminaToken.LinkToken(playerBoard.owenrToken.Token);
+        RestoreStaminaAsync(perSec, staminaToken.Token).Forget();
+    }
+
+    private async UniTaskVoid RestoreStaminaAsync(float restorePerSec, CancellationToken ctk)
+    {
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(GetStats(StatId.StaminaRestoreDelay)), cancellationToken: ctk); 
+
+            while (!ctk.IsCancellationRequested && nowStamina < MaxStamina)
+            {
+                await UniTask.NextFrame(PlayerLoopTiming.EarlyUpdate, ctk);
+
+                RestoreStamina(restorePerSec * Time.deltaTime);
+            }
+
+            if (!ctk.IsCancellationRequested && isStaminaBroken && nowStamina >= MaxStamina)
+            {
+                isStaminaBroken = false;
+                OnStaminaRestore?.Invoke();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
     }
 
     public void SetDashInvincible(bool invincible)

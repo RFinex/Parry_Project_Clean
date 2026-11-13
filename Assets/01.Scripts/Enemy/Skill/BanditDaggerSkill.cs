@@ -58,7 +58,7 @@ public class BanditDaggerSkill : EnemySkill
             if (projectile == null)
                 continue;
 
-            EnemyAttackInfo attackInfo = new(data.Damage, owner, data.CanGuard, data.CanParry, false);
+            EnemyAttackInfo attackInfo = new(data.Damage, data.StaminaDamage, owner, data.CanGuard, data.CanParry, false);
 
             projectile.Shoot(direction, attackInfo);
         }

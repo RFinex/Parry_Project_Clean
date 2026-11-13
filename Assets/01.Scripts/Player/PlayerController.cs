@@ -158,6 +158,7 @@ public class PlayerController : MonoBehaviour
         InitBlackBoard();
 
         combat.Initialized(blackBoard);
+        stats.Initialized(blackBoard);
 
         token = token.ResetToken();
 
@@ -319,7 +320,6 @@ public class PlayerController : MonoBehaviour
 
         stateMachine.ChangeState(typeof(PlayerHurtState));
     }
-
     
 
     private void GroundCheck()
@@ -424,23 +424,10 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             InputToCurrentState(PlayerInput.JumpPressed);
-
-            //if (!isGround)
-            //    return;
-
-            //Jump();
-            //movement.verticalVelocity = rb.linearVelocity.y;
-
-            //stateMachine.ChangeState(typeof(PlayerJumpState));
-
         }        
         else if (context.canceled)
         {
             InputToCurrentState(PlayerInput.JumpReleased);
-            //if (stateMachine.IsState(typeof(PlayerJumpState)))
-            //{
-            //    StopJump();
-            //}            
         }
     }
 
@@ -449,28 +436,16 @@ public class PlayerController : MonoBehaviour
         if (!canInput || IsDeadState())
             return;
 
+        if (stats.IsStaminaBroken)
+        {
+            // 스테미너 게이지 흔들림
+            return;
+        }
+
         if (context.performed)
         {
             InputToCurrentState(PlayerInput.DashPressed);
         }
-
-        //if (!context.performed)
-        //    return;
-
-        //if (stateMachine.IsState(typeof(PlayerDashState)) || skill.dashCoolTimer > 0f)
-        //{
-        //    Utils.Log<PlayerController>("대시중이거나 쿨타임 중");
-        //    return;
-        //}
-
-        //if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-        //    stateMachine.IsState(typeof(PlayerMoveState)) ||
-        //    stateMachine.IsState(typeof(PlayerFallState)) ||
-        //    stateMachine.IsState(typeof(PlayerAttackState)) ||
-        //    stateMachine.IsState(typeof(PlayerJumpState)))
-        //{
-        //    stateMachine.ChangeState(typeof(PlayerDashState));
-        //}
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -484,41 +459,19 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             InputToCurrentState(PlayerInput.AttackPressed);
-        }
-
-        //if (!context.performed)
-        //    return;
-
-        //if (stateMachine.IsState(typeof(PlayerAttackState)))
-        //{
-        //    combat.RequestCombo();
-        //    return;
-        //}
-
-        //if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-        //    stateMachine.IsState(typeof(PlayerMoveState)) ||
-        //    stateMachine.IsState(typeof(PlayerGuardState)) ||
-        //    stateMachine.IsState(typeof(PlayerFallState)) ||
-        //    stateMachine.IsState(typeof(PlayerJumpState)))
-        //{
-        //    GameObject target = combat.FindExecuteTarget(transform.position);
-
-        //    if (target != null)
-        //    {
-        //        executeTarget = target;
-
-        //        stateMachine.ChangeState(typeof(PlayerExecuteState));
-        //        return;
-        //    }
-
-        //    stateMachine.ChangeState(typeof(PlayerAttackState));
-        //}        
+        } 
     }
 
     public void OnGuard(InputAction.CallbackContext context)
     {
         if (!canInput || IsDeadState())
             return;
+
+        if (stats.IsStaminaBroken)
+        {
+            // 스테미너 게이지 흔들림
+            return;
+        }
 
         if (context.started)
         {
@@ -531,40 +484,6 @@ public class PlayerController : MonoBehaviour
         {
             InputToCurrentState(PlayerInput.GuardReleased);
         }
-
-        //if (context.started)
-        //{
-        //    if (!combat.CanGuard)
-        //        return;
-
-        //    if (stateMachine.IsState(typeof(PlayerIdleState)) ||
-        //        stateMachine.IsState(typeof(PlayerMoveState)) ||
-        //        stateMachine.IsState(typeof(PlayerAttackState)) ||
-        //        stateMachine.IsState(typeof(PlayerFallState)) ||
-        //        stateMachine.IsState(typeof(PlayerJumpState)))
-        //    {
-        //        stateMachine.ChangeState(typeof(PlayerGuardState));
-        //    }
-        //}
-        //else if (context.canceled)
-        //{
-        //    if (stateMachine.IsState(typeof(PlayerGuardState)))
-        //    {
-        //        if (!isGround)
-        //        {
-        //            stateMachine.ChangeState(typeof(PlayerFallState));
-        //            return;
-        //        }
-
-        //        if (moveInput.x != 0f)
-        //        {
-        //            stateMachine.ChangeState(typeof(PlayerMoveState));
-        //            return;
-        //        }
-
-        //        stateMachine.ChangeState(typeof(PlayerIdleState));
-        //    }
-        //}
     }
 
     public void OnInteract(InputAction.CallbackContext context)
