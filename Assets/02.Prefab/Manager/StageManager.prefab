@@ -58,3 +58,4 @@ MonoBehaviour:
     shopRoomCount: 0
   nextSceneAfterClear: 0
   stageBGMType: 0
+  isFinalStage: 0

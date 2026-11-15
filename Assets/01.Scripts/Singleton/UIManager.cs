@@ -14,7 +14,8 @@ public enum UIName
     Popup_Setting = 107,
     Popup_Warning = 108,
     Popup_Credit = 109,
-    Popup_Spawn_Dummy = 110
+    Popup_Spawn_Dummy = 110,
+    Popup_Clear = 111
 }
 
 public class UIManager : Singleton<UIManager>
@@ -61,6 +62,7 @@ public class UIManager : Singleton<UIManager>
         EventBus.Subscribe<StageMapClosedEvent>(HandleStageMapClosed);
         EventBus.Subscribe<InventoryTogglePopupEvent>(HandleInventoryToggle);
         EventBus.Subscribe<PopupCancelEvent>(HandlePopupCancel);
+        EventBus.Subscribe<StageClearedEvent>(HandleStageCleared);
     }
 
     private void OnDisable()
@@ -70,6 +72,7 @@ public class UIManager : Singleton<UIManager>
         EventBus.UnSubscribe<StageMapClosedEvent>(HandleStageMapClosed);
         EventBus.UnSubscribe<InventoryTogglePopupEvent>(HandleInventoryToggle);
         EventBus.UnSubscribe<PopupCancelEvent>(HandlePopupCancel);
+        EventBus.UnSubscribe<StageClearedEvent>(HandleStageCleared);
     }
 
     protected override void OnDestroy()
@@ -321,7 +324,7 @@ public class UIManager : Singleton<UIManager>
         OpenPopup(name);
     }
 
-    public void HandlePopupCancel(PopupCancelEvent eventData)
+    private void HandlePopupCancel(PopupCancelEvent eventData)
     {
         PopupBase topPopup = null;
         int topIndex = -1;
@@ -351,6 +354,12 @@ public class UIManager : Singleton<UIManager>
         }
 
         topPopup.CancelPopup();
+    }
+
+    private void HandleStageCleared(StageClearedEvent eventData)
+    {
+        if (eventData.isFinalStage)
+            OpenPopup(UIName.Popup_Clear);
     }
 
     public bool OpenSpawnDummyPopup(DummySpawn spawner)

@@ -14,7 +14,9 @@ public enum SFXType
     MouseOnButton,
     ClickButton,
     Heal,
-    Chest
+    Chest,
+    Hurt,
+    Clear
 }
 
 public enum BGMType

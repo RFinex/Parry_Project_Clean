@@ -53,4 +53,5 @@ MonoBehaviour:
   - {fileID: -93004857719675478, guid: 49f29a81acc6b634aa4132e69ac16e5b, type: 3}
   - {fileID: 2693353672056177286, guid: 0169d34a5e61f7a4ba7c2028137e8186, type: 3}
   - {fileID: 5374903904842423917, guid: fa70a8bf78eeacd4599ed79a8cefdd5b, type: 3}
+  - {fileID: 1634654736635241235, guid: 185b5020ca15bac49bb678822b9fdaf2, type: 3}
   popupCanvas: {fileID: 0}

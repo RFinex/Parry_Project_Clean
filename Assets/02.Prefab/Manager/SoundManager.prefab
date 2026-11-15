@@ -260,5 +260,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 52104bc3637e70540be457e0ba1ba9cd, type: 3}
   - {fileID: 8300000, guid: eb4f9cd05fe26a248a3e033a926c7fc4, type: 3}
   - {fileID: 8300000, guid: 6dce80fc630b7b545b115edbbbd9e2c0, type: 3}
+  - {fileID: 8300000, guid: bdf45e694b2ea324786f233644cacf76, type: 3}
+  - {fileID: 8300000, guid: 4dbfbd1a56081db4ca174255a4d56b1f, type: 3}
   defaultVolume: 0.5
   fadeDuration: 0.2

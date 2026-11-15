@@ -507,6 +507,9 @@ public class PlayerController : MonoBehaviour
         if (!context.started || IsDeadState())
             return;
 
+        if (GameManager.Instance.CurrentState == GameState.Clear)
+            return;
+
         EventBus.Publish(new PopupCancelEvent());
     }
 
