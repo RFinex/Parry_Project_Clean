@@ -347,7 +347,7 @@ public class UIManager : Singleton<UIManager>
 
         if (topPopup == null)
         {
-            if(GameManager.Instance.CurrentState == GameState.Play && !isMenuScene)
+            if(!isMenuScene && GameManager.Instance.CurrentState == GameState.Play)
                 OpenPopup(UIName.Popup_Paused);
 
             return;

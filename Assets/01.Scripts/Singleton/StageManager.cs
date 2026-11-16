@@ -7,8 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class StageManager : Singleton<StageManager>
 {
-    [SerializeField] private int startNodeId;
-    [SerializeField] private float mapShowDelay = 2f;
+    private int startNodeId;
 
     [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
 

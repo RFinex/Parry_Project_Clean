@@ -31,8 +31,6 @@ public enum BGMType
 
 public class SoundManager : Singleton<SoundManager>
 {
-    public static SoundManager instance;
-
     [Header("Audio Source")]
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
@@ -48,7 +46,7 @@ public class SoundManager : Singleton<SoundManager>
     private float fadeMultiplier = 1f;
     [SerializeField] private float fadeDuration = 0.2f;
 
-    private CancellationTokenSource token;
+    private CancellationTokenSource soundFadeToken;
 
     private BGMType previousBGM;
     private BGMType currentBGM;
@@ -63,12 +61,12 @@ public class SoundManager : Singleton<SoundManager>
 
     private void OnEnable()
     {
-        token = token.ResetToken();
+        soundFadeToken = soundFadeToken.ResetToken();
     }
 
     private void OnDisable()
     {
-        token = token.Cancel_DisposeToken();
+        soundFadeToken = soundFadeToken.Cancel_DisposeToken();
     }
 
     public void SetBGMVolume(float vol)
@@ -151,28 +149,16 @@ public class SoundManager : Singleton<SoundManager>
         if ((int)type >= bgmClip.Length || (int)type < 0)
             return;
 
-        //switch (type)
-        //{
-        //    case BGMType.Menu:
-        //    case BGMType.Game:
-        //    case BGMType.Boss:
-        //        bgmSource.loop = true;
-        //        break;
+        soundFadeToken = soundFadeToken.ResetToken();
 
-        //    case BGMType.Die:
-        //    case BGMType.Clear:
-        //        bgmSource.loop = false;
-        //        break;
-        //}
+        fadeMultiplier = 1f;
+        UpdateBGMVolume();
 
         if (bgmSource.clip == bgmClip[(int)type] && bgmSource.isPlaying)
             return;
 
         previousBGM = currentBGM;
         currentBGM = type;
-
-        fadeMultiplier = 1f;
-        UpdateBGMVolume();
 
         bgmSource.clip = bgmClip[(int)type];
         bgmSource.Play();
@@ -185,11 +171,14 @@ public class SoundManager : Singleton<SoundManager>
 
     public void StopBGM()
     {
-        bgmSource.Stop();
+        if(bgmSource != null)
+            bgmSource.Stop();
     }
 
     public async UniTask StopBGMFadeOut(CancellationToken ctk)
     {
+        CancellationTokenSource linkToken = CancellationTokenSource.CreateLinkedTokenSource(soundFadeToken.Token, ctk);
+
         try
         {
             await DOTween.To(() => fadeMultiplier,
@@ -201,13 +190,12 @@ public class SoundManager : Singleton<SoundManager>
                 0f,
                 fadeDuration)
                 .SetEase(Ease.Linear)
-                .ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, ctk);
-
-            StopBGM();
+                .ToUniTask(TweenCancelBehaviour.CompleteAndCancelAwait, linkToken.Token);
         }
-        catch (OperationCanceledException)
+        finally
         {
-
+            StopBGM();
+            linkToken?.Dispose();
         }
     }
 }

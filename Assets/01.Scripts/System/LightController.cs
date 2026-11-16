@@ -17,11 +17,6 @@ public class LightController : MonoBehaviour
 
     private CancellationTokenSource token;
 
-    private void Awake()
-    {
-
-    }
-
     private void OnEnable()
     {
         token = token.ResetToken();
@@ -39,25 +34,22 @@ public class LightController : MonoBehaviour
         {
             while (!ctk.IsCancellationRequested)
             {
-                while (!ctk.IsCancellationRequested)
-                {
-                    // minScale -> maxScale
-                    await DOTween.To(() => minScale, x => {
-                        // 단계를 나누어 뚝뚝 끊기도록 값 변환
-                        float snapped = Mathf.Round(x * steps) / steps;
-                        spriteLightTransform.localScale = new Vector3(snapped, snapped, 1f);
-                    }, maxScale, duration * 0.5f)
-                    .SetEase(Ease.Linear)
-                    .ToUniTask(cancellationToken: ctk);
+                // minScale -> maxScale
+                await DOTween.To(() => minScale, x => {
+                    // 단계를 나누어 뚝뚝 끊기도록 값 변환(반올림 값으로 고정)
+                    float snapped = Mathf.Round(x * steps) / steps;
+                    spriteLightTransform.localScale = new Vector3(snapped, snapped, 1f);
+                }, maxScale, duration * 0.5f)
+                .SetEase(Ease.Linear)
+                .ToUniTask(cancellationToken: ctk);
 
-                    // maxScale -> minScale
-                    await DOTween.To(() => maxScale, x => {
-                        float snapped = Mathf.Round(x * steps) / steps;
-                        spriteLightTransform.localScale = new Vector3(snapped, snapped, 1f);
-                    }, minScale, duration * 0.5f)
-                    .SetEase(Ease.Linear)
-                    .ToUniTask(cancellationToken: ctk);
-                }
+                // maxScale -> minScale
+                await DOTween.To(() => maxScale, x => {
+                    float snapped = Mathf.Round(x * steps) / steps;
+                    spriteLightTransform.localScale = new Vector3(snapped, snapped, 1f);
+                }, minScale, duration * 0.5f)
+                .SetEase(Ease.Linear)
+                .ToUniTask(cancellationToken: ctk);
             }
         }
         catch (OperationCanceledException)

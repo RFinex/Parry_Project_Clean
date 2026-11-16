@@ -45,8 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   ddol: 0
-  startNodeId: 0
-  mapShowDelay: 2
   mapGenerator:
     floorCount: 10
     laneCount: 9

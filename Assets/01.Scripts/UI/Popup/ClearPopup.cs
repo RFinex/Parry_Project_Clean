@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,17 +24,26 @@ public class ClearPopup : PopupBase
         SoundManager.Instance.PlaySFX(SFXType.Clear);
     }
 
-    private async void ReturnLobby()
+    private void ReturnLobby()
     {
-        if (SceneLoadManager.Instance == null)
-            return;
+        ReturnLobbyAsync().Forget();
+    }
 
-        await SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene);
-
-        if (SceneLoadManager.Instance.IsLobby)
+    private async UniTask ReturnLobbyAsync()
+    {
+        try
         {
-            GameManager.Instance.ClearInventory();
-            GameManager.Instance.SetGameState(GameState.Play);
+            await SceneLoadManager.Instance.LoadSceneAsync(SceneName.LobbyScene);
+
+            if (SceneLoadManager.Instance.IsLobby)
+            {
+                GameManager.Instance.ClearInventory();
+                GameManager.Instance.SetGameState(GameState.Play);
+            }
+        }
+        catch (Exception e)
+        {
+            Utils.LogException<ClearPopup>(e);
         }
     }
 }

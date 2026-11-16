@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCombat
@@ -52,10 +50,11 @@ public class PlayerCombat
     public event Action<IReadOnlyList<EnemyController>, float> OnAttackHitTargets;
 
     private readonly List<EnemyController> hitEnemyList = new();
-
-    private List<Collider2D> hitEnemies = new();
+    private readonly List<Collider2D> hitColliders = new();
     private ContactFilter2D enemyFilter;
     private bool isFilterInit = false;
+
+    private readonly List<Collider2D> executeColliders = new();
 
     private bool isDamageConversion = false;
 
@@ -89,21 +88,22 @@ public class PlayerCombat
 
         // √÷¿˚»≠
 
-        hitEnemies.Clear();
+        hitColliders.Clear();
 
         if (!isFilterInit)
         {
             enemyFilter.SetLayerMask(data.EnemyLayer);
             enemyFilter.useLayerMask = true;
+            isFilterInit = true;
         }
 
-        int hitCount = Physics2D.OverlapCircle(attackPos, attackRange, enemyFilter, hitEnemies);
+        int hitCount = Physics2D.OverlapCircle(attackPos, attackRange, enemyFilter, hitColliders);
 
         hitEnemyList.Clear();
 
         for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hitEnemies[i];
+            Collider2D hit = hitColliders[i];
 
             if (!hit.TryGetComponent<EnemyController>(out var enemy))
                 enemy = hit.GetComponentInParent<EnemyController>();
@@ -171,15 +171,26 @@ public class PlayerCombat
     /// <returns></returns>
     public GameObject FindExecuteTarget(Vector2 pos)
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(pos, data.ExecuteSearchRange, data.EnemyLayer);
+        executeColliders.Clear();
+
+        if (!isFilterInit)
+        {
+            enemyFilter.SetLayerMask(data.EnemyLayer);
+            enemyFilter.useLayerMask = true;
+            isFilterInit = true;
+        }
+
+        int executeCount = Physics2D.OverlapCircle(pos, data.ExecuteSearchRange, enemyFilter, executeColliders);
 
         GameObject target = null;
-
         float closeDistance = float.MaxValue;
 
-        foreach (Collider2D hit in hits)
+        for (int i = 0; i < executeCount; i++)
         {
-            IExecuteTarget enemy = hit.GetComponentInParent<IExecuteTarget>();
+            Collider2D hit = executeColliders[i];
+
+            if (!hit.TryGetComponent<IExecuteTarget>(out var enemy))
+                enemy = hit.GetComponentInParent<IExecuteTarget>();
 
             if (enemy == null || !enemy.CanExecute)
                 continue;

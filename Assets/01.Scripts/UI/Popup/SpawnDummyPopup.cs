@@ -1,12 +1,8 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEngine.InputManagerEntry;
 
 public class SpawnDummyPopup : PopupBase
 {
@@ -45,6 +41,9 @@ public class SpawnDummyPopup : PopupBase
 
     private readonly Dictionary<DummyButtonType, Button> buttonDic = new();
 
+    // 콜백 함수 매칭용
+    private readonly Dictionary<Button, UnityEngine.Events.UnityAction> actionDic = new();
+
     private void Awake()
     {
         spriteAnimHash = Animator.StringToHash(spriteAnimState);
@@ -57,7 +56,11 @@ public class SpawnDummyPopup : PopupBase
             if (!buttonDic.TryAdd(bind.type, bind.button))
                 continue;
 
-            bind.button.onClick.AddListener(() => OnClickButton(bind.type));
+            // 람다를 새로 만들기 때문에 그대로 AddListener에 넣으면 똑같은 콜백을 해제할 수 없음.
+            UnityEngine.Events.UnityAction action = () => OnClickButton(bind.type);
+
+            actionDic.Add(bind.button, action);
+            bind.button.onClick.AddListener(action);
 
             if (bind.holder != null)
             {
@@ -74,10 +77,12 @@ public class SpawnDummyPopup : PopupBase
 
     private void OnDestroy()
     {
+        // 딕셔너리에 함께 등록한 콜백을 직접 해제
+        foreach (var pair in actionDic)
+            pair.Key.onClick.RemoveListener(pair.Value);
+
         foreach (ButtonBind bind in buttonList)
         {
-            bind.button.onClick.RemoveListener(() => OnClickButton(bind.type));
-
             if (bind.holder != null)
             {
                 bind.holder.OnEnter -= HandlePointerEnter;
@@ -142,6 +147,6 @@ public class SpawnDummyPopup : PopupBase
     {
         base.ClosePopup();
 
-        spawner?.HandlePopupClosed();
+        spawner.HandlePopupClosed();
     }
 }

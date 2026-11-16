@@ -27,8 +27,8 @@ MonoBehaviour:
   maxHp: 100
   maxStamina: 100
   attackDamage: 50
-  attackRange: 0.8
-  attackOffset: {x: 0.6, y: 0}
+  attackRange: 0.7
+  attackOffset: {x: 0.75, y: 0.7}
   maxCombo: 3
   comboInputTime: 0.25
   attackEndTime: 0.5
@@ -45,11 +45,13 @@ MonoBehaviour:
   invincibleTime: 2
   invincibleAlpha: 0.35
   blinkInterval: 0.1
-  executeSearchRange: 5
+  executeSearchRange: 2
   executeMoveSpeed: 80
   executeBackOffset: 0.8
   executeEffectId: 9
   executeEffectOffset: {x: 0, y: 0.5}
+  executeArrivalDistance: 0.05
+  executeDurationDelay: 0.2
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
