@@ -370,6 +370,21 @@ public class PlayerController : MonoBehaviour
         Vector3 origin = transform.position + checkOffset;
 
         Gizmos.DrawWireCube(origin + Vector3.down * checkDistance, checkSize);
+
+        if (data == null)
+            return;
+
+        float facing = Application.isPlaying ? frontDir : (sr != null && sr.flipX ? -1f : 1f);
+        Vector2 attackOffset = data.AttackOffset;
+        attackOffset.x *= facing;
+
+        Vector3 attackCenter = transform.position + (Vector3)attackOffset;
+        float attackRange = Application.isPlaying && stats != null
+            ? stats.GetStats(StatId.AttackRange)
+            : data.AttackRange;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackCenter, attackRange);
     }
 #endif
 
@@ -505,6 +520,9 @@ public class PlayerController : MonoBehaviour
     public void OnCancel(InputAction.CallbackContext context)
     {
         if (!context.started || IsDeadState())
+            return;
+
+        if (GameManager.Instance.CurrentState == GameState.Clear)
             return;
 
         EventBus.Publish(new PopupCancelEvent());

@@ -141,8 +141,7 @@ public class PlayerStatusBar : MonoBehaviour
         if(GameManager.Instance != null )
             GameManager.Instance.OnPlayerChanged -= HandlePlayerChanged;
 
-        if(staminaOriginColor != null)
-            staminaFill.color = staminaOriginColor;
+        HandleStaminaRestore();
 
         UnBind();
     }

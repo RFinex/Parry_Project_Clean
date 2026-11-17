@@ -22,6 +22,15 @@ public class SettingPopup : PopupBase
         exitBtn.onClick.RemoveListener(CancelPopup);
     }
 
+    protected override void Initialized()
+    {
+        if (SoundManager.Instance == null)
+            return;
+
+        bgmSlider.SetValueWithoutNotify(SoundManager.Instance.GetBGMVolume());
+        sfxSlider.SetValueWithoutNotify(SoundManager.Instance.GetSFXVolume());
+    }
+
     private void BGMVolumeChanged(float vol)
     {
         SoundManager.Instance.SetBGMVolume(vol);

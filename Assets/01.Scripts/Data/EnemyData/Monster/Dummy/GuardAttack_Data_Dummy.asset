@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf1f59301b9e0a43afd671c900d7bbf, type: 3}
   m_Name: GuardAttack_Data_Dummy
   m_EditorClassIdentifier: Assembly-CSharp::DummyAttackData
-  canInterrupted: 1
+  canInterrupted: 0
   animType: 2
   warningDelay: 0
   warningDuration: 0.5

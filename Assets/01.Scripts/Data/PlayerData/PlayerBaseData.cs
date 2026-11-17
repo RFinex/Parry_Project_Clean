@@ -57,6 +57,8 @@ public class PlayerBaseData : ScriptableObject
     [SerializeField] private float executeBackOffset = 0.8f;
     [SerializeField] private int executeEffectId = 9;
     [SerializeField] private Vector2 executeEffectOffset = new(0f, 0.5f);
+    [SerializeField] private float executeArrivalDistance = 0.05f;
+    [SerializeField] private float executeDurationDelay = 0.2f;
 
     [Header("Layer Mask")]
     [SerializeField] private LayerMask enemyLayer;
@@ -107,6 +109,8 @@ public class PlayerBaseData : ScriptableObject
     public float ExecuteBackOffset => executeBackOffset;
     public int ExecuteEffectId => executeEffectId;
     public Vector2 ExecuteEffectOffset => executeEffectOffset;
+    public float ExecuteArrivalDistance => executeArrivalDistance;
+    public float ExecuteDurationDelay => executeDurationDelay;
 
     public LayerMask EnemyLayer => enemyLayer;
 

@@ -7,13 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class StageManager : Singleton<StageManager>
 {
-    [SerializeField] private int startNodeId;
-    [SerializeField] private float mapShowDelay = 2f;
+    private int startNodeId;
 
     [SerializeField] private StageMapGenerator mapGenerator = new StageMapGenerator();
 
     [SerializeField] private SceneName nextSceneAfterClear;
     [SerializeField] private BGMType stageBGMType;
+
+    [Header("Final Stage Checker")]
+    [SerializeField] private bool isFinalStage;
 
     private List<StageMapNodeData> nodes;
     private int currentNodeId;
@@ -95,7 +97,10 @@ public class StageManager : Singleton<StageManager>
         if (currentNode.roomType == RoomType.Boss || currentNode.nextNodeIds.Count == 0)
         {
             if(nextSceneAfterClear == SceneName.LobbyScene)
-                EventBus.Publish(new StageClearedEvent());
+                EventBus.Publish(new StageClearedEvent(isFinalStage));
+
+            if (isFinalStage)
+                return;
 
             SceneLoadManager.Instance.LoadSceneAsync(nextSceneAfterClear).Forget();
             return;

@@ -13,11 +13,6 @@ public class PlayerExecuteState : PlayerBaseState
     {
         EnterToken(owner.DestroyToken);
 
-        //if (blackBoard is PlayerBlackBoard board)
-        //{
-        //    this.board = board;
-        //}
-
         target = playerBoard.executeTarget;
 
         if (target == null)
@@ -84,7 +79,7 @@ public class PlayerExecuteState : PlayerBaseState
 
                 playerBoard.rb.MovePosition(nextPos);
 
-                float targetOffset = 0.05f * 0.05f;
+                float targetOffset = playerBoard.data.ExecuteArrivalDistance * playerBoard.data.ExecuteArrivalDistance;
                 float distance = (targetPos - nextPos).sqrMagnitude;
 
                 if (distance <= targetOffset)
@@ -102,7 +97,7 @@ public class PlayerExecuteState : PlayerBaseState
 
             playerBoard.combat.SpecialAttack(target);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.2f), cancellationToken: ctk);
+            await UniTask.Delay(TimeSpan.FromSeconds(playerBoard.data.ExecuteDurationDelay), cancellationToken: ctk);
 
             TransitionState(typeof(PlayerIdleState));
         }

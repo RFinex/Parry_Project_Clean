@@ -210,8 +210,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9009812715777200401}
   m_HandleRect: {fileID: 9098014208835661477}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.55841446
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 5
   m_Viewport: {fileID: 4723885351754158847}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 1619091285435080687}
@@ -944,14 +944,21 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uADF8\uB798\uD53D \xB7 UI\nAsset FTTGR | Free Pixel Art Platformer \u2014
-    Superposition Principle\nBandits - Pixel Art \u2014 Sven Thole\nHero Knight -
-    Pixel Art \u2014 Sven Thole\nPixel Art - Swords and Staffs \u2014 SnoopethDuckDuck\nSamurai
-    2D Pixel Art \u2014 Mattz Art\nFantasy Map Assets Pack Lite \u2014 Amanz / Deface
-    Games\nGame Input Controller Icons Free \u2014 Amanz / Deface Games\n\n\uC74C\uC545
-    \xB7 \uD6A8\uACFC\uC74C\nAsset FTTGR | Free Pixel Art Platformer \u2014 Superposition
-    Principle\nRPG Essentials SFX - Free! \u2014 Leohpaz\n\n\uAE00\uAF34\n\uB465\uADFC\uBAA8\uAF34
-    (DungGeunMo) \u2014 Public Domain"
+  m_text: "Graphics \xB7 UI\nAsset FTTGR | Free Pixel Art Platformer \u2014 Superposition
+    Principle\nBandits - Pixel Art \u2014 Sven Thole\nHero Knight - Pixel Art \u2014
+    Sven Thole\nPixel Art - Swords and Staffs \u2014 SnoopethDuckDuck\nSamurai 2D
+    Pixel Art \u2014 Mattz Art\nFantasy Map Assets Pack Lite \u2014 Amanz / Deface
+    Games\nGame Input Controller Icons Free \u2014 Amanz / Deface Games\nMonsters
+    Creatures Fantasy \u2014 LuizMelo (CC0)\nSPUM Retro GUI Pack \u2014 Soonsoon
+    Studio\n\nVFX\nPixel Craft VFX \u2014 Vefects\n\nMusic \xB7 SFX\nAsset FTTGR
+    | Free Pixel Art Platformer \u2014 Superposition Principle\nRPG Essentials SFX
+    - Free! \u2014 Leohpaz\nFantasy Battle Music Free Pack \u2014 Tyler Cunningham\n25
+    Fantasy RPG Game Tracks Music Pack \u2014 alkakrab\nFree UI Click Sound Pack
+    \u2014 SwishSwoosh\nPixel Craft VFX \u2014 Vefects\nPunch 1 \u2014 qubodup (CC0)\nsamurai
+    slash \u2014 nekoninja\n\nFonts\n\uB465\uADFC\uBAA8\uAF34 (DungGeunMo) \u2014
+    Public Domain\nLiberation Sans \u2014 SIL Open Font License 1.1\n\nLibrary\nUniTask
+    \u2014 Yoshifumi Kawai / Cysharp, Inc. (MIT)\nDOTween \u2014 Daniele Giardini
+    / Demigiant"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 637bf44f9ca077e428806388f697123b, type: 2}
   m_sharedMaterial: {fileID: 1594459440087663755, guid: 637bf44f9ca077e428806388f697123b, type: 2}

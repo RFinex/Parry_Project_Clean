@@ -18,6 +18,7 @@ public class PlayerHurtState : PlayerBaseState
         //    this.board = board;
         //}
 
+        SoundManager.Instance.PlaySFX(SFXType.Hurt);
         playerBoard.animator.PlayHurt();
 
         HurtTimeAsync(token.Token).Forget();

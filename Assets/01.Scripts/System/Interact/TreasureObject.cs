@@ -44,10 +44,9 @@ public class TreasureObject : InteractableBase
 
         ServiceLocator.Inject(out artifactSystem);
 
-        TryDropArtifact();
-
-        SetAvailable(false);
         Open();
+        TryDropArtifact();
+        SetAvailable(false);
 
         EventBus.Publish(new TreasureSelectedEvent(this));
     }
@@ -70,8 +69,8 @@ public class TreasureObject : InteractableBase
         if (chestAnimator == null || openAnimHash == 0)
             return;
 
-        chestAnimator.enabled = true;
         SoundManager.Instance.PlaySFX(SFXType.Chest);
+        chestAnimator.enabled = true;
         chestAnimator.Play(openAnimHash, 0, 0f);
     }
 

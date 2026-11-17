@@ -11,7 +11,8 @@ public enum GameState
     Map,
     SceneTransition,
     Paused,
-    Popup
+    Popup,
+    Clear
 }
 
 public class GameManager : Singleton<GameManager>
@@ -166,10 +167,16 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 현재 1스테이지 클리어 후 로비로 돌아오므로 임시로 바로 초기화
+    /// 클리어 후 게임 상태를 Clear로 변환
     /// </summary>
     /// <param name="eventData"></param>
     private void HandleStageCleared(StageClearedEvent eventData)
+    {
+        if (eventData.isFinalStage)
+            SetGameState(GameState.Clear);
+    }
+
+    public void ClearInventory()
     {
         Inventory.Clear();
     }

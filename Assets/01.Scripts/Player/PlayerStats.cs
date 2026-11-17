@@ -212,12 +212,15 @@ public class PlayerStats
 
         // 이번 대미지에 스테미너가 파괴되었는지 확인
         bool staminaBrokenThisHit = nowStamina <= 0f;
+        bool isBrokenNow = staminaBrokenThisHit && !isStaminaBroken;
 
         if (staminaBrokenThisHit)
         {
             nowStamina = 0f;
             isStaminaBroken = true;
-            OnStaminaBroken?.Invoke();
+
+            if(isBrokenNow)
+                OnStaminaBroken?.Invoke();
         }
 
         OnStaminaChanged?.Invoke(nowStamina, MaxStamina);

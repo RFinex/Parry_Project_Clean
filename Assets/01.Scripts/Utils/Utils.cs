@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Threading;
 
 public static class Utils
 {
@@ -22,5 +21,13 @@ public static class Utils
     public static void LogError<T>(string text) where T : class
     {
         UnityEngine.Debug.LogError($"[{typeof(T).Name}] {text}");
+    }
+
+    [Conditional("UNITY_EDITOR")]
+    [Conditional("DEVELOPMENT_BUILD")]
+    public static void LogException<T>(System.Exception exception) where T : class
+    {
+        Log<T>($"[{typeof(T).Name}]");
+        UnityEngine.Debug.LogException(exception);
     }
 }

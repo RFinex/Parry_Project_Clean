@@ -25,6 +25,7 @@ public class MenuButton : MonoBehaviour
     [SerializeField] private List<ButtonBind> buttonList;
 
     private readonly Dictionary<MenuButtonType, Button> buttonDic = new();
+    private readonly Dictionary<Button, UnityEngine.Events.UnityAction> actionDic = new();
 
     private void Awake()
     {
@@ -36,14 +37,17 @@ public class MenuButton : MonoBehaviour
             if (!buttonDic.TryAdd(bind.type, bind.button))
                 continue;
 
-            bind.button.onClick.AddListener(() => OnClickButton(bind.type));
+            UnityEngine.Events.UnityAction action = () => OnClickButton(bind.type);
+
+            actionDic.Add(bind.button, action);
+            bind.button.onClick.AddListener(action);
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        foreach (ButtonBind bind in buttonList)
-            bind.button.onClick.RemoveAllListeners();
+        foreach (var pair in actionDic)
+            pair.Key.onClick.RemoveListener(pair.Value);
     }
 
     private void OnClickButton(MenuButtonType type)
