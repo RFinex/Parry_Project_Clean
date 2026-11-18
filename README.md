@@ -69,7 +69,7 @@ Google Sheets To Unity 에셋을 활용해 시트 데이터를 Unity 에디터�
 
 현재 플레이 가능 빌드는 아래 링크를 통해 다운로드할 수 있습니다.
 
-🔗 [Shield Hero Windows 빌드 다운로드](빌드 다운로드 링크)
+🔗 [Shield Hero Windows 빌드 다운로드](https://github.com/RFinex/Parry_Project_Clean/releases/tag/v0.5)
 
 ### 실행 방법
 
