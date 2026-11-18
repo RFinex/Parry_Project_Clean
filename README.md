@@ -77,5 +77,19 @@ Google Sheets To Unity 에셋을 활용해 시트 데이터를 Unity 에디터�
 2. 압축을 푼 폴더에서 `Shield Hero.exe`를 실행합니다.
 
 ## 🎮 플레이 영상
-[![Shield Hero 플레이 영상](Images/thumbnail.png)](https://youtu.be/VJes4_LjH1s)
+<a href="https://youtu.be/VJes4_LjH1s">
+  <img src="https://raw.githubusercontent.com/RFinex/Parry_Project_Clean/main/Images/thumbnail.png" alt="Shield Hero 플레이 영상" width="600">
+</a>
 
+## 🎮 조작 방법
+
+| 입력 | 동작 |
+|---|---|
+| A / D | 좌우 이동 |
+| Space | 점프 |
+| Shift | 대시 |
+| 마우스 좌클릭 | 일반 공격 |
+| 마우스 우클릭 | 가드 / 패리 |
+| F | 상호작용 |
+| I | 인벤토리 열기 |
+| ESC | 일시정지 및 닫기 |
