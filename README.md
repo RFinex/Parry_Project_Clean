@@ -74,7 +74,7 @@ Google Sheets To Unity 에셋을 활용해 시트 데이터를 Unity 에디터�
 ### 실행 방법
 
 1. 다운로드한 ZIP 파일의 압축을 풉니다.
-2. 압축을 푼 폴더에서 `Shield Hero.exe`를 실행합니다.
+2. 압축을 푼 폴더에서 `Shield_Hero.exe`를 실행합니다.
 
 ## 🎮 플레이 영상
 <a href="https://youtu.be/VJes4_LjH1s">
