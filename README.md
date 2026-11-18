@@ -77,5 +77,5 @@ Google Sheets To Unity 에셋을 활용해 시트 데이터를 Unity 에디터�
 2. 압축을 푼 폴더에서 `Shield Hero.exe`를 실행합니다.
 
 ## 🎮 플레이 영상
-[![Shield Hero 플레이 영상](./Images/thumbnail.png)](https://youtu.be/VJes4_LjH1s)
+[![Shield Hero 플레이 영상](Images/thumbnail.png)](https://youtu.be/VJes4_LjH1s)
 
