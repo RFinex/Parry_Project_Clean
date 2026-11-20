@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DebugTool : EditorWindow
 {
-    [SerializeField] private ArtifactDataReader artifactReader;
     [SerializeField] private int selectedArtifactIndex;
 
     [MenuItem("Tools/Debug Tool")]
@@ -39,20 +38,21 @@ public class DebugTool : EditorWindow
     {
         EditorGUILayout.LabelField("Artifact", EditorStyles.boldLabel);
 
-        EditorGUI.BeginChangeCheck();
-
-        artifactReader = (ArtifactDataReader)EditorGUILayout.ObjectField("Artifact Reader", artifactReader, typeof(ArtifactDataReader), false);
-
-        if (EditorGUI.EndChangeCheck())
-            selectedArtifactIndex = 0;
-
-        if (artifactReader == null)
+        if (!EditorApplication.isPlaying)
         {
-            EditorGUILayout.HelpBox("½ÃÆ®¸¦ ÀĞ¾î¿Â ArtifactDataReader ¿¡¼ÂÀ» ÁöÁ¤ÇÏ¼¼¿ä.", MessageType.Info);
+            EditorGUILayout.HelpBox("í”Œë ˆì´ ëª¨ë“œì—ì„œ GameManagerê°€ ì´ˆê¸°í™”í•œ ìœ ë¬¼ ë°ì´í„°ë¥¼ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
             return;
         }
 
-        var artifacts = artifactReader.Artifacts;
+        ServiceLocator.Inject(out ArtifactSystem artifactSystem);
+
+        if (artifactSystem == null || artifactSystem.Artifacts == null)
+        {
+            EditorGUILayout.HelpBox("ArtifactSystem ë˜ëŠ” ìœ ë¬¼ ë°ì´í„°ê°€ ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", MessageType.Warning);
+            return;
+        }
+
+        var artifacts = artifactSystem.Artifacts;
 
         if (artifacts == null || artifacts.Count == 0)
         {
@@ -85,7 +85,7 @@ public class DebugTool : EditorWindow
 
         EditorGUILayout.LabelField("¼³¸í", selected.Description, EditorStyles.wordWrappedLabel);
 
-        GameManager manager = EditorApplication.isPlaying ? GameManager.Instance : null;
+        GameManager manager = GameManager.Instance;
 
         bool canAdd = manager != null && manager.Inventory != null && manager.ItemFactory != null;
 

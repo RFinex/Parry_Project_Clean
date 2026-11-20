@@ -11,7 +11,7 @@ public class PlayerDashState : PlayerBaseState
 
     public override void Enter(PlayerController owner)
     {
-        EnterToken(owner.DestroyToken);
+        EnterToken(playerBoard.owenrToken.Token);
 
         playerBoard.animator.PlayDash();
 
@@ -19,7 +19,7 @@ public class PlayerDashState : PlayerBaseState
         float dashSpeed = playerBoard.stats.GetStats(StatId.DashSpeed);
         float dashCooldown = playerBoard.stats.GetStats(StatId.DashCooldown);
 
-        playerBoard.skill.DashCoolTime(dashCooldown, owner.DestroyToken).Forget();
+        playerBoard.skill.DashCoolTime(dashCooldown, playerBoard.owenrToken.Token).Forget();
         playerBoard.stats.SetDashInvincible(true);
 
         playerBoard.stats.UseStamina(playerBoard.stats.GetStats(StatId.DashStaminaCost));

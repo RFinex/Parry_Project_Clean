@@ -9,7 +9,7 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void Enter(PlayerController owner)
     {
-        EnterToken(owner.DestroyToken);
+        EnterToken(playerBoard.owenrToken.Token);
 
         //if (blackBoard is PlayerBlackBoard board)
         //{

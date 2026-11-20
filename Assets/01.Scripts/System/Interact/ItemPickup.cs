@@ -115,6 +115,10 @@ public class ItemPickup : InteractableBase
         RefreshIcon();
     }
 
+    /// <summary>
+    /// 등급별 아이템 아웃라인 적용
+    /// </summary>
+    /// <param name="rarity"> 아이템 등급 </param>
     private void ApplyRarityOutline(ItemRarity rarity)
     {
         if (itemRenderer == null)
@@ -130,6 +134,7 @@ public class ItemPickup : InteractableBase
         rendererProperties.SetColor(OutlineColorId, outlineColor);
         itemRenderer.SetPropertyBlock(rendererProperties);
     }
+
     private void StartDropMotion()
     {
         dropToken = dropToken.ResetToken();

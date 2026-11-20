@@ -1,19 +1,12 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using UnityEngine;
 
 public class PlayerGuardState : PlayerBaseState
 {
-    //private PlayerBlackBoard board;
     public override void Enter(PlayerController owner)
     {
-        EnterToken(owner.DestroyToken);
-
-        //if (blackBoard is PlayerBlackBoard board)
-        //{
-        //    this.board = board;
-        //}
+        EnterToken(playerBoard.owenrToken.Token);
 
         owner.StopMove();
 
@@ -46,21 +39,4 @@ public class PlayerGuardState : PlayerBaseState
 
         }
     }
-
-    //public override void HandleInput(PlayerInput input)
-    //{
-    //    switch (input)
-    //    {
-    //        case PlayerInput.AttackPressed:
-    //            TryAttackOrExecute();
-    //            break;
-
-    //        case PlayerInput.GuardReleased:
-    //            ReleaseGuard();
-    //            break;
-
-    //        default:
-    //            break;
-    //    }
-    //}
 }

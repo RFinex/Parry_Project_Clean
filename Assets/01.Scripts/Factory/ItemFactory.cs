@@ -48,19 +48,19 @@ public class ItemFactory
     {
         if (creator == null)
         {
-            Utils.Log<ItemFactory>($"\uc0dd\uc131\uc790 \ud568\uc218\uac00 null\uc785\ub2c8\ub2e4: {itemId}");
+            Utils.Log<ItemFactory>($"생성자 함수가 null입니다 : {itemId}");
             return;
         }
 
         if (!creatorsDic.TryAdd(itemId, creator))
-            Utils.LogWarning<ItemFactory>($"\uc0dd\uc131\uc790 ID \uc911\ubcf5 : {itemId}");
+            Utils.LogWarning<ItemFactory>($"생성자 ID 중복: {itemId}");
     }
 
     public Item Create(int itemId)
     {
         if (!creatorsDic.TryGetValue(itemId, out Func<Item> creator))
         {
-            Utils.LogWarning<ItemFactory>($"\ub4f1\ub85d\ub418\uc9c0 \uc54a\uc740 \uc544\uc774\ud15c : {itemId}");
+            Utils.LogWarning<ItemFactory>($"등록되지 않은 아이템: {itemId}");
             return null;
         }
 

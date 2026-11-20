@@ -15,16 +15,25 @@ using UnityEngine;
 [Serializable]
 public class StageMapGenerator
 {
+    //floorCount : 스테이지 맵 층 수(최소 3)
+    //laneCount : 각 층에 방이 놓일 수 있는 라인의 수
+    //pathCount : 시작 - 보스방 까지의 경로를 무작위로 뽑을 개수
+    //eliteFloor : 엘리트가 배치될 층, 시작과 마지막 방 안으로 범위가 제한됨
     [Header("Floor Setting")]
     [SerializeField] private int floorCount = 8;
     [SerializeField] private int laneCount = 7;
     [SerializeField] private int pathCount = 5;
     [SerializeField] private int eliteFloor = 4;
+    [SerializeField] private int minFloorCount = 3;
 
+    // horizontalSpacing : 층 사이의 가로 간격
+    // verticalSpacing : 같은 층 사이의 세로 간격
     [Header("Map Spacing")]
     [SerializeField] private float horizontalSpacing = 190f;
     [SerializeField] private float verticalSpacing = 125f;
 
+    // treasureRoomCount : 보물방으로 변경될 방 개수
+    // shopRoomCount : 남은 후보 중 상점방으로 변경될 일반 방 개수
     [Header("Special Room Setting")]
     [SerializeField] private int treasureRoomCount = 2;
     [SerializeField] private int shopRoomCount = 2;
@@ -35,8 +44,8 @@ public class StageMapGenerator
     /// <returns></returns>
     public List<StageMapNodeData> Generate()
     {
-        floorCount = Mathf.Max(3, floorCount);
-        laneCount = Mathf.Max(3, laneCount);
+        floorCount = Mathf.Max(minFloorCount, floorCount);
+        laneCount = Mathf.Max(minFloorCount, laneCount);
 
         // 중앙 위치를 갖도록 레인 수는 홀수로 유지
         if (laneCount % 2 == 0)
@@ -85,7 +94,7 @@ public class StageMapGenerator
     /// <returns></returns>
     private List<Vector2Int> CreatePath(int lastFloor, int middleLane, int fixedEliteFloor)
     {
-        List<Vector2Int> path = new List<Vector2Int>()
+        List<Vector2Int> path = new()
         {
             new Vector2Int(0, middleLane)
         };

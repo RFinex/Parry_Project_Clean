@@ -4,6 +4,8 @@ using System.Threading;
 
 public class EnemyIdleState : EnemyBaseState
 {
+    private float detectInterval = 0.1f;
+
     public override void Enter(EnemyController owner)
     {
         if (!owner.UseStateMachineBehavior)
@@ -30,8 +32,6 @@ public class EnemyIdleState : EnemyBaseState
     {
         try
         {
-            float detectInterval = 0.1f;
-
             if (owner.TryDetectTarget())
             {
                 TransitionState(typeof(EnemyTraceState));
