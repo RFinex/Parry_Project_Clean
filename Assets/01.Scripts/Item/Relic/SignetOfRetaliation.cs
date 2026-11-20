@@ -29,9 +29,9 @@ public class SignetOfRetaliation : Artifact
         if (!IsEquipped)
             return;
 
-        board.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
         blackBoard.combat.OnAttackEnded -= FirstDamageDown;
-        board.combat.OnParrySucceed += FirstDamageUp;
+        blackBoard.combat.OnParrySucceed += FirstDamageUp;
         blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 

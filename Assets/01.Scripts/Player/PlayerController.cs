@@ -124,6 +124,7 @@ public class PlayerController : MonoBehaviour
         playerToken = playerToken.ResetToken();
         blackBoard.owenrToken = playerToken;
 
+        stateMachine.ChangeState(typeof(PlayerIdleState), true);
         UpdateAsync(token.Token).Forget();
     }
 
@@ -162,9 +163,7 @@ public class PlayerController : MonoBehaviour
 
         token = token.ResetToken();
 
-        InitStateMachine();        
-
-        stateMachine.ChangeState(typeof(PlayerIdleState));
+        InitStateMachine();
     }
 
     private void InitBasePlayerInfo()

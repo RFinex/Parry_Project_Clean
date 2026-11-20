@@ -108,3 +108,5 @@ InitTestScene*.unity*
 # Ignore Assets
 Assets/IgnoreAssets/
 *.md
+!Docs/Portfolio/
+!Docs/Portfolio/*.md

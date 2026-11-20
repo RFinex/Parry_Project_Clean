@@ -30,9 +30,9 @@ public class RingOfChaser : Artifact
         if (!IsEquipped)
             return;
 
-        board.skill.OnDashEnded -= FirstDamageUp;
+        blackBoard.skill.OnDashEnded -= FirstDamageUp;
         blackBoard.combat.OnAttackEnded -= FirstDamageDown;
-        board.skill.OnDashEnded += FirstDamageUp;
+        blackBoard.skill.OnDashEnded += FirstDamageUp;
         blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 

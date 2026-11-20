@@ -30,9 +30,9 @@ public class SealOfJudgement : Artifact
         if (!IsEquipped)
             return;
 
-        board.combat.OnParrySucceed -= FirstDamageUp;
+        blackBoard.combat.OnParrySucceed -= FirstDamageUp;
         blackBoard.combat.OnAttackEnded -= FirstDamageDown;
-        board.combat.OnParrySucceed += FirstDamageUp;
+        blackBoard.combat.OnParrySucceed += FirstDamageUp;
         blackBoard.combat.OnAttackEnded += FirstDamageDown;
     }
 
@@ -56,10 +56,6 @@ public class SealOfJudgement : Artifact
         try
         {
             await UniTask.Delay(TimeSpan.FromSeconds(applyTimer), cancellationToken: ctk);
-        }
-        catch (OperationCanceledException)
-        {
-
         }
         finally
         {

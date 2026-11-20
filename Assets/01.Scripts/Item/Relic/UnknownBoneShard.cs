@@ -26,10 +26,10 @@ public class UnknownBoneShard : Artifact
         if (!IsEquipped)
             return;
 
-        CheckHealth(board.stats.NowHp, board.stats.MaxHp);
+        CheckHealth(blackBoard.stats.NowHp, blackBoard.stats.MaxHp);
 
-        board.stats.OnHealthChanged -= CheckHealth;
-        board.stats.OnHealthChanged += CheckHealth;
+        blackBoard.stats.OnHealthChanged -= CheckHealth;
+        blackBoard.stats.OnHealthChanged += CheckHealth;
     }
 
     public override void OnUnequip(PlayerBlackBoard board)
@@ -37,7 +37,7 @@ public class UnknownBoneShard : Artifact
         if (!IsEquipped)
             return;
 
-        CheckHealth(board.stats.NowHp, board.stats.MaxHp);
+        CheckHealth(blackBoard.stats.NowHp, blackBoard.stats.MaxHp);
 
         blackBoard.stats.OnHealthChanged -= CheckHealth;
 

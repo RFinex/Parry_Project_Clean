@@ -13,6 +13,8 @@ public class ArtifactSystem : IService
     private List<ArtifactData> artifactList = new();
     private List<RarityWeight> availableRarityWeights = new();
 
+    public IReadOnlyList<ArtifactData> Artifacts => dataReader != null ? dataReader.Artifacts : null;
+
     public void Initialized(ArtifactDataReader reader, ItemFactory factory)
     {
         dataReader = reader;

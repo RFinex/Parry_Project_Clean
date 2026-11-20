@@ -6,7 +6,7 @@ public class PlayerAttackState : PlayerBaseState
 {
     public override void Enter(PlayerController owner)
     {
-        EnterToken(owner.DestroyToken);
+        EnterToken(playerBoard.owenrToken.Token);
 
         UnityEngine.Vector2 velocity = playerBoard.rb.linearVelocity;
         bool isAir = !playerBoard.movement.isGround || velocity.y > 0f;
